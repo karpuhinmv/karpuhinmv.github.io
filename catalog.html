@@ -179,6 +179,7 @@
             background: var(--glass-bg);
         }
         
+        /* ===== СТИЛИ МОБИЛЬНОЙ КНОПКИ С АНИМАЦИЕЙ ===== */
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -187,9 +188,35 @@
             font-size: 1.5rem;
             cursor: pointer;
             padding: 5px;
+            width: 44px;
+            height: 44px;
+            position: relative;
+        }
+        .mobile-menu-btn i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .mobile-menu-btn .fa-bars {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .mobile-menu-btn .fa-times {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+        .mobile-menu-btn.active .fa-bars {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+        .mobile-menu-btn.active .fa-times {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
         
-        /* === СТИЛИ КАТАЛОГА (из index.html) === */
+        /* === СТИЛИ КАТАЛОГА === */
         .catalog {
             padding: 40px 0;
         }
@@ -284,7 +311,7 @@
             transform: translateY(-2px);
         }
 
-        /* === ПОДВАЛ (из index.html) === */
+        /* === ПОДВАЛ === */
         footer {
             padding: 30px 0;
             text-align: center;
@@ -344,15 +371,26 @@
 
         @media (max-width: 768px) {
             .container { width: 100%; padding: 0 15px; }
-            .header-container { flex-direction: row; justify-content: space-between; gap: 15px; }
+            .header-container { 
+                flex-wrap: nowrap;              /* в одну строку */
+                gap: 10px;
+            }
+            .logo {
+                flex: 1;
+                min-width: 0;
+            }
+            .logo-text {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .logo-text h1 { font-size: 1.3rem; }
+            .logo-icon { width: 45px; height: 45px; }
             nav { width: 100%; order: 3; margin-top: 15px; display: none; }
             nav.active { display: block; }
             nav ul { flex-direction: column; width: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; gap: 10px; }
             nav a { display: block; text-align: center; padding: 12px; font-size: 16px; border: 1px solid rgba(255, 255, 255, 0.1); }
-            .mobile-menu-btn { display: block; order: 2; }
-            .logo { order: 1; }
-            .logo-text h1 { font-size: 1.3rem; }
-            .logo-icon { width: 45px; height: 45px; }
+            .mobile-menu-btn { display: block; order: 2; flex-shrink: 0; }
             .catalog-grid { grid-template-columns: 1fr; gap: 15px; }
             .filters { flex-direction: column; width: 100%; }
             .filter-btn { width: 100%; text-align: center; }
@@ -386,12 +424,13 @@
             </div>
             <button class="mobile-menu-btn">
                 <i class="fas fa-bars"></i>
+                <i class="fas fa-times"></i>   <!-- добавили крестик -->
             </button>
             <nav>
                 <ul>
                     <li><a href="index.html">Главная</a></li>
                     <li><a href="catalog.html" class="active">Каталог</a></li>
-                    <li><a href="index.html">Контакты</a></li>
+                    <li><a href="index.html#contacts">Контакты</a></li>
                 </ul>
             </nav>
         </div>
@@ -441,67 +480,22 @@
         //  МАССИВ ТОВАРОВ С КАТЕГОРИЯМИ ДЛЯ ФИЛЬТРАЦИИ
         // ------------------------------------------------------------
         const products = [
-            { 
-                name: "Гроб деревянный (обивка тканью)", 
-                price: "от 8 000 000 ₽", 
-                image: "images/zal.jpg", 
-                category: "caskets" 
-            },
-            { 
-                name: "Венок похоронный", 
-                price: "от 1 200 ₽", 
-                image: "images/wreath.jpg", 
-                category: "wreaths" 
-            },
-            { 
-                name: "Крест металлический", 
-                price: "от 2 500 ₽", 
-                image: "images/cross.jpg", 
-                category: "crosses_plaques" 
-            },
-            { 
-                name: "Табличка на могилу (латунь)", 
-                price: "от 1 800 ₽", 
-                image: "images/tablet.jpg", 
-                category: "crosses_plaques" 
-            },
-            { 
-                name: "Одежда для усопшего (мужская)", 
-                price: "от 4 500 ₽", 
-                image: "images/clothes.jpg", 
-                category: "clothing" 
-            },
-            { 
-                name: "Ритуальная корзина", 
-                price: "от 2 200 ₽", 
-                image: "images/basket.jpg", 
-                category: "wreaths" 
-            },
-            { 
-                name: "Памятник гранитный", 
-                price: "от 25 000 ₽", 
-                image: "images/monument.jpg", 
-                category: "monuments" 
-            },
-            { 
-                name: "Ограда металлическая", 
-                price: "от 7 500 ₽", 
-                image: "images/fence.jpg", 
-                category: "monuments" 
-            }
+            { name: "Гроб деревянный (обивка тканью)", price: "от 8 000 000 ₽", image: "images/zal.jpg", category: "caskets" },
+            { name: "Венок похоронный", price: "от 1 200 ₽", image: "images/wreath.jpg", category: "wreaths" },
+            { name: "Крест металлический", price: "от 2 500 ₽", image: "images/cross.jpg", category: "crosses_plaques" },
+            { name: "Табличка на могилу (латунь)", price: "от 1 800 ₽", image: "images/tablet.jpg", category: "crosses_plaques" },
+            { name: "Одежда для усопшего (мужская)", price: "от 4 500 ₽", image: "images/clothes.jpg", category: "clothing" },
+            { name: "Ритуальная корзина", price: "от 2 200 ₽", image: "images/basket.jpg", category: "wreaths" },
+            { name: "Памятник гранитный", price: "от 25 000 ₽", image: "images/monument.jpg", category: "monuments" },
+            { name: "Ограда металлическая", price: "от 7 500 ₽", image: "images/fence.jpg", category: "monuments" }
         ];
 
-        // ------------------------------------------------------------
-        //  ФУНКЦИЯ ОТОБРАЖЕНИЯ ТОВАРОВ (С ФИЛЬТРАЦИЕЙ)
-        // ------------------------------------------------------------
         function renderCatalog(category = 'all') {
             const grid = document.getElementById('catalogGrid');
             if (!grid) return;
             grid.innerHTML = '';
 
-            const filtered = category === 'all' 
-                ? products 
-                : products.filter(p => p.category === category);
+            const filtered = category === 'all' ? products : products.filter(p => p.category === category);
 
             if (filtered.length === 0) {
                 grid.innerHTML = '<div class="glass" style="grid-column:1/-1; text-align:center; padding:40px;">Товары данной категории временно отсутствуют</div>';
@@ -537,12 +531,13 @@
                 price.textContent = product.price;
                 
                 const btn = document.createElement('a');
-                btn.href = 'new.html#contacts';
+                btn.href = 'index.html#contacts';
                 btn.className = 'btn btn-small';
                 btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Заказать';
                 btn.addEventListener('click', function(e) {
                     if (window.innerWidth <= 768) {
                         nav.classList.remove('active');
+                        mobileMenuBtn.classList.remove('active');
                         document.body.style.overflow = 'auto';
                     }
                 });
@@ -555,9 +550,7 @@
             });
         }
 
-        // ------------------------------------------------------------
-        //  ИНИЦИАЛИЗАЦИЯ ФИЛЬТРОВ
-        // ------------------------------------------------------------
+        // ---------- ФИЛЬТРЫ ----------
         function initFilters() {
             const filterBtns = document.querySelectorAll('.filter-btn');
             filterBtns.forEach(btn => {
@@ -570,9 +563,7 @@
             });
         }
 
-        // ------------------------------------------------------------
-        //  МОБИЛЬНОЕ МЕНЮ
-        // ------------------------------------------------------------
+        // ---------- МОБИЛЬНОЕ МЕНЮ (с анимацией кнопки) ----------
         const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
         const nav = document.querySelector('nav');
 
@@ -580,6 +571,8 @@
             mobileMenuBtn.addEventListener('click', () => {
                 nav.style.display = '';
                 nav.classList.toggle('active');
+                mobileMenuBtn.classList.toggle('active');
+
                 if (nav.classList.contains('active')) {
                     document.body.style.overflow = 'hidden';
                 } else {
@@ -592,6 +585,7 @@
             if (window.innerWidth <= 768 && nav && nav.classList.contains('active')) {
                 if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
                     nav.classList.remove('active');
+                    mobileMenuBtn.classList.remove('active');
                     document.body.style.overflow = 'auto';
                 }
             }
@@ -600,13 +594,12 @@
         window.addEventListener('resize', () => {
             if (window.innerWidth > 768 && nav) {
                 nav.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
         });
 
-        // ------------------------------------------------------------
-        //  ЗАПУСК
-        // ------------------------------------------------------------
+        // ---------- ЗАПУСК ----------
         document.addEventListener('DOMContentLoaded', () => {
             renderCatalog('all');
             initFilters();

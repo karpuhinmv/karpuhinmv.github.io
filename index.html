@@ -6,6 +6,7 @@
     <title>Похоронный дом "Душа" | Калуга</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ====== БАЗОВЫЕ СТИЛИ (без изменений, только добавлен блок для кнопки) ====== */
         * {
             margin: 0;
             padding: 0;
@@ -178,6 +179,7 @@
             background: var(--glass-bg);
         }
         
+        /* ===== СТИЛИ МОБИЛЬНОЙ КНОПКИ С АНИМАЦИЕЙ ===== */
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -186,6 +188,32 @@
             font-size: 1.5rem;
             cursor: pointer;
             padding: 5px;
+            width: 44px;
+            height: 44px;
+            position: relative;
+        }
+        .mobile-menu-btn i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .mobile-menu-btn .fa-bars {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .mobile-menu-btn .fa-times {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+        .mobile-menu-btn.active .fa-bars {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+        .mobile-menu-btn.active .fa-times {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
         
         .hero {
@@ -292,8 +320,6 @@
             font-size: 1.2rem;
             margin-bottom: 10px;
         }
-
-        /* ======= СТИЛИ КАТАЛОГА БЫЛИ УДАЛЕНЫ ======= */
         
         .contacts {
             padding: 40px 0;
@@ -392,25 +418,91 @@
         
         @media (max-width: 768px) {
             .container { width: 100%; padding: 0 15px; }
-            .header-container { flex-direction: row; justify-content: space-between; gap: 15px; }
-            nav { width: 100%; order: 3; margin-top: 15px; display: none; }
-            nav.active { display: block; }
-            nav ul { flex-direction: column; width: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; gap: 10px; }
-            nav a { display: block; text-align: center; padding: 12px; font-size: 16px; border: 1px solid rgba(255, 255, 255, 0.1); }
-            .mobile-menu-btn { display: block; order: 2; }
-            .logo { order: 1; }
-            .logo-text h1 { font-size: 1.3rem; }
-            .logo-icon { width: 45px; height: 45px; }
-            .hero { padding: 30px 0 40px; }
-            .hero h2 { font-size: 1.8rem; }
-            .hero p { font-size: 1rem; }
-            .glass { padding: 20px 15px; border-radius: 15px; }
-            .advantages { padding: 30px 0; }
-            .advantages-grid { grid-template-columns: 1fr; gap: 15px; }
-            .services-grid { grid-template-columns: 1fr; gap: 15px; }
-            .contact-buttons { flex-direction: column; width: 100%; }
-            .contact-buttons .btn { width: 100%; margin-bottom: 10px; }
-            .footer-content { gap: 20px; }
+            .header-container { 
+                flex-wrap: nowrap;              /* ← заставляем быть в одну строку */
+                gap: 10px;
+            }
+            .logo {
+                flex: 1;                         /* ← логотип занимает оставшееся место */
+                min-width: 0;                     /* ← разрешаем сжиматься */
+            }
+            .logo-text {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .logo-text h1 {
+                font-size: 1.3rem;
+            }
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+            nav {
+                width: 100%;
+                order: 3;
+                margin-top: 15px;
+                display: none;
+            }
+            nav.active {
+                display: block;
+            }
+            nav ul {
+                flex-direction: column;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(10px);
+                border-radius: 15px;
+                padding: 20px;
+                gap: 10px;
+            }
+            nav a {
+                display: block;
+                text-align: center;
+                padding: 12px;
+                font-size: 16px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .mobile-menu-btn {
+                display: block;                  /* ← показываем кнопку */
+                order: 2;
+                flex-shrink: 0;                   /* ← запрещаем сжиматься */
+            }
+            .hero {
+                padding: 30px 0 40px;
+            }
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .glass {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+            .advantages {
+                padding: 30px 0;
+            }
+            .advantages-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .contact-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            .contact-buttons .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .footer-content {
+                gap: 20px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -483,20 +575,21 @@
             </div>
             <button class="mobile-menu-btn">
                 <i class="fas fa-bars"></i>
+                <i class="fas fa-times"></i>   <!-- добавили иконку крестика -->
             </button>
             <nav>
                 <ul>
                     <li><a href="#main">Главная</a></li>
                     <li><a href="#advantages">Преимущества</a></li>
                     <li><a href="#services">Услуги</a></li>
-                    <li><a href="catalog.html">Каталог</a></li> <!-- ссылка на отдельную страницу -->
+                    <li><a href="catalog.html">Каталог</a></li>
                     <li><a href="#contacts">Контакты</a></li>
                 </ul>
             </nav>
         </div>
     </header>
     
-    <main>
+    <main> <!-- остальной контент без изменений -->
         <section id="main" class="hero">
             <div class="container">
                 <div class="glass fade-in">
@@ -511,6 +604,7 @@
             <div class="container">
                 <h2 class="section-title fade-in">Почему выбирают нас</h2>
                 <div class="advantages-grid">
+                    <!-- ... карточки ... -->
                     <div class="glass advantage-card fade-in delay-1">
                         <div class="advantage-icon"><i class="fas fa-clock"></i></div>
                         <h3>Круглосуточно и без выходных</h3>
@@ -577,7 +671,6 @@
             </div>
         </section>
         
-        <!-- ======= КНОПКА-ССЫЛКА НА СТРАНИЦУ КАТАЛОГА ======= -->
         <section class="catalog-button-section" style="padding: 40px 0; text-align: center;">
             <div class="container">
                 <div class="glass fade-in">
@@ -655,6 +748,7 @@
                     });
                     if (window.innerWidth <= 768) {
                         nav.classList.remove('active');
+                        mobileMenuBtn.classList.remove('active'); // убираем активность с кнопки
                         document.body.style.overflow = 'auto';
                     }
                 }
@@ -662,7 +756,7 @@
         });
     });
 
-    // ---------- МОБИЛЬНОЕ МЕНЮ ----------
+    // ---------- МОБИЛЬНОЕ МЕНЮ (с анимацией кнопки) ----------
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const nav = document.querySelector('nav');
 
@@ -670,6 +764,8 @@
         mobileMenuBtn.addEventListener('click', () => {
             nav.style.display = '';
             nav.classList.toggle('active');
+            mobileMenuBtn.classList.toggle('active'); // переключаем класс для анимации иконки
+
             if (nav.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
             } else {
@@ -682,6 +778,7 @@
         if (window.innerWidth <= 768 && nav && nav.classList.contains('active')) {
             if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
                 nav.classList.remove('active');
+                mobileMenuBtn.classList.remove('active'); // убираем активность
                 document.body.style.overflow = 'auto';
             }
         }
@@ -690,6 +787,7 @@
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768 && nav) {
             nav.classList.remove('active');
+            mobileMenuBtn.classList.remove('active'); // убираем активность
             document.body.style.overflow = 'auto';
         }
     });
