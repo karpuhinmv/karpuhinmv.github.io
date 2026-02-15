@@ -40,7 +40,6 @@
             padding: 0 15px;
         }
         
-        /* Эффект жидкого стекла */
         .glass {
             background: var(--glass-bg);
             backdrop-filter: blur(10px);
@@ -52,7 +51,6 @@
             margin: 15px 0;
         }
         
-        /* Закругленные кнопки */
         .btn {
             display: inline-block;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -70,7 +68,7 @@
             z-index: 1;
             font-size: 16px;
             text-align: center;
-            min-height: 48px; /* Минимальная высота для удобного нажатия на мобильных */
+            min-height: 48px;
         }
         
         .btn:hover {
@@ -95,8 +93,14 @@
         .btn:hover:before {
             opacity: 1;
         }
+
+        .btn-small {
+            padding: 8px 20px;
+            font-size: 14px;
+            min-height: 36px;
+            margin-top: 12px;
+        }
         
-        /* Шапка */
         header {
             padding: 15px 0;
             position: relative;
@@ -124,7 +128,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0; /* Чтобы логотип не сжимался на мобильных */
+            flex-shrink: 0;
         }
         
         .logo-icon img {
@@ -146,7 +150,6 @@
             opacity: 0.8;
         }
         
-        /* Навигация */
         nav {
             display: flex;
             align-items: center;
@@ -168,7 +171,7 @@
             padding: 8px 14px;
             border-radius: 50px;
             font-size: 15px;
-            white-space: nowrap; /* Текст не переносится */
+            white-space: nowrap;
         }
         
         nav a:hover {
@@ -185,7 +188,6 @@
             padding: 5px;
         }
         
-        /* Герой секция */
         .hero {
             padding: 40px 0 60px;
             text-align: center;
@@ -210,7 +212,6 @@
             padding: 0 10px;
         }
         
-        /* Преимущества */
         .advantages {
             padding: 40px 0;
         }
@@ -266,7 +267,6 @@
             font-size: 0.95rem;
         }
         
-        /* Услуги */
         .services {
             padding: 40px 0;
         }
@@ -292,8 +292,9 @@
             font-size: 1.2rem;
             margin-bottom: 10px;
         }
+
+        /* ======= СТИЛИ КАТАЛОГА БЫЛИ УДАЛЕНЫ ======= */
         
-        /* Контакты */
         .contacts {
             padding: 40px 0;
         }
@@ -332,7 +333,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            flex-shrink: 0; /* Иконка не сжимается */
+            flex-shrink: 0;
         }
         
         .contact-item h4 {
@@ -340,7 +341,6 @@
             margin-bottom: 5px;
         }
         
-        /* Подвал */
         footer {
             padding: 30px 0;
             text-align: center;
@@ -384,212 +384,56 @@
             transform: translateY(-3px);
         }
         
-        /* Адаптивность для планшетов */
         @media (max-width: 992px) {
-            .hero h2 {
-                font-size: 2rem;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-            }
-            
-            .advantages-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .hero h2 { font-size: 2rem; }
+            .section-title { font-size: 1.8rem; }
+            .advantages-grid { grid-template-columns: repeat(2, 1fr); }
         }
         
-        /* Адаптивность для мобильных (горизонтальная ориентация) */
         @media (max-width: 768px) {
-            .container {
-                width: 100%;
-                padding: 0 15px;
-            }
-            
-            .header-container {
-                flex-direction: row;
-                justify-content: space-between;
-                gap: 15px;
-            }
-            
-            /* Мобильное меню */
-            nav {
-                width: 100%;
-                order: 3;
-                margin-top: 15px;
-                display: none; /* Скрыто по умолчанию */
-            }
-            
-            nav.active {
-                display: block;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(10px);
-                border-radius: 15px;
-                padding: 20px;
-                gap: 10px;
-            }
-            
-            nav a {
-                display: block;
-                text-align: center;
-                padding: 12px;
-                font-size: 16px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-                order: 2;
-            }
-            
-            .logo {
-                order: 1;
-            }
-            
-            .logo-text h1 {
-                font-size: 1.3rem;
-            }
-            
-            .logo-icon {
-                width: 45px;
-                height: 45px;
-            }
-            
-            .hero {
-                padding: 30px 0 40px;
-            }
-            
-            .hero h2 {
-                font-size: 1.8rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .glass {
-                padding: 20px 15px;
-                border-radius: 15px;
-            }
-            
-            .advantages {
-                padding: 30px 0;
-            }
-            
-            .advantages-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .advantage-card {
-                padding: 20px 15px;
-            }
-            
-            .services-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .contact-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .contact-buttons .btn {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            
-            .footer-content {
-                gap: 20px;
-            }
+            .container { width: 100%; padding: 0 15px; }
+            .header-container { flex-direction: row; justify-content: space-between; gap: 15px; }
+            nav { width: 100%; order: 3; margin-top: 15px; display: none; }
+            nav.active { display: block; }
+            nav ul { flex-direction: column; width: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; gap: 10px; }
+            nav a { display: block; text-align: center; padding: 12px; font-size: 16px; border: 1px solid rgba(255, 255, 255, 0.1); }
+            .mobile-menu-btn { display: block; order: 2; }
+            .logo { order: 1; }
+            .logo-text h1 { font-size: 1.3rem; }
+            .logo-icon { width: 45px; height: 45px; }
+            .hero { padding: 30px 0 40px; }
+            .hero h2 { font-size: 1.8rem; }
+            .hero p { font-size: 1rem; }
+            .glass { padding: 20px 15px; border-radius: 15px; }
+            .advantages { padding: 30px 0; }
+            .advantages-grid { grid-template-columns: 1fr; gap: 15px; }
+            .services-grid { grid-template-columns: 1fr; gap: 15px; }
+            .contact-buttons { flex-direction: column; width: 100%; }
+            .contact-buttons .btn { width: 100%; margin-bottom: 10px; }
+            .footer-content { gap: 20px; }
         }
         
-        /* Адаптивность для маленьких мобильных */
         @media (max-width: 480px) {
-            .hero h2 {
-                font-size: 1.6rem;
-            }
-            
-            .section-title {
-                font-size: 1.6rem;
-                margin-bottom: 30px;
-            }
-            
-            .btn {
-                padding: 12px 20px;
-                font-size: 15px;
-                width: 100%;
-                max-width: 300px;
-                margin: 0 auto;
-                display: block;
-            }
-            
-            .logo-text h1 {
-                font-size: 1.2rem;
-            }
-            
-            .logo-text p {
-                font-size: 0.75rem;
-            }
-            
-            .contact-item {
-                flex-direction: column;
-                text-align: center;
-                gap: 10px;
-            }
-            
-            .contact-icon {
-                width: 45px;
-                height: 45px;
-                font-size: 1.1rem;
-            }
-            
-            .social-links a {
-                width: 40px;
-                height: 40px;
-                font-size: 1.1rem;
-            }
-            
-            .advantage-icon {
-                font-size: 2.2rem;
-            }
-            
-            .advantage-card h3 {
-                font-size: 1.2rem;
-            }
+            .hero h2 { font-size: 1.6rem; }
+            .section-title { font-size: 1.6rem; margin-bottom: 30px; }
+            .btn { padding: 12px 20px; font-size: 15px; width: 100%; max-width: 300px; margin: 0 auto; display: block; }
+            .logo-text h1 { font-size: 1.2rem; }
+            .logo-text p { font-size: 0.75rem; }
+            .contact-item { flex-direction: column; text-align: center; gap: 10px; }
+            .contact-icon { width: 45px; height: 45px; font-size: 1.1rem; }
+            .social-links a { width: 40px; height: 40px; font-size: 1.1rem; }
+            .advantage-icon { font-size: 2.2rem; }
+            .advantage-card h3 { font-size: 1.2rem; }
         }
         
-        /* Адаптивность для очень маленьких экранов */
         @media (max-width: 360px) {
-            .logo-text h1 {
-                font-size: 1.1rem;
-            }
-            
-            .logo-icon {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .hero h2 {
-                font-size: 1.4rem;
-            }
-            
-            .hero p {
-                font-size: 0.95rem;
-            }
-            
-            .section-title {
-                font-size: 1.4rem;
-            }
+            .logo-text h1 { font-size: 1.1rem; }
+            .logo-icon { width: 40px; height: 40px; }
+            .hero h2 { font-size: 1.4rem; }
+            .hero p { font-size: 0.95rem; }
+            .section-title { font-size: 1.4rem; }
         }
         
-        /* Анимации */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -603,79 +447,56 @@
         .delay-2 { animation-delay: 0.4s; }
         .delay-3 { animation-delay: 0.6s; }
         
-        /* Дополнительные стили */
-        .highlight {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-        
         .divider {
             height: 1px;
             background: var(--glass-border);
             margin: 30px 0;
         }
         
-        .contacts-center {
-            text-align: center;
-        }
+        .contacts-center { text-align: center; }
+        .contact-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px; }
         
-        .contact-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 25px;
-        }
-        
-        /* Улучшение для touch устройств */
         @media (hover: none) {
-            .btn:hover {
-                transform: none;
-            }
-            
-            .advantage-card:hover {
-                transform: none;
-            }
-            
-            .service-item:hover {
-                background: none;
-            }
+            .btn:hover { transform: none; }
+            .advantage-card:hover { transform: none; }
+            .service-item:hover { background: none; }
+        }
+
+        /* Дополнительный стиль для кнопки перехода в каталог */
+        .catalog-button-section .btn {
+            font-size: 1.2rem;
+            padding: 16px 40px;
         }
     </style>
 </head>
 <body>
-    <!-- Шапка -->
     <header>
         <div class="container header-container">
             <div class="logo">
                 <div class="logo-icon">
-                    <!-- Вставьте ваш логотип -->
-                    <img src="dusha-logo.png" alt="Похоронный дом Душа">
+                    <img src="images/dusha-logo.png" alt="Похоронный дом Душа">
                 </div>
                 <div class="logo-text">
                     <h1>Похоронный дом «Душа»</h1>
                     <p>Калуга</p>
                 </div>
             </div>
-            
             <button class="mobile-menu-btn">
                 <i class="fas fa-bars"></i>
             </button>
-            
             <nav>
                 <ul>
                     <li><a href="#main">Главная</a></li>
                     <li><a href="#advantages">Преимущества</a></li>
                     <li><a href="#services">Услуги</a></li>
+                    <li><a href="catalog.html">Каталог</a></li> <!-- ссылка на отдельную страницу -->
                     <li><a href="#contacts">Контакты</a></li>
                 </ul>
             </nav>
         </div>
     </header>
     
-    <!-- Основной контент -->
     <main>
-        <!-- Герой секция -->
         <section id="main" class="hero">
             <div class="container">
                 <div class="glass fade-in">
@@ -686,56 +507,37 @@
             </div>
         </section>
         
-        <!-- Преимущества -->
         <section id="advantages" class="advantages">
             <div class="container">
                 <h2 class="section-title fade-in">Почему выбирают нас</h2>
-                
                 <div class="advantages-grid">
                     <div class="glass advantage-card fade-in delay-1">
-                        <div class="advantage-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
+                        <div class="advantage-icon"><i class="fas fa-clock"></i></div>
                         <h3>Круглосуточно и без выходных</h3>
                         <p>Мы доступны 24/7 для оперативного выезда и консультации. Понимаем, что горе не ждет удобного времени.</p>
                     </div>
-                    
                     <div class="glass advantage-card fade-in delay-2">
-                        <div class="advantage-icon">
-                            <i class="fas fa-hand-holding-heart"></i>
-                        </div>
+                        <div class="advantage-icon"><i class="fas fa-hand-holding-heart"></i></div>
                         <h3>Индивидуальный подход</h3>
                         <p>Каждая церемония тщательно планируется с учетом пожеланий семьи, религиозных и культурных традиций.</p>
                     </div>
-                    
                     <div class="glass advantage-card fade-in delay-3">
-                        <div class="advantage-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
+                        <div class="advantage-icon"><i class="fas fa-map-marker-alt"></i></div>
                         <h3>Автопарк и залы</h3>
                         <p>В нашем распоряжении катафальный транспорт, траурные залы и все необходимые атрибуты для церемонии.</p>
                     </div>
-                    
                     <div class="glass advantage-card fade-in delay-1">
-                        <div class="advantage-icon">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
+                        <div class="advantage-icon"><i class="fas fa-user-tie"></i></div>
                         <h3>Профессиональные сотрудники</h3>
                         <p>Наш персонал прошел специальную подготовку и с пониманием относится к горю каждой семьи.</p>
                     </div>
-                    
                     <div class="glass advantage-card fade-in delay-2">
-                        <div class="advantage-icon">
-                            <i class="fas fa-ruble-sign"></i>
-                        </div>
+                        <div class="advantage-icon"><i class="fas fa-ruble-sign"></i></div>
                         <h3>Прозрачные цены</h3>
                         <p>Честное ценообразование без скрытых платежей. Предоставляем детализированную смету перед началом работ.</p>
                     </div>
-                    
                     <div class="glass advantage-card fade-in delay-3">
-                        <div class="advantage-icon">
-                            <i class="fas fa-history"></i>
-                        </div>
+                        <div class="advantage-icon"><i class="fas fa-history"></i></div>
                         <h3>Много лет опыта</h3>
                         <p>Огромное количество времени мы помогаем семьям Калуги и области в самые трудные моменты.</p>
                     </div>
@@ -743,37 +545,30 @@
             </div>
         </section>
         
-        <!-- Услуги -->
         <section id="services" class="services">
             <div class="container">
                 <h2 class="section-title fade-in">Наши услуги</h2>
-                
                 <div class="services-grid">
                     <div class="glass service-item fade-in delay-1">
                         <h3>Организация похорон</h3>
                         <p>Полный комплекс услуг от оформления документов до проведения церемонии.</p>
                     </div>
-                    
                     <div class="glass service-item fade-in delay-2">
                         <h3>Транспорт</h3>
                         <p>Большой выбор транспорта для проведения траурной церемонии.</p>
                     </div>
-                    
                     <div class="glass service-item fade-in delay-3">
                         <h3>Траурные церемонии</h3>
                         <p>Проведение гражданских и религиозных панихид, организация поминальных обедов.</p>
                     </div>
-                    
                     <div class="glass service-item fade-in delay-1">
                         <h3>Ритуальные товары</h3>
                         <p>Широкий выбор гробов, венков, одежды и других необходимых атрибутов.</p>
                     </div>
-                    
                     <div class="glass service-item fade-in delay-2">
                         <h3>Благоустройство мест</h3>
                         <p>Установка памятников, оград, благоустройство могил и уход за захоронениями.</p>
                     </div>
-                    
                     <div class="glass service-item fade-in delay-3">
                         <h3>Груз 200</h3>
                         <p>Организация транспортировки умерших в другие города и страны.</p>
@@ -782,65 +577,44 @@
             </div>
         </section>
         
+        <!-- ======= КНОПКА-ССЫЛКА НА СТРАНИЦУ КАТАЛОГА ======= -->
+        <section class="catalog-button-section" style="padding: 40px 0; text-align: center;">
+            <div class="container">
+                <div class="glass fade-in">
+                    <h2 style="margin-bottom: 20px;">Широкий выбор ритуальных товаров</h2>
+                    <p style="margin-bottom: 30px; font-size: 1.1rem;">Ознакомьтесь с нашим каталогом гробов, венков, памятников и других принадлежностей.</p>
+                    <a href="catalog.html" class="btn" style="font-size: 1.2rem; padding: 16px 40px;">Перейти в каталог</a>
+                </div>
+            </div>
+        </section>
+        
         <div class="container divider"></div>
         
-        <!-- Контакты -->
         <section id="contacts" class="contacts">
             <div class="container">
                 <h2 class="section-title fade-in">Наши контакты</h2>
-                
                 <div class="contacts-container">
                     <div class="contact-info glass fade-in delay-1 contacts-center">
                         <h3>Свяжитесь с нами</h3>
-                        
                         <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div>
-                                <h4>Адрес</h4>
-                                <p>г. Калуга, Грабцевское шоссе, д. 12</p>
-                            </div>
+                            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div><h4>Адрес</h4><p>г. Калуга, Грабцевское шоссе, д. 12</p></div>
                         </div>
-                        
                         <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-phone"></i>
-                            </div>
-                            <div>
-                                <h4>Телефон</h4>
-                                <p>+7 (4842) 283-000</p>
-                                <p>Круглосуточная горячая линия: 8-910-609-30-00</p>
-                            </div>
+                            <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                            <div><h4>Телефон</h4><p>+7 (4842) 283-000</p><p>Круглосуточная горячая линия: 8-910-609-30-00</p></div>
                         </div>
-                        
                         <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div>
-                                <h4>Email</h4>
-                                <p>dusha.communication@gmail.com</p>
-                            </div>
+                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                            <div><h4>Email</h4><p>dusha.communication@gmail.com</p></div>
                         </div>
-                        
                         <div class="contact-item">
-                            <div class="contact-icon">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div>
-                                <h4>Режим работы</h4>
-                                <p>c 8:00 по 17:00, без выходных</p>
-                            </div>
+                            <div class="contact-icon"><i class="fas fa-clock"></i></div>
+                            <div><h4>Режим работы</h4><p>c 8:00 по 17:00, без выходных</p></div>
                         </div>
-                        
                         <div class="contact-buttons">
-                            <a href="tel:+79106093000" class="btn">
-                                <i class="fas fa-phone"></i> Позвонить
-                            </a>
-                            <a href="mailto:dusha.communication@gmail.com" class="btn">
-                                <i class="fas fa-envelope"></i> Написать
-                            </a>
+                            <a href="tel:+79106093000" class="btn"><i class="fas fa-phone"></i> Позвонить</a>
+                            <a href="mailto:dusha.communication@gmail.com" class="btn"><i class="fas fa-envelope"></i> Написать</a>
                         </div>
                     </div>
                 </div>
@@ -848,7 +622,6 @@
         </section>
     </main>
     
-    <!-- Подвал -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -856,17 +629,10 @@
                     <h3>Похоронный дом «Душа»</h3>
                     <p>Калуга</p>
                 </div>
-                
                 <div class="social-links">
-                    <!-- Вставьте свои ссылки на соцсети -->
-                    <a href="https://vk.com/dushakaluga" target="_blank" title="ВКонтакте">
-                        <i class="fab fa-vk"></i>
-                    </a>
-                    <a href="https://t.me/dushakaluga" target="_blank" title="Telegram">
-                        <i class="fab fa-telegram"></i>
-                    </a>
+                    <a href="https://vk.com/dushakaluga" target="_blank" title="ВКонтакте"><i class="fab fa-vk"></i></a>
+                    <a href="https://t.me/dushakaluga" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
                 </div>
-                
                 <div class="footer-info">
                     <p>© 2026 Похоронный дом «Душа». Все права защищены.</p>
                 </div>
@@ -875,92 +641,72 @@
     </footer>
 
     <script>
-        // Плавная прокрутка
-        document.querySelectorAll('nav a, .btn[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetId = href;
-                    const targetElement = document.querySelector(targetId);
-                    
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                        
-                        // Закрываем мобильное меню после клика
-                        if (window.innerWidth <= 768) {
-                            nav.classList.remove('active');
-                            document.body.style.overflow = 'auto';
-                        }
+    // Плавная прокрутка для якорей
+    document.querySelectorAll('nav a, .btn[href^="#"]:not(.btn-small)').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                const targetElement = document.querySelector(href);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    if (window.innerWidth <= 768) {
+                        nav.classList.remove('active');
+                        document.body.style.overflow = 'auto';
                     }
                 }
-            });
+            }
         });
-        
-        // Мобильное меню
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const nav = document.querySelector('nav');
-        
+    });
+
+    // ---------- МОБИЛЬНОЕ МЕНЮ ----------
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const nav = document.querySelector('nav');
+
+    if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', () => {
+            nav.style.display = '';
             nav.classList.toggle('active');
-            
-            // Блокируем прокрутку страницы при открытом меню
             if (nav.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
             } else {
                 document.body.style.overflow = 'auto';
             }
         });
-        
-        // Закрытие меню при клике вне его
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768 && nav.classList.contains('active')) {
-                if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                    nav.classList.remove('active');
-                    document.body.style.overflow = 'auto';
-                }
-            }
-        });
-        
-        // Адаптивное меню
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
+    }
+
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && nav && nav.classList.contains('active')) {
+            if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
                 nav.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
-        });
-        
-        // Анимация при загрузке
-        document.addEventListener('DOMContentLoaded', () => {
-            // Добавляем классы анимации для элементов при прокрутке
-            const observerOptions = {
-                threshold: 0.1
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                    }
-                });
-            }, observerOptions);
-            
-            document.querySelectorAll('.glass').forEach(el => {
-                observer.observe(el);
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && nav) {
+            nav.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // ---------- АНИМАЦИЯ ПРИ СКРОЛЛЕ ----------
+    document.addEventListener('DOMContentLoaded', () => {
+        const observerOptions = { threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
             });
-            
-            // Проверяем, мобильное ли устройство
-            const isMobile = window.innerWidth <= 768;
-            if (isMobile) {
-                nav.style.display = 'none';
-            }
-        });
+        }, observerOptions);
         
-        // Улучшение для touch-устройств
-        document.addEventListener('touchstart', function() {}, {passive: true});
+        document.querySelectorAll('.glass').forEach(el => observer.observe(el));
+    });
     </script>
 </body>
 </html>
