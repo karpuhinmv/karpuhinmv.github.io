@@ -33,6 +33,10 @@
             overflow-x: hidden;
         }
 
+        body.menu-open {
+            overflow: hidden;
+        }
+
         .container {
             width: 95%;
             max-width: 1200px;
@@ -185,9 +189,15 @@
             background: var(--glass-bg);
         }
 
+        nav a.active {
+            background: var(--accent-color);
+        }
+
+        /* Улучшенное мобильное меню */
         .mobile-menu-btn {
             display: none;
-            background: none;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
             border: none;
             color: white;
             font-size: 1.5rem;
@@ -196,14 +206,27 @@
             width: 44px;
             height: 44px;
             position: relative;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 101;
         }
+
+        .mobile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.1);
+        }
+
         .mobile-menu-btn i {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(1);
             transition: opacity 0.3s ease, transform 0.3s ease;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
+
         .mobile-menu-btn .fa-bars {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
@@ -219,6 +242,120 @@
         .mobile-menu-btn.active .fa-times {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
+        }
+
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 99;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container { width: 100%; padding: 0 15px; }
+            .header-container {
+                flex-wrap: nowrap;
+                gap: 10px;
+            }
+            .logo {
+                flex: 1;
+                min-width: 0;
+            }
+            .logo-text {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .logo-name {
+                font-size: 1.3rem;
+            }
+            .logo-description, .logo-location {
+                font-size: 0.7rem;
+            }
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+
+            /* Стили для мобильного меню */
+            nav {
+                position: fixed;
+                top: 80px;
+                left: 15px;
+                right: 15px;
+                width: auto;
+                z-index: 100;
+                transform: translateY(-20px);
+                opacity: 0;
+                visibility: hidden;
+                transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.3s ease, visibility 0.3s;
+                pointer-events: none;
+            }
+            nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+                pointer-events: all;
+            }
+            nav ul {
+                flex-direction: column;
+                background: linear-gradient(145deg, rgba(20, 30, 40, 0.98), rgba(10, 20, 30, 1));
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 25px;
+                padding: 20px 15px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+                gap: 5px;
+            }
+            nav li {
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.3s ease;
+                transition-delay: calc(0.05s * var(--i, 0));
+            }
+            nav.active li {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            nav li:nth-child(1) { --i: 1; }
+            nav li:nth-child(2) { --i: 2; }
+            nav li:nth-child(3) { --i: 3; }
+            nav a {
+                display: block;
+                text-align: center;
+                padding: 14px 20px;
+                font-size: 16px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 40px;
+                margin: 5px 0;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                transition: all 0.3s ease;
+            }
+            nav a:hover {
+                background: var(--accent-color);
+                border-color: var(--accent-color);
+                transform: translateX(5px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            }
+            .mobile-menu-btn {
+                display: block;
+                order: 2;
+                flex-shrink: 0;
+            }
         }
 
         /* Стили каталога */
@@ -372,65 +509,18 @@
         .delay-2 { animation-delay: 0.4s; }
         .delay-3 { animation-delay: 0.6s; }
 
+        /* Адаптация каталога под мобильные */
         @media (max-width: 768px) {
-            .container { width: 100%; padding: 0 15px; }
-            .header-container {
-                flex-wrap: nowrap;
-                gap: 10px;
-            }
-            .logo {
-                flex: 1;
-                min-width: 0;
-            }
-            .logo-text {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .logo-name {
-                font-size: 1.3rem;
-            }
-            .logo-description, .logo-location {
-                font-size: 0.7rem;
-            }
-            .logo-icon {
-                width: 45px;
-                height: 45px;
-            }
-            nav {
-                width: 100%;
-                order: 3;
-                margin-top: 15px;
-                display: none;
-            }
-            nav.active {
-                display: block;
-            }
-            nav ul {
-                flex-direction: column;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(10px);
-                border-radius: 15px;
-                padding: 20px;
-                gap: 10px;
-            }
-            nav a {
-                display: block;
-                text-align: center;
-                padding: 12px;
-                font-size: 16px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            .mobile-menu-btn {
-                display: block;
-                order: 2;
-                flex-shrink: 0;
-            }
             .catalog-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr); /* Две колонки на планшетах и больших телефонах */
                 gap: 15px;
             }
+            
+            .catalog-image {
+                width: 130px;
+                height: 130px;
+            }
+
             .filters {
                 flex-direction: column;
                 width: 100%;
@@ -442,9 +532,19 @@
         }
 
         @media (max-width: 480px) {
-            .btn { padding: 12px 20px; font-size: 15px; width: 100%; max-width: 300px; margin: 0 auto; display: block; }
-            .logo-name { font-size: 1.2rem; }
-            .catalog-image { width: 130px; height: 130px; }
+            .catalog-grid {
+                grid-template-columns: 1fr; /* Одна колонка на маленьких телефонах */
+            }
+            
+            .catalog-image {
+                width: 160px; /* Возвращаем обычный размер */
+                height: 160px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .logo-name { font-size: 1.1rem; }
+            .logo-icon { width: 40px; height: 40px; }
         }
 
         @media (hover: none) {
@@ -456,6 +556,7 @@
     </style>
 </head>
 <body>
+    <div class="mobile-menu-overlay"></div>
     <header>
         <div class="container header-container">
             <div class="logo">
@@ -578,13 +679,6 @@
                 btn.href = 'index.html#contacts';
                 btn.className = 'btn btn-small';
                 btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Заказать';
-                btn.addEventListener('click', function(e) {
-                    if (window.innerWidth <= 768) {
-                        nav.classList.remove('active');
-                        mobileMenuBtn.classList.remove('active');
-                        document.body.style.overflow = 'auto';
-                    }
-                });
 
                 card.appendChild(imageDiv);
                 card.appendChild(title);
@@ -606,43 +700,53 @@
             });
         }
 
-        // Мобильное меню
-        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-        const nav = document.querySelector('nav');
+        // Улучшенное мобильное меню
+        (function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const nav = document.querySelector('nav');
+            const overlay = document.querySelector('.mobile-menu-overlay');
+            const body = document.body;
 
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
-                nav.style.display = '';
-                nav.classList.toggle('active');
-                mobileMenuBtn.classList.toggle('active');
+            if (!mobileMenuBtn || !nav) return;
 
-                if (nav.classList.contains('active')) {
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    document.body.style.overflow = 'auto';
+            function toggleMenu(force) {
+                const isActive = force !== undefined ? force : !nav.classList.contains('active');
+                nav.classList.toggle('active', isActive);
+                mobileMenuBtn.classList.toggle('active', isActive);
+                if (overlay) overlay.classList.toggle('active', isActive);
+                body.classList.toggle('menu-open', isActive);
+            }
+
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            if (overlay) {
+                overlay.addEventListener('click', () => toggleMenu(false));
+            }
+
+            // Закрытие при клике на любую ссылку в меню
+            nav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    setTimeout(() => toggleMenu(false), 100);
+                });
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    toggleMenu(false);
                 }
             });
-        }
 
-        document.addEventListener('click', (e) => {
-            if (window.innerWidth <= 768 && nav && nav.classList.contains('active')) {
-                if (!nav.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                    nav.classList.remove('active');
-                    mobileMenuBtn.classList.remove('active');
-                    document.body.style.overflow = 'auto';
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && nav.classList.contains('active')) {
+                    toggleMenu(false);
                 }
-            }
-        });
+            });
+        })();
 
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && nav) {
-                nav.classList.remove('active');
-                mobileMenuBtn.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        });
-
-        // Запуск
+        // Анимация при скролле
         document.addEventListener('DOMContentLoaded', () => {
             renderCatalog('all');
             initFilters();
