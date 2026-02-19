@@ -359,7 +359,7 @@
             }
         }
 
-        /* Адаптация для очень маленьких экранов */
+        /* Адаптация для очень маленьких экранов (только шапка и кнопки) */
         @media (max-width: 480px) {
             nav {
                 top: 70px;
@@ -367,8 +367,17 @@
             nav ul {
                 padding: 15px;
             }
-            .btn { padding: 12px 20px; font-size: 15px; width: 100%; max-width: 300px; margin: 0 auto; display: block; }
-            .logo-name { font-size: 1.2rem; }
+            .btn {
+                padding: 12px 20px;
+                font-size: 15px;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+                display: block;
+            }
+            .logo-name {
+                font-size: 1.2rem;
+            }
         }
 
         @media (max-width: 360px) {
@@ -530,7 +539,7 @@
         /* Адаптация каталога под мобильные */
         @media (max-width: 768px) {
             .catalog-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(2, 1fr); /* две колонки на всех мобильных */
                 gap: 15px;
             }
             
@@ -549,16 +558,8 @@
             }
         }
 
-        @media (max-width: 480px) {
-            .catalog-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .catalog-image {
-                width: 160px;
-                height: 160px;
-            }
-        }
+        /* Убираем старый медиазапрос для 480px, который устанавливал 1 колонку */
+        /* Теперь на всех мобильных экранах (до 768px) будет 2 колонки */
 
         @media (hover: none) {
             .btn:hover { transform: none; }
