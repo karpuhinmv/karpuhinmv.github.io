@@ -250,7 +250,7 @@
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(3px);
             -webkit-backdrop-filter: blur(3px);
-            z-index: 99;
+            z-index: 999; /* повышен, но ниже меню */
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -293,7 +293,7 @@
                 left: 15px;
                 right: 15px;
                 width: auto;
-                z-index: 100;
+                z-index: 1000; /* выше оверлея */
                 transform: translateY(-20px);
                 opacity: 0;
                 visibility: hidden;
@@ -308,7 +308,8 @@
             }
             nav ul {
                 flex-direction: column;
-                background: linear-gradient(145deg, rgba(20, 30, 40, 0.98), rgba(10, 20, 30, 1));
+                /* Полностью непрозрачный фон */
+                background: linear-gradient(145deg, #141e28, #0a141e);
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 25px;
                 padding: 20px 15px;
@@ -833,10 +834,10 @@
                 overlay.addEventListener('click', () => toggleMenu(false));
             }
 
-            // Закрытие при клике на любую ссылку в меню
+            // Закрытие при клике на любую ссылку в меню (с небольшой задержкой)
             nav.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
-                    setTimeout(() => toggleMenu(false), 100);
+                    setTimeout(() => toggleMenu(false), 150);
                 });
             });
 

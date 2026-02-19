@@ -254,7 +254,7 @@
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(3px);
             -webkit-backdrop-filter: blur(3px);
-            z-index: 99;
+            z-index: 999;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -297,7 +297,7 @@
                 left: 15px;
                 right: 15px;
                 width: auto;
-                z-index: 100;
+                z-index: 1000;
                 transform: translateY(-20px);
                 opacity: 0;
                 visibility: hidden;
@@ -312,7 +312,8 @@
             }
             nav ul {
                 flex-direction: column;
-                background: linear-gradient(145deg, rgba(20, 30, 40, 0.98), rgba(10, 20, 30, 1));
+                /* Полностью непрозрачный фон */
+                background: linear-gradient(145deg, #141e28, #0a141e);
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 25px;
                 padding: 20px 15px;
@@ -529,7 +530,7 @@
         /* Адаптация каталога под мобильные */
         @media (max-width: 768px) {
             .catalog-grid {
-                grid-template-columns: repeat(2, 1fr); /* Две колонки на планшетах и больших телефонах */
+                grid-template-columns: repeat(2, 1fr);
                 gap: 15px;
             }
             
@@ -550,11 +551,11 @@
 
         @media (max-width: 480px) {
             .catalog-grid {
-                grid-template-columns: 1fr; /* Одна колонка на маленьких телефонах */
+                grid-template-columns: 1fr;
             }
             
             .catalog-image {
-                width: 160px; /* Возвращаем обычный размер */
+                width: 160px;
                 height: 160px;
             }
         }
@@ -741,7 +742,7 @@
             // Закрытие при клике на любую ссылку в меню
             nav.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => {
-                    setTimeout(() => toggleMenu(false), 100);
+                    setTimeout(() => toggleMenu(false), 150);
                 });
             });
 
