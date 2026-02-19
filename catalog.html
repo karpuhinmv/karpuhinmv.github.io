@@ -358,6 +358,23 @@
             }
         }
 
+        /* Адаптация для очень маленьких экранов */
+        @media (max-width: 480px) {
+            nav {
+                top: 70px;
+            }
+            nav ul {
+                padding: 15px;
+            }
+            .btn { padding: 12px 20px; font-size: 15px; width: 100%; max-width: 300px; margin: 0 auto; display: block; }
+            .logo-name { font-size: 1.2rem; }
+        }
+
+        @media (max-width: 360px) {
+            .logo-name { font-size: 1.1rem; }
+            .logo-icon { width: 40px; height: 40px; }
+        }
+
         /* Стили каталога */
         .catalog {
             padding: 40px 0;
@@ -540,11 +557,6 @@
                 width: 160px; /* Возвращаем обычный размер */
                 height: 160px;
             }
-        }
-
-        @media (max-width: 360px) {
-            .logo-name { font-size: 1.1rem; }
-            .logo-icon { width: 40px; height: 40px; }
         }
 
         @media (hover: none) {
