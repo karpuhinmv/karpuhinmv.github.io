@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Похоронный дом "Душа" | Калуга</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #7f8c8d;
+            --light-color: #ecf0f1;
+            --dark-color: #1a252f;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: var(--light-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin: 15px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-size: 16px;
+            text-align: center;
+            min-height: 48px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+            border-radius: 50px;
+        }
+
+        .btn:hover:before {
+            opacity: 1;
+        }
+
+        .btn-small {
+            padding: 8px 20px;
+            font-size: 14px;
+            min-height: 36px;
+            margin-top: 12px;
+        }
+
+        header {
+            padding: 15px 0;
+            position: relative;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        .logo-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+        .logo-description {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        .logo-location {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            color: var(--light-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 14px;
+            border-radius: 50px;
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        nav a:hover {
+            background: var(--glass-bg);
+        }
+
+        /* Улучшенное мобильное меню */
+        .mobile-menu-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            width: 44px;
+            height: 44px;
+            position: relative;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 101;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.1);
+        }
+
+        .mobile-menu-btn i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .mobile-menu-btn .fa-bars {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .mobile-menu-btn .fa-times {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+        .mobile-menu-btn.active .fa-bars {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.5);
+        }
+        .mobile-menu-btn.active .fa-times {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 99;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container { width: 100%; padding: 0 15px; }
+            .header-container {
+                flex-wrap: nowrap;
+                gap: 10px;
+            }
+            .logo {
+                flex: 1;
+                min-width: 0;
+            }
+            .logo-text {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .logo-name {
+                font-size: 1.3rem;
+            }
+            .logo-description, .logo-location {
+                font-size: 0.7rem;
+            }
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+
+            /* Стили для мобильного меню (появляется как панель) */
+            nav {
+                position: fixed;
+                top: 80px;
+                left: 15px;
+                right: 15px;
+                width: auto;
+                z-index: 100;
+                transform: translateY(-20px);
+                opacity: 0;
+                visibility: hidden;
+                transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.3s ease, visibility 0.3s;
+                pointer-events: none;
+            }
+            nav.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+                pointer-events: all;
+            }
+            nav ul {
+                flex-direction: column;
+                background: linear-gradient(145deg, rgba(20, 30, 40, 0.98), rgba(10, 20, 30, 1));
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 25px;
+                padding: 20px 15px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+                gap: 5px;
+            }
+            nav li {
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.3s ease;
+                transition-delay: calc(0.05s * var(--i, 0));
+            }
+            nav.active li {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            nav li:nth-child(1) { --i: 1; }
+            nav li:nth-child(2) { --i: 2; }
+            nav li:nth-child(3) { --i: 3; }
+            nav li:nth-child(4) { --i: 4; }
+            nav li:nth-child(5) { --i: 5; }
+            nav li:nth-child(6) { --i: 6; }
+            nav a {
+                display: block;
+                text-align: center;
+                padding: 14px 20px;
+                font-size: 16px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 40px;
+                margin: 5px 0;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                transition: all 0.3s ease;
+            }
+            nav a:hover {
+                background: var(--accent-color);
+                border-color: var(--accent-color);
+                transform: translateX(5px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            }
+            .mobile-menu-btn {
+                display: block;
+                order: 2;
+                flex-shrink: 0;
+            }
+        }
+
+        /* Адаптация для очень маленьких экранов */
+        @media (max-width: 480px) {
+            nav {
+                top: 70px;
+            }
+            nav ul {
+                padding: 15px;
+            }
+            .hero h2 { font-size: 1.6rem; }
+            .section-title { font-size: 1.6rem; margin-bottom: 30px; }
+            .btn { padding: 12px 20px; font-size: 15px; width: 100%; max-width: 300px; margin: 0 auto; display: block; }
+            .logo-name { font-size: 1.2rem; }
+            .logo-description, .logo-location { font-size: 0.65rem; }
+        }
+
+        @media (max-width: 360px) {
+            .logo-name { font-size: 1.1rem; }
+            .logo-icon { width: 40px; height: 40px; }
+        }
+
+        /* Основные стили контента (без изменений) */
+        .hero {
+            padding: 40px 0 60px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(to right, #fff, #bdc3c7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 0 10px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+            padding: 0 10px;
+        }
+
+        .advantages {
+            padding: 40px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            position: relative;
+            padding: 0 15px;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .advantage-card {
+            padding: 25px 20px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .advantage-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .advantage-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .advantage-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+        }
+
+        .advantage-card p {
+            font-size: 0.95rem;
+        }
+
+        .services {
+            padding: 40px 0;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .service-item {
+            padding: 20px 15px;
+            text-align: center;
+            border-radius: 15px;
+            transition: var(--transition);
+        }
+
+        .service-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .service-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .contacts {
+            padding: 40px 0;
+        }
+
+        .contacts-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .contact-info {
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .contact-info h3 {
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            text-align: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--glass-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .contact-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        footer {
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .footer-logo h3 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            background: var(--glass-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+
+        .social-links a:hover {
+            background: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 992px) {
+            .hero h2 { font-size: 2rem; }
+            .section-title { font-size: 1.8rem; }
+            .advantages-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .advantages-grid { grid-template-columns: 1fr; }
+            .services-grid { grid-template-columns: 1fr; }
+            .contact-item { flex-direction: column; text-align: center; gap: 10px; }
+            .contact-icon { width: 45px; height: 45px; font-size: 1.1rem; }
+            .contact-buttons { flex-direction: column; width: 100%; }
+            .contact-buttons .btn { width: 100%; margin-bottom: 10px; }
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--glass-border);
+            margin: 30px 0;
+        }
+
+        .contacts-center { text-align: center; }
+        .contact-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        @media (hover: none) {
+            .btn:hover { transform: none; }
+            .advantage-card:hover { transform: none; }
+            .service-item:hover { background: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-menu-overlay"></div>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <img src="images/dusha-logo.png" alt="Похоронный дом Душа" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\'fas fa-dove\' style=\'font-size:2rem;color:white;\'></i>'">
+                </div>
+                <div class="logo-text">
+                    <div class="logo-name">Душа</div>
+                    <div class="logo-description">Похоронный дом</div>
+                    <div class="logo-location">Калуга</div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-times"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="#main">Главная</a></li>
+                    <li><a href="#advantages">Преимущества</a></li>
+                    <li><a href="#services">Услуги</a></li>
+                    <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="#contacts">Контакты</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="main" class="hero">
+            <div class="container">
+                <div class="glass fade-in">
+                    <h2>Достойные проводы в последний путь</h2>
+                    <p>Похоронный дом «Душа» в Калуге оказывает полный спектр ритуальных услуг с уважением, тактом и вниманием к деталям. Мы помогаем организовать прощание в соответствии с традициями и пожеланиями семьи.</p>
+                    <a href="#contacts" class="btn">Наши контакты</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="advantages" class="advantages">
+            <div class="container">
+                <h2 class="section-title fade-in">Почему выбирают нас</h2>
+                <div class="advantages-grid">
+                    <div class="glass advantage-card fade-in delay-1">
+                        <div class="advantage-icon"><i class="fas fa-clock"></i></div>
+                        <h3>Круглосуточно и без выходных</h3>
+                        <p>Мы доступны 24/7 для оперативного выезда и консультации. Понимаем, что горе не ждет удобного времени.</p>
+                    </div>
+                    <div class="glass advantage-card fade-in delay-2">
+                        <div class="advantage-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                        <h3>Индивидуальный подход</h3>
+                        <p>Каждая церемония тщательно планируется с учетом пожеланий семьи, религиозных и культурных традиций.</p>
+                    </div>
+                    <div class="glass advantage-card fade-in delay-3">
+                        <div class="advantage-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <h3>Автопарк и залы</h3>
+                        <p>В нашем распоряжении катафальный транспорт, траурные залы и все необходимые атрибуты для церемонии.</p>
+                    </div>
+                    <div class="glass advantage-card fade-in delay-1">
+                        <div class="advantage-icon"><i class="fas fa-user-tie"></i></div>
+                        <h3>Профессиональные сотрудники</h3>
+                        <p>Наш персонал прошел специальную подготовку и с пониманием относится к горю каждой семьи.</p>
+                    </div>
+                    <div class="glass advantage-card fade-in delay-2">
+                        <div class="advantage-icon"><i class="fas fa-ruble-sign"></i></div>
+                        <h3>Прозрачные цены</h3>
+                        <p>Честное ценообразование без скрытых платежей. Предоставляем детализированную смету перед началом работ.</p>
+                    </div>
+                    <div class="glass advantage-card fade-in delay-3">
+                        <div class="advantage-icon"><i class="fas fa-history"></i></div>
+                        <h3>Много лет опыта</h3>
+                        <p>Огромное количество времени мы помогаем семьям Калуги и области в самые трудные моменты.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <div class="container">
+                <h2 class="section-title fade-in">Наши услуги</h2>
+                <div class="services-grid">
+                    <div class="glass service-item fade-in delay-1">
+                        <h3>Организация похорон</h3>
+                        <p>Полный комплекс услуг от оформления документов до проведения церемонии.</p>
+                    </div>
+                    <div class="glass service-item fade-in delay-2">
+                        <h3>Транспорт</h3>
+                        <p>Большой выбор транспорта для проведения траурной церемонии.</p>
+                    </div>
+                    <div class="glass service-item fade-in delay-3">
+                        <h3>Траурные церемонии</h3>
+                        <p>Проведение гражданских и религиозных панихид, организация поминальных обедов.</p>
+                    </div>
+                    <div class="glass service-item fade-in delay-1">
+                        <h3>Ритуальные товары</h3>
+                        <p>Широкий выбор гробов, венков, одежды и других необходимых атрибутов.</p>
+                    </div>
+                    <div class="glass service-item fade-in delay-2">
+                        <h3>Благоустройство мест</h3>
+                        <p>Установка памятников, оград, благоустройство могил и уход за захоронениями.</p>
+                    </div>
+                    <div class="glass service-item fade-in delay-3">
+                        <h3>Груз 200</h3>
+                        <p>Организация транспортировки умерших в другие города и страны.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="catalog-button-section" style="padding: 40px 0; text-align: center;">
+            <div class="container">
+                <div class="glass fade-in">
+                    <h2 style="margin-bottom: 20px;">Широкий выбор ритуальных товаров</h2>
+                    <p style="margin-bottom: 30px; font-size: 1.1rem;">Ознакомьтесь с нашим каталогом гробов, венков, памятников и других принадлежностей.</p>
+                    <a href="catalog.html" class="btn" style="font-size: 1.2rem; padding: 16px 40px;">Перейти в каталог</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="container divider"></div>
+
+        <section id="contacts" class="contacts">
+            <div class="container">
+                <h2 class="section-title fade-in">Наши контакты</h2>
+                <div class="contacts-container">
+                    <div class="contact-info glass fade-in delay-1 contacts-center">
+                        <h3>Свяжитесь с нами</h3>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div><h4>Адрес</h4><p>г. Калуга, Грабцевское шоссе, д. 12</p></div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                            <div><h4>Телефон</h4><p>+7 (4842) 283-000</p><p>Круглосуточная горячая линия: 8-910-609-30-00</p></div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                            <div><h4>Email</h4><p>dusha.communication@gmail.com</p></div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fas fa-clock"></i></div>
+                            <div><h4>Режим работы</h4><p>c 8:00 по 17:00, без выходных</p></div>
+                        </div>
+                        <div class="contact-buttons">
+                            <a href="tel:+79106093000" class="btn"><i class="fas fa-phone"></i> Позвонить</a>
+                            <a href="mailto:dusha.communication@gmail.com" class="btn"><i class="fas fa-envelope"></i> Написать</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Похоронный дом «Душа»</h3>
+                    <p>Калуга</p>
+                </div>
+                <div class="social-links">
+                    <a href="https://vk.com/dushakaluga" target="_blank" title="ВКонтакте"><i class="fab fa-vk"></i></a>
+                    <a href="https://t.me/dushakaluga" target="_blank" title="Telegram"><i class="fab fa-telegram"></i></a>
+                </div>
+                <div class="footer-info">
+                    <p>© 2026 Похоронный дом «Душа». Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Плавная прокрутка для якорей
+        document.querySelectorAll('nav a, .btn[href^="#"]:not(.btn-small)').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(href);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Улучшенное мобильное меню
+        (function() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const nav = document.querySelector('nav');
+            const overlay = document.querySelector('.mobile-menu-overlay');
+            const body = document.body;
+
+            if (!mobileMenuBtn || !nav) return;
+
+            function toggleMenu(force) {
+                const isActive = force !== undefined ? force : !nav.classList.contains('active');
+                nav.classList.toggle('active', isActive);
+                mobileMenuBtn.classList.toggle('active', isActive);
+                if (overlay) overlay.classList.toggle('active', isActive);
+                body.classList.toggle('menu-open', isActive);
+            }
+
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            if (overlay) {
+                overlay.addEventListener('click', () => toggleMenu(false));
+            }
+
+            // Закрытие при клике на любую ссылку в меню
+            nav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    setTimeout(() => toggleMenu(false), 100);
+                });
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    toggleMenu(false);
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && nav.classList.contains('active')) {
+                    toggleMenu(false);
+                }
+            });
+        })();
+
+        // Анимация при скролле (Intersection Observer)
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = { threshold: 0.1 };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.glass').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
