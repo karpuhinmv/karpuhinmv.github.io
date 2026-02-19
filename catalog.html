@@ -252,8 +252,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
+            /* backdrop-filter удалён — размытие убрано */
             z-index: 999;
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -359,7 +358,7 @@
             }
         }
 
-        /* Адаптация для очень маленьких экранов (только шапка и кнопки) */
+        /* Адаптация для очень маленьких экранов */
         @media (max-width: 480px) {
             nav {
                 top: 70px;
