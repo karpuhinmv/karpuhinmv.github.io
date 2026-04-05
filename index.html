@@ -123,7 +123,6 @@
             object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
-        /* Если логотип не загружен или нужен текстовый запасной вариант — скрыт */
         .logo-text {
             background: linear-gradient(135deg, #FFFFFF, #cbd5ff);
             -webkit-background-clip: text;
@@ -413,21 +412,16 @@
 
 <header class="header">
     <div class="container header-flex">
-        <a href="#home" class="logo">
-            <!-- 
-                ИНСТРУКЦИЯ: 
-                1. Поместите ваш файл логотипа (например, logo.png) в ту же папку, где находится этот HTML-файл.
-                2. Замените значение src="logo.png" на имя вашего файла.
-                3. Если логотип не загрузится, отобразится только текст "Душа" (он всегда виден).
-            -->
+        <a href="index.html" class="logo">
             <img src="images/logo.png" alt="Логотип похоронного дома Душа" onerror="this.style.display='none'">
             <span class="logo-text">Похоронный дом «Душа»</span>
         </a>
         <nav>
             <ul class="nav-links">
-                <li><a href="#home">Главная</a></li>
+                <li><a href="index.html">Главная</a></li>
                 <li><a href="#about">О нас</a></li>
                 <li><a href="#services">Услуги</a></li>
+                <li><a href="catalog.html">Каталог</a></li>
                 <li><a href="#contact">Контакты</a></li>
             </ul>
         </nav>
@@ -440,7 +434,10 @@
             <div class="hero-content glass-card" style="padding: 2.5rem; border-radius: 2rem; background: rgba(20, 28, 40, 0.5); backdrop-filter: blur(16px);">
                 <h1>Похоронный дом «Душа»</h1>
                 <p>Организация похорон с глубоким уважением, заботой и традициями. Поможем в самый трудный час, сохраняя достоинство и память.</p>
-                <a href="#contact" class="btn btn-primary"><i class="fas fa-hand-holding-heart"></i> Связаться с нами</a>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="#contact" class="btn btn-primary"><i class="fas fa-hand-holding-heart"></i> Связаться с нами</a>
+                    <a href="catalog.html" class="btn"><i class="fas fa-boxes"></i> Каталог товаров</a>
+                </div>
             </div>
         </div>
     </section>
@@ -552,8 +549,8 @@
 </footer>
 
 <script>
-    // Плавный скролл для навигации
-    document.querySelectorAll('.nav-links a, .btn-primary[href="#contact"]').forEach(anchor => {
+    // Плавный скролл для навигации (только для якорных ссылок)
+    document.querySelectorAll('.nav-links a[href^="#"], .btn-primary[href="#contact"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
             if (targetId && targetId.startsWith('#')) {
