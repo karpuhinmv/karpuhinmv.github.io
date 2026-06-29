@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Каталог ритуальных товаров похоронного дома «Душа». Гробы, памятники, венки и всё необходимое.">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Каталог ритуальных товаров похоронного дома «Душа». Гробы, памятники, венки и всё необходимое." />
     <title>Каталог | Похоронный дом «Душа»</title>
-    <!-- Google Fonts + Font Awesome 6 -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
-        /* ---- ГЛОБАЛЬНЫЕ СТИЛИ (скопированы с index.html) ---- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ---- ГЛОБАЛЬНЫЕ СТИЛИ ---- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background: radial-gradient(circle at 10% 20%, #0c1322, #03060c);
@@ -27,7 +30,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(115deg, rgba(255,255,255,0.02) 0%, rgba(220,240,255,0.05) 25%, rgba(255,255,245,0.08) 50%, rgba(210,230,255,0.03) 75%, rgba(255,255,255,0) 100%);
+            background: linear-gradient(115deg, rgba(255, 255, 255, 0.02) 0%, rgba(220, 240, 255, 0.05) 25%, rgba(255, 255, 245, 0.08) 50%, rgba(210, 230, 255, 0.03) 75%, rgba(255, 255, 255, 0) 100%);
             background-size: 200% 200%;
             pointer-events: none;
             z-index: 1;
@@ -40,33 +43,48 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at 40% 60%, rgba(180,210,255,0.03) 0%, transparent 70%);
+            background: radial-gradient(ellipse at 40% 60%, rgba(180, 210, 255, 0.03) 0%, transparent 70%);
             pointer-events: none;
             z-index: 1;
             animation: slowPulse 18s infinite alternate;
         }
         @keyframes liquidFlow {
-            0% { background-position: 0% 0%; opacity: 0.4; }
-            50% { background-position: 100% 100%; opacity: 0.8; }
-            100% { background-position: 0% 0%; opacity: 0.4; }
+            0% {
+                background-position: 0% 0%;
+                opacity: 0.4;
+            }
+            50% {
+                background-position: 100% 100%;
+                opacity: 0.8;
+            }
+            100% {
+                background-position: 0% 0%;
+                opacity: 0.4;
+            }
         }
         @keyframes slowPulse {
-            0% { opacity: 0.2; transform: scale(1); }
-            100% { opacity: 0.6; transform: scale(1.05); }
+            0% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0.6;
+                transform: scale(1.05);
+            }
         }
 
         .glass-card {
             background: rgba(20, 28, 40, 0.55);
             backdrop-filter: blur(12px);
             border-radius: 2rem;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             transition: transform 0.25s ease, box-shadow 0.3s ease, background 0.3s;
         }
         .glass-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 28px 40px -16px rgba(0,0,0,0.4);
-            border-color: rgba(255,255,255,0.35);
+            box-shadow: 0 28px 40px -16px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.35);
             background: rgba(25, 35, 50, 0.65);
         }
         .container {
@@ -77,7 +95,7 @@
             z-index: 3;
         }
 
-        /* ---- HEADER (как на главной) ---- */
+        /* ---- HEADER ---- */
         .header {
             padding: 1.25rem 0;
             position: sticky;
@@ -85,7 +103,7 @@
             z-index: 100;
             background: rgba(8, 12, 20, 0.65);
             backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255,255,240,0.12);
+            border-bottom: 1px solid rgba(255, 255, 240, 0.12);
         }
         .header-flex {
             display: flex;
@@ -105,7 +123,7 @@
             width: auto;
             max-width: 180px;
             object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
         }
         .logo-text {
             background: linear-gradient(135deg, #FFFFFF, #cbd5ff);
@@ -135,7 +153,7 @@
         .nav-links a.active {
             border-bottom-color: #c7ddff;
             color: white;
-            text-shadow: 0 0 4px rgba(255,255,240,0.5);
+            text-shadow: 0 0 4px rgba(255, 255, 240, 0.5);
         }
 
         /* ---- ХЛЕБНЫЕ КРОШКИ ---- */
@@ -171,7 +189,7 @@
             background: rgba(10, 16, 26, 0.6);
             backdrop-filter: blur(14px);
             border-radius: 1.8rem;
-            border: 1px solid rgba(255,255,240,0.12);
+            border: 1px solid rgba(255, 255, 240, 0.12);
         }
         .filters-sidebar h3 {
             font-size: 1.3rem;
@@ -195,8 +213,8 @@
             width: 100%;
             padding: 0.6rem 1rem;
             border-radius: 40px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             font-family: inherit;
             font-size: 0.95rem;
@@ -206,7 +224,7 @@
         .filter-group select:focus,
         .filter-group input:focus {
             border-color: #8ab0ff;
-            background: rgba(255,255,255,0.14);
+            background: rgba(255, 255, 255, 0.14);
         }
         .filter-group select option {
             background: #1a253a;
@@ -238,17 +256,17 @@
         }
         .btn-outline {
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .btn-outline:hover {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
         }
         .btn-sm {
             padding: 0.5rem 1rem;
             font-size: 0.85rem;
         }
 
-        /* ---- ПАНЕЛЬ УПРАВЛЕНИЯ (сортировка, вид, кол-во) ---- */
+        /* ---- ПАНЕЛЬ УПРАВЛЕНИЯ ---- */
         .catalog-toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -266,8 +284,8 @@
         .toolbar-left select {
             padding: 0.5rem 1.2rem;
             border-radius: 40px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             font-family: inherit;
             font-size: 0.9rem;
@@ -286,8 +304,8 @@
             gap: 0.4rem;
         }
         .view-toggle button {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: #b0c8ff;
             padding: 0.4rem 0.7rem;
             border-radius: 30px;
@@ -296,12 +314,12 @@
             font-size: 1rem;
         }
         .view-toggle button.active {
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.15);
             border-color: #8ab0ff;
             color: white;
         }
         .view-toggle button:hover {
-            background: rgba(255,255,255,0.12);
+            background: rgba(255, 255, 255, 0.12);
         }
         .found-count {
             opacity: 0.7;
@@ -351,31 +369,34 @@
             color: #d4e4ff;
             margin-bottom: 0.5rem;
         }
-        .product-card .rating {
-            color: #ffd966;
-            margin-bottom: 0.7rem;
-            font-size: 0.9rem;
-        }
         .product-card .btn {
             padding: 0.5rem 1.5rem;
             font-size: 0.85rem;
             background: rgba(100, 130, 200, 0.4);
-            border-color: rgba(255,255,250,0.3);
+            border-color: rgba(255, 255, 250, 0.3);
         }
         .product-card .btn:hover {
             background: rgba(100, 130, 200, 0.7);
         }
-        .product-card .badge {
+        /* Плашки */
+        .badge {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(60, 180, 120, 0.6);
             padding: 0.2rem 0.8rem;
             border-radius: 30px;
             font-size: 0.7rem;
             font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(4px);
+            background: rgba(60, 180, 120, 0.6);
+            color: #fff;
+        }
+        .badge-out-of-stock {
+            right: auto;
+            left: 10px;
+            background: rgba(200, 60, 60, 0.8);
+            color: #fff;
         }
 
         /* ---- ПАГИНАЦИЯ ---- */
@@ -387,8 +408,8 @@
             flex-wrap: wrap;
         }
         .pagination-wrap button {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: #d0ddff;
             padding: 0.5rem 1rem;
             border-radius: 30px;
@@ -398,23 +419,23 @@
             font-size: 0.9rem;
         }
         .pagination-wrap button.active {
-            background: rgba(255,255,255,0.18);
+            background: rgba(255, 255, 255, 0.18);
             border-color: #8ab0ff;
             color: white;
         }
         .pagination-wrap button:hover:not(.active) {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
         .pagination-wrap button:disabled {
             opacity: 0.3;
             cursor: default;
         }
 
-        /* ---- МОБИЛЬНАЯ КНОПКА ОТКРЫТИЯ ФИЛЬТРОВ ---- */
+        /* ---- МОБИЛЬНАЯ КНОПКА ФИЛЬТРОВ ---- */
         .mobile-filter-toggle {
             display: none;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
             padding: 0.6rem 1.2rem;
             border-radius: 40px;
@@ -429,11 +450,17 @@
 
         /* ---- АДАПТИВНОСТЬ ---- */
         @media (max-width: 1024px) {
-            .products-grid { grid-template-columns: repeat(2, 1fr); }
-            .filters-sidebar { flex: 0 0 240px; }
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .filters-sidebar {
+                flex: 0 0 240px;
+            }
         }
         @media (max-width: 820px) {
-            .catalog-layout { flex-direction: column; }
+            .catalog-layout {
+                flex-direction: column;
+            }
             .filters-sidebar {
                 position: relative;
                 top: 0;
@@ -442,38 +469,60 @@
                 display: none;
                 margin-bottom: 1.5rem;
             }
-            .filters-sidebar.open { display: block; }
-            .mobile-filter-toggle { display: inline-block; }
-            /* на планшетах и мобильных — 2 колонки */
+            .filters-sidebar.open {
+                display: block;
+            }
+            .mobile-filter-toggle {
+                display: inline-block;
+            }
             .products-grid:not(.list-view) {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
         @media (max-width: 600px) {
-            .header-flex { flex-direction: column; }
-            .nav-links { justify-content: center; gap: 1.3rem; }
-            .logo-text { font-size: 1.5rem; }
-            .container { padding: 0 16px; }
-            .filters-sidebar { padding: 1rem; }
-            .toolbar-left, .toolbar-right { width: 100%; justify-content: center; }
-            .catalog-toolbar { flex-direction: column; align-items: stretch; }
-            .view-toggle { justify-content: center; }
+            .header-flex {
+                flex-direction: column;
+            }
+            .nav-links {
+                justify-content: center;
+                gap: 1.3rem;
+            }
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            .container {
+                padding: 0 16px;
+            }
+            .filters-sidebar {
+                padding: 1rem;
+            }
+            .toolbar-left,
+            .toolbar-right {
+                width: 100%;
+                justify-content: center;
+            }
+            .catalog-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .view-toggle {
+                justify-content: center;
+            }
         }
-        /* Очень узкие экраны — 1 колонка */
         @media (max-width: 400px) {
             .products-grid:not(.list-view) {
                 grid-template-columns: 1fr;
             }
         }
 
-        /* ---- ОБЩИЕ КНОПКИ (дополнение) ---- */
+        /* ---- ОБЩИЕ КНОПКИ ---- */
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255,255,255,0.12);
+            background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,245,0.3);
+            border: 1px solid rgba(255, 255, 245, 0.3);
             padding: 12px 28px;
             border-radius: 60px;
             font-weight: 600;
@@ -485,7 +534,7 @@
         }
         .btn-primary {
             background: rgba(100, 130, 200, 0.55);
-            border-color: rgba(255,255,250,0.5);
+            border-color: rgba(255, 255, 250, 0.5);
         }
         .btn-primary:hover {
             background: rgba(120, 150, 220, 0.75);
@@ -528,12 +577,12 @@
             background: transparent;
         }
         .filters-sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
         }
         footer {
             padding: 2rem 0;
-            border-top: 1px solid rgba(255,255,240,0.15);
+            border-top: 1px solid rgba(255, 255, 240, 0.15);
             text-align: center;
             font-size: 0.85rem;
             background: rgba(5, 8, 14, 0.5);
@@ -543,372 +592,377 @@
 </head>
 <body>
 
-<header class="header">
-    <div class="container header-flex">
-        <a href="index.html" class="logo">
-            <img src="images/logo.png" alt="Логотип похоронного дома Душа" onerror="this.style.display='none'">
-            <span class="logo-text">Похоронный дом «Душа»</span>
-        </a>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="index.html">Главная</a></li>
-                <li><a href="index.html#about">О нас</a></li>
-                <li><a href="index.html#services">Услуги</a></li>
-                <li><a href="catalog.html" class="active">Каталог</a></li>
-                <li><a href="index.html#contact">Контакты</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
-
-<main>
-    <div class="container">
-        <!-- Хлебные крошки -->
-        <div class="breadcrumbs">
-            <a href="index.html">Главная</a> <span>→</span> <span>Каталог</span>
+    <header class="header">
+        <div class="container header-flex">
+            <a href="index.html" class="logo">
+                <img src="images/logo.png" alt="Логотип похоронного дома Душа" onerror="this.style.display='none'" />
+                <span class="logo-text">Похоронный дом «Душа»</span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="index.html#about">О нас</a></li>
+                    <li><a href="index.html#services">Услуги</a></li>
+                    <li><a href="catalog.html" class="active">Каталог</a></li>
+                    <li><a href="index.html#contact">Контакты</a></li>
+                </ul>
+            </nav>
         </div>
+    </header>
 
-        <!-- Мобильная кнопка открытия фильтров -->
-        <button class="mobile-filter-toggle" id="mobileFilterToggle">
-            <i class="fas fa-sliders-h"></i> Фильтры
-        </button>
+    <main>
+        <div class="container">
+            <!-- Хлебные крошки -->
+            <div class="breadcrumbs">
+                <a href="index.html">Главная</a> <span>→</span> <span>Каталог</span>
+            </div>
 
-        <div class="catalog-layout">
-            <!-- Сайдбар фильтров -->
-            <aside class="filters-sidebar" id="filtersSidebar">
-                <h3>
-                    <span>Фильтры</span>
-                    <button class="btn btn-sm btn-outline" id="resetFiltersBtn" style="padding:0.3rem 0.8rem; font-size:0.8rem;">
-                        <i class="fas fa-undo"></i> Сброс
-                    </button>
-                </h3>
+            <!-- Мобильная кнопка -->
+            <button class="mobile-filter-toggle" id="mobileFilterToggle">
+                <i class="fas fa-sliders-h"></i> Фильтры
+            </button>
 
-                <div class="filter-group">
-                    <label for="categoryFilter">Категория</label>
-                    <select id="categoryFilter">
-                        <option value="all">Все категории</option>
-                        <option value="гробы">Гробы</option>
-                        <option value="памятники">Памятники</option>
-                        <option value="венки и цветы">Венки и цветы</option>
-                        <option value="кресты и таблички">Кресты и таблички</option>
-                        <option value="ритуальные принадлежности">Ритуальные принадлежности</option>
-                        <option value="одежда для усопших">Одежда для усопших</option>
-                    </select>
-                </div>
+            <div class="catalog-layout">
+                <!-- Сайдбар -->
+                <aside class="filters-sidebar" id="filtersSidebar">
+                    <h3>
+                        <span>Фильтры</span>
+                        <button class="btn btn-sm btn-outline" id="resetFiltersBtn" style="padding:0.3rem 0.8rem; font-size:0.8rem;">
+                            <i class="fas fa-undo"></i> Сброс
+                        </button>
+                    </h3>
 
-                <div class="filter-group">
-                    <label>Цена (от – до)</label>
-                    <div class="price-range">
-                        <input type="number" id="priceFrom" placeholder="от" min="0" step="100">
-                        <span>–</span>
-                        <input type="number" id="priceTo" placeholder="до" min="0" step="100">
-                    </div>
-                </div>
-
-                <div class="filter-group">
-                    <label for="materialFilter">Материал</label>
-                    <select id="materialFilter">
-                        <option value="all">Любой</option>
-                        <option value="дерево">Дерево</option>
-                        <option value="металл">Металл</option>
-                        <option value="гранит">Гранит</option>
-                        <option value="мрамор">Мрамор</option>
-                        <option value="искусственные">Искусственные</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="sizeFilter">Размер</label>
-                    <select id="sizeFilter">
-                        <option value="all">Любой</option>
-                        <option value="маленький">Маленький</option>
-                        <option value="средний">Средний</option>
-                        <option value="большой">Большой</option>
-                        <option value="стандартный">Стандартный</option>
-                        <option value="детский">Детский</option>
-                    </select>
-                </div>
-
-                <div class="filter-actions">
-                    <button class="btn btn-primary" id="applyFiltersBtn"><i class="fas fa-check"></i> Применить</button>
-                </div>
-            </aside>
-
-            <!-- Основная область -->
-            <section class="catalog-main">
-                <!-- Панель управления -->
-                <div class="catalog-toolbar">
-                    <div class="toolbar-left">
-                        <span class="found-count" id="foundCount">Найдено: 0</span>
-                        <select id="sortSelect">
-                            <option value="popular">По популярности</option>
-                            <option value="price-asc">Цена: по возрастанию</option>
-                            <option value="price-desc">Цена: по убыванию</option>
-                            <option value="new">По новизне</option>
+                    <div class="filter-group">
+                        <label for="categoryFilter">Категория</label>
+                        <select id="categoryFilter">
+                            <option value="all">Все категории</option>
+                            <option value="гробы">Гробы</option>
+                            <option value="памятники">Памятники</option>
+                            <option value="венки и цветы">Венки и цветы</option>
+                            <option value="кресты и таблички">Кресты и таблички</option>
+                            <option value="ритуальные принадлежности">Ритуальные принадлежности</option>
+                            <option value="одежда для усопших">Одежда для усопших</option>
                         </select>
                     </div>
-                    <div class="toolbar-right">
-                        <div class="view-toggle">
-                            <button id="gridViewBtn" class="active" title="Сетка"><i class="fas fa-th"></i></button>
-                            <button id="listViewBtn" title="Список"><i class="fas fa-list"></i></button>
+
+                    <div class="filter-group">
+                        <label>Цена (от – до)</label>
+                        <div class="price-range">
+                            <input type="number" id="priceFrom" placeholder="от" min="0" step="100" />
+                            <span>–</span>
+                            <input type="number" id="priceTo" placeholder="до" min="0" step="100" />
                         </div>
                     </div>
-                </div>
 
-                <!-- Сетка товаров -->
-                <div class="products-grid" id="productsGrid"></div>
-
-                <!-- Пагинация -->
-                <div class="pagination-wrap" id="paginationWrap"></div>
-            </section>
-        </div>
-    </div>
-</main>
-
-<footer>
-    <div class="container">
-        <p>© 2026 Похоронный дом «Душа» — организация традиционных похорон с душой и заботой. Все права защищены.</p>
-        <p style="margin-top: 10px;"><i class="fas fa-heart" style="color: #c6dbff;"></i> Работаем бережно, чтим традиции</p>
-    </div>
-</footer>
-
-<script>
-    // ---------- ДАННЫЕ ТОВАРОВ (28 товаров) ----------
-    const products = [
-        { id: 1, name: 'Гроб сосновый полированный', description: 'Сосна, лак, стандартный размер', price: 8500, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.5, image: 'fa-solid fa-box', date: '2026-01-10' },
-        { id: 2, name: 'Гроб дубовый резной', description: 'Массив дуба, ручная резьба', price: 18500, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.8, image: 'fa-solid fa-box', date: '2026-02-05' },
-        { id: 3, name: 'Гроб детский', description: 'Сосна, светлая отделка', price: 6200, category: 'гробы', material: 'дерево', size: 'детский', rating: 4.2, image: 'fa-solid fa-box', date: '2026-01-20' },
-        { id: 4, name: 'Гроб металлический', description: 'Оцинкованная сталь, герметичный', price: 12000, category: 'гробы', material: 'металл', size: 'стандартный', rating: 4.3, image: 'fa-solid fa-box', date: '2026-02-12' },
-        { id: 5, name: 'Памятник гранитный', description: 'Чёрный гранит, полировка', price: 45000, category: 'памятники', material: 'гранит', size: 'большой', rating: 4.9, image: 'fa-solid fa-gem', date: '2026-01-15' },
-        { id: 6, name: 'Памятник мраморный', description: 'Белый мрамор, фигурный', price: 38000, category: 'памятники', material: 'мрамор', size: 'средний', rating: 4.6, image: 'fa-solid fa-gem', date: '2026-02-18' },
-        { id: 7, name: 'Памятник гранитный двойной', description: 'Серый гранит, два места', price: 72000, category: 'памятники', material: 'гранит', size: 'большой', rating: 4.7, image: 'fa-solid fa-gem', date: '2026-03-01' },
-        { id: 8, name: 'Памятник металлический', description: 'Кованый, с фотографией', price: 21000, category: 'памятники', material: 'металл', size: 'средний', rating: 4.0, image: 'fa-solid fa-gem', date: '2026-01-25' },
-        { id: 9, name: 'Венок траурный живой', description: 'Хвойные, ленты, 1 м', price: 3200, category: 'венки и цветы', material: 'искусственные', size: 'средний', rating: 4.4, image: 'fa-solid fa-leaf', date: '2026-02-20' },
-        { id: 10, name: 'Венок искусственный', description: 'Ткань, пластик, 50 см', price: 1400, category: 'венки и цветы', material: 'искусственные', size: 'маленький', rating: 4.0, image: 'fa-solid fa-leaf', date: '2026-01-30' },
-        { id: 11, name: 'Цветы живые (розы)', description: 'Букет из 25 роз', price: 2800, category: 'венки и цветы', material: 'искусственные', size: 'средний', rating: 4.3, image: 'fa-solid fa-leaf', date: '2026-03-05' },
-        { id: 12, name: 'Крест деревянный', description: 'Сосна, резной', price: 2100, category: 'кресты и таблички', material: 'дерево', size: 'средний', rating: 4.2, image: 'fa-solid fa-cross', date: '2026-01-12' },
-        { id: 13, name: 'Крест металлический', description: 'Сталь, порошковое покрытие', price: 3500, category: 'кресты и таблички', material: 'металл', size: 'большой', rating: 4.1, image: 'fa-solid fa-cross', date: '2026-02-08' },
-        { id: 14, name: 'Табличка мемориальная', description: 'Латунь, гравировка', price: 1800, category: 'кресты и таблички', material: 'металл', size: 'маленький', rating: 4.5, image: 'fa-solid fa-id-card', date: '2026-02-25' },
-        { id: 15, name: 'Набор ритуальный', description: 'Свечи, лампа, кадило', price: 3900, category: 'ритуальные принадлежности', material: 'металл', size: 'средний', rating: 4.6, image: 'fa-solid fa-candle', date: '2026-03-02' },
-        { id: 16, name: 'Подушка для гроба', description: 'Атлас, наполнитель', price: 1200, category: 'ритуальные принадлежности', material: 'искусственные', size: 'маленький', rating: 4.0, image: 'fa-solid fa-bed', date: '2026-01-18' },
-        { id: 17, name: 'Одежда для усопшего (мужская)', description: 'Костюм, рубашка, галстук', price: 6500, category: 'одежда для усопших', material: 'искусственные', size: 'стандартный', rating: 4.3, image: 'fa-solid fa-user-tie', date: '2026-02-14' },
-        { id: 18, name: 'Одежда для усопшей (женская)', description: 'Платье, чулки, туфли', price: 5900, category: 'одежда для усопших', material: 'искусственные', size: 'стандартный', rating: 4.4, image: 'fa-solid fa-female', date: '2026-01-22' },
-        { id: 19, name: 'Гроб эксклюзивный', description: 'Дуб, инкрустация', price: 32000, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.9, image: 'fa-solid fa-box', date: '2026-03-08' },
-        { id: 20, name: 'Памятник гранитный малый', description: 'Серый гранит, 1 м', price: 22000, category: 'памятники', material: 'гранит', size: 'маленький', rating: 4.2, image: 'fa-solid fa-gem', date: '2026-02-28' },
-        { id: 21, name: 'Венок большой живой', description: 'Ель, цветы, 1.5 м', price: 5200, category: 'венки и цветы', material: 'искусственные', size: 'большой', rating: 4.5, image: 'fa-solid fa-leaf', date: '2026-03-10' },
-        { id: 22, name: 'Крест мраморный', description: 'Мрамор, резьба', price: 7800, category: 'кресты и таблички', material: 'мрамор', size: 'средний', rating: 4.6, image: 'fa-solid fa-cross', date: '2026-01-28' },
-        { id: 23, name: 'Свечи ритуальные (набор)', description: '6 свечей, подставки', price: 2500, category: 'ритуальные принадлежности', material: 'искусственные', size: 'средний', rating: 4.1, image: 'fa-solid fa-fire', date: '2026-02-02' },
-        { id: 24, name: 'Одежда детская', description: 'Платье/костюм для ребёнка', price: 4200, category: 'одежда для усопших', material: 'искусственные', size: 'детский', rating: 4.3, image: 'fa-solid fa-child', date: '2026-01-05' },
-        { id: 25, name: 'Гроб лакированный', description: 'Берёза, глянец', price: 9300, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.4, image: 'fa-solid fa-box', date: '2026-03-12' },
-        { id: 26, name: 'Памятник мраморный двойной', description: 'Белый мрамор, два места', price: 66000, category: 'памятники', material: 'мрамор', size: 'большой', rating: 4.8, image: 'fa-solid fa-gem', date: '2026-02-16' },
-        { id: 27, name: 'Табличка гранитная', description: 'Гранит, гравировка', price: 2900, category: 'кресты и таблички', material: 'гранит', size: 'маленький', rating: 4.2, image: 'fa-solid fa-id-card', date: '2026-01-08' },
-        { id: 28, name: 'Набор поминальный', description: 'Посуда, скатерть, свечи', price: 4100, category: 'ритуальные принадлежности', material: 'искусственные', size: 'средний', rating: 4.0, image: 'fa-solid fa-utensils', date: '2026-03-03' }
-    ];
-
-    // ---------- СОСТОЯНИЕ ----------
-    let currentProducts = [...products];
-    let currentPage = 1;
-    const perPage = 6;
-    let currentView = 'grid'; // 'grid' или 'list'
-
-    // DOM-элементы
-    const grid = document.getElementById('productsGrid');
-    const paginationWrap = document.getElementById('paginationWrap');
-    const foundCount = document.getElementById('foundCount');
-    const categoryFilter = document.getElementById('categoryFilter');
-    const priceFrom = document.getElementById('priceFrom');
-    const priceTo = document.getElementById('priceTo');
-    const materialFilter = document.getElementById('materialFilter');
-    const sizeFilter = document.getElementById('sizeFilter');
-    const sortSelect = document.getElementById('sortSelect');
-    const applyBtn = document.getElementById('applyFiltersBtn');
-    const resetBtn = document.getElementById('resetFiltersBtn');
-    const gridViewBtn = document.getElementById('gridViewBtn');
-    const listViewBtn = document.getElementById('listViewBtn');
-    const mobileToggle = document.getElementById('mobileFilterToggle');
-    const sidebar = document.getElementById('filtersSidebar');
-
-    // ---------- ФУНКЦИИ ФИЛЬТРАЦИИ ----------
-    function filterProducts() {
-        const cat = categoryFilter.value;
-        const mat = materialFilter.value;
-        const sz = sizeFilter.value;
-        const from = parseFloat(priceFrom.value) || 0;
-        const to = parseFloat(priceTo.value) || Infinity;
-
-        currentProducts = products.filter(p => {
-            const matchCat = cat === 'all' || p.category === cat;
-            const matchMat = mat === 'all' || p.material === mat;
-            const matchSize = sz === 'all' || p.size === sz;
-            const matchPrice = p.price >= from && p.price <= to;
-            return matchCat && matchMat && matchSize && matchPrice;
-        });
-
-        // Сортировка
-        sortProducts();
-
-        // Сброс страницы на первую
-        currentPage = 1;
-        render();
-    }
-
-    function sortProducts() {
-        const sortBy = sortSelect.value;
-        switch (sortBy) {
-            case 'popular':
-                currentProducts.sort((a, b) => b.rating - a.rating);
-                break;
-            case 'price-asc':
-                currentProducts.sort((a, b) => a.price - b.price);
-                break;
-            case 'price-desc':
-                currentProducts.sort((a, b) => b.price - a.price);
-                break;
-            case 'new':
-                currentProducts.sort((a, b) => new Date(b.date) - new Date(a.date));
-                break;
-            default: break;
-        }
-    }
-
-    function resetFilters() {
-        categoryFilter.value = 'all';
-        priceFrom.value = '';
-        priceTo.value = '';
-        materialFilter.value = 'all';
-        sizeFilter.value = 'all';
-        sortSelect.value = 'popular';
-        filterProducts();
-    }
-
-    // ---------- ОТРИСОВКА ----------
-    function render() {
-        const start = (currentPage - 1) * perPage;
-        const end = start + perPage;
-        const pageItems = currentProducts.slice(start, end);
-        const total = currentProducts.length;
-
-        foundCount.textContent = `Найдено: ${total}`;
-
-        // Рендер карточек
-        grid.innerHTML = '';
-        if (pageItems.length === 0) {
-            grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:3rem; opacity:0.6;">Ничего не найдено. Попробуйте изменить фильтры.</p>`;
-        } else {
-            pageItems.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'glass-card product-card';
-                // Добавляем badge для популярных (рейтинг > 4.7)
-                if (p.rating >= 4.7) {
-                    const badge = document.createElement('span');
-                    badge.className = 'badge';
-                    badge.textContent = 'Популярное';
-                    card.appendChild(badge);
-                }
-                const iconClass = p.image || 'fa-solid fa-box';
-                card.innerHTML = `
-                    <div class="icon-wrap"><i class="${iconClass}"></i></div>
-                    <div class="info">
-                        <h4>${p.name}</h4>
-                        <div class="desc">${p.description}</div>
-                        <div class="price">${p.price.toLocaleString()} ₽</div>
-                        <div class="rating">${'★'.repeat(Math.floor(p.rating))}${p.rating % 1 >= 0.5 ? '½' : ''} (${p.rating})</div>
-                        <button class="btn btn-primary btn-sm" onclick="alert('Заказ товара: ${p.name}')"><i class="fas fa-shopping-cart"></i> Заказать</button>
+                    <div class="filter-group">
+                        <label for="materialFilter">Материал</label>
+                        <select id="materialFilter">
+                            <option value="all">Любой</option>
+                            <option value="дерево">Дерево</option>
+                            <option value="металл">Металл</option>
+                            <option value="гранит">Гранит</option>
+                            <option value="мрамор">Мрамор</option>
+                            <option value="искусственные">Искусственные</option>
+                        </select>
                     </div>
-                `;
-                grid.appendChild(card);
+
+                    <div class="filter-group">
+                        <label for="sizeFilter">Размер</label>
+                        <select id="sizeFilter">
+                            <option value="all">Любой</option>
+                            <option value="маленький">Маленький</option>
+                            <option value="средний">Средний</option>
+                            <option value="большой">Большой</option>
+                            <option value="стандартный">Стандартный</option>
+                            <option value="детский">Детский</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" id="applyFiltersBtn"><i class="fas fa-check"></i> Применить</button>
+                    </div>
+                </aside>
+
+                <!-- Основная область -->
+                <section class="catalog-main">
+                    <div class="catalog-toolbar">
+                        <div class="toolbar-left">
+                            <span class="found-count" id="foundCount">Найдено: 0</span>
+                            <select id="sortSelect">
+                                <option value="popular">По популярности</option>
+                                <option value="price-asc">Цена: по возрастанию</option>
+                                <option value="price-desc">Цена: по убыванию</option>
+                                <option value="new">По новизне</option>
+                            </select>
+                        </div>
+                        <div class="toolbar-right">
+                            <div class="view-toggle">
+                                <button id="gridViewBtn" class="active" title="Сетка"><i class="fas fa-th"></i></button>
+                                <button id="listViewBtn" title="Список"><i class="fas fa-list"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Сетка товаров -->
+                    <div class="products-grid" id="productsGrid"></div>
+
+                    <!-- Пагинация -->
+                    <div class="pagination-wrap" id="paginationWrap"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2026 Похоронный дом «Душа» — организация традиционных похорон с душой и заботой. Все права защищены.</p>
+            <p style="margin-top: 10px;"><i class="fas fa-heart" style="color: #c6dbff;"></i> Работаем бережно, чтим традиции</p>
+        </div>
+    </footer>
+
+    <script>
+        // ---------- ДАННЫЕ ТОВАРОВ (28 товаров) с полем inStock ----------
+        const products = [
+            { id: 1, name: 'Гроб сосновый полированный', description: 'Сосна, лак, стандартный размер', price: 8500, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.5, image: 'fa-solid fa-box', date: '2026-01-10', inStock: true },
+            { id: 2, name: 'Гроб дубовый резной', description: 'Массив дуба, ручная резьба', price: 18500, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.8, image: 'fa-solid fa-box', date: '2026-02-05', inStock: true },
+            { id: 3, name: 'Гроб детский', description: 'Сосна, светлая отделка', price: 6200, category: 'гробы', material: 'дерево', size: 'детский', rating: 4.2, image: 'fa-solid fa-box', date: '2026-01-20', inStock: false },
+            { id: 4, name: 'Гроб металлический', description: 'Оцинкованная сталь, герметичный', price: 12000, category: 'гробы', material: 'металл', size: 'стандартный', rating: 4.3, image: 'fa-solid fa-box', date: '2026-02-12', inStock: true },
+            { id: 5, name: 'Памятник гранитный', description: 'Чёрный гранит, полировка', price: 45000, category: 'памятники', material: 'гранит', size: 'большой', rating: 4.9, image: 'fa-solid fa-gem', date: '2026-01-15', inStock: true },
+            { id: 6, name: 'Памятник мраморный', description: 'Белый мрамор, фигурный', price: 38000, category: 'памятники', material: 'мрамор', size: 'средний', rating: 4.6, image: 'fa-solid fa-gem', date: '2026-02-18', inStock: true },
+            { id: 7, name: 'Памятник гранитный двойной', description: 'Серый гранит, два места', price: 72000, category: 'памятники', material: 'гранит', size: 'большой', rating: 4.7, image: 'fa-solid fa-gem', date: '2026-03-01', inStock: true },
+            { id: 8, name: 'Памятник металлический', description: 'Кованый, с фотографией', price: 21000, category: 'памятники', material: 'металл', size: 'средний', rating: 4.0, image: 'fa-solid fa-gem', date: '2026-01-25', inStock: true },
+            { id: 9, name: 'Венок траурный живой', description: 'Хвойные, ленты, 1 м', price: 3200, category: 'венки и цветы', material: 'искусственные', size: 'средний', rating: 4.4, image: 'fa-solid fa-leaf', date: '2026-02-20', inStock: true },
+            { id: 10, name: 'Венок искусственный', description: 'Ткань, пластик, 50 см', price: 1400, category: 'венки и цветы', material: 'искусственные', size: 'маленький', rating: 4.0, image: 'fa-solid fa-leaf', date: '2026-01-30', inStock: false },
+            { id: 11, name: 'Цветы живые (розы)', description: 'Букет из 25 роз', price: 2800, category: 'венки и цветы', material: 'искусственные', size: 'средний', rating: 4.3, image: 'fa-solid fa-leaf', date: '2026-03-05', inStock: true },
+            { id: 12, name: 'Крест деревянный', description: 'Сосна, резной', price: 2100, category: 'кресты и таблички', material: 'дерево', size: 'средний', rating: 4.2, image: 'fa-solid fa-cross', date: '2026-01-12', inStock: true },
+            { id: 13, name: 'Крест металлический', description: 'Сталь, порошковое покрытие', price: 3500, category: 'кресты и таблички', material: 'металл', size: 'большой', rating: 4.1, image: 'fa-solid fa-cross', date: '2026-02-08', inStock: true },
+            { id: 14, name: 'Табличка мемориальная', description: 'Латунь, гравировка', price: 1800, category: 'кресты и таблички', material: 'металл', size: 'маленький', rating: 4.5, image: 'fa-solid fa-id-card', date: '2026-02-25', inStock: true },
+            { id: 15, name: 'Набор ритуальный', description: 'Свечи, лампа, кадило', price: 3900, category: 'ритуальные принадлежности', material: 'металл', size: 'средний', rating: 4.6, image: 'fa-solid fa-candle', date: '2026-03-02', inStock: true },
+            { id: 16, name: 'Подушка для гроба', description: 'Атлас, наполнитель', price: 1200, category: 'ритуальные принадлежности', material: 'искусственные', size: 'маленький', rating: 4.0, image: 'fa-solid fa-bed', date: '2026-01-18', inStock: true },
+            { id: 17, name: 'Одежда для усопшего (мужская)', description: 'Костюм, рубашка, галстук', price: 6500, category: 'одежда для усопших', material: 'искусственные', size: 'стандартный', rating: 4.3, image: 'fa-solid fa-user-tie', date: '2026-02-14', inStock: true },
+            { id: 18, name: 'Одежда для усопшей (женская)', description: 'Платье, чулки, туфли', price: 5900, category: 'одежда для усопших', material: 'искусственные', size: 'стандартный', rating: 4.4, image: 'fa-solid fa-female', date: '2026-01-22', inStock: true },
+            { id: 19, name: 'Гроб эксклюзивный', description: 'Дуб, инкрустация', price: 32000, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.9, image: 'fa-solid fa-box', date: '2026-03-08', inStock: true },
+            { id: 20, name: 'Памятник гранитный малый', description: 'Серый гранит, 1 м', price: 22000, category: 'памятники', material: 'гранит', size: 'маленький', rating: 4.2, image: 'fa-solid fa-gem', date: '2026-02-28', inStock: true },
+            { id: 21, name: 'Венок большой живой', description: 'Ель, цветы, 1.5 м', price: 5200, category: 'венки и цветы', material: 'искусственные', size: 'большой', rating: 4.5, image: 'fa-solid fa-leaf', date: '2026-03-10', inStock: true },
+            { id: 22, name: 'Крест мраморный', description: 'Мрамор, резьба', price: 7800, category: 'кресты и таблички', material: 'мрамор', size: 'средний', rating: 4.6, image: 'fa-solid fa-cross', date: '2026-01-28', inStock: true },
+            { id: 23, name: 'Свечи ритуальные (набор)', description: '6 свечей, подставки', price: 2500, category: 'ритуальные принадлежности', material: 'искусственные', size: 'средний', rating: 4.1, image: 'fa-solid fa-fire', date: '2026-02-02', inStock: true },
+            { id: 24, name: 'Одежда детская', description: 'Платье/костюм для ребёнка', price: 4200, category: 'одежда для усопших', material: 'искусственные', size: 'детский', rating: 4.3, image: 'fa-solid fa-child', date: '2026-01-05', inStock: false },
+            { id: 25, name: 'Гроб лакированный', description: 'Берёза, глянец', price: 9300, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.4, image: 'fa-solid fa-box', date: '2026-03-12', inStock: true },
+            { id: 26, name: 'Памятник мраморный двойной', description: 'Белый мрамор, два места', price: 66000, category: 'памятники', material: 'мрамор', size: 'большой', rating: 4.8, image: 'fa-solid fa-gem', date: '2026-02-16', inStock: true },
+            { id: 27, name: 'Табличка гранитная', description: 'Гранит, гравировка', price: 2900, category: 'кресты и таблички', material: 'гранит', size: 'маленький', rating: 4.2, image: 'fa-solid fa-id-card', date: '2026-01-08', inStock: true },
+            { id: 28, name: 'Набор поминальный', description: 'Посуда, скатерть, свечи', price: 4100, category: 'ритуальные принадлежности', material: 'искусственные', size: 'средний', rating: 4.0, image: 'fa-solid fa-utensils', date: '2026-03-03', inStock: true }
+        ];
+
+        // ---------- СОСТОЯНИЕ ----------
+        let currentProducts = [...products];
+        let currentPage = 1;
+        const perPage = 6;
+        let currentView = 'grid';
+
+        const grid = document.getElementById('productsGrid');
+        const paginationWrap = document.getElementById('paginationWrap');
+        const foundCount = document.getElementById('foundCount');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const priceFrom = document.getElementById('priceFrom');
+        const priceTo = document.getElementById('priceTo');
+        const materialFilter = document.getElementById('materialFilter');
+        const sizeFilter = document.getElementById('sizeFilter');
+        const sortSelect = document.getElementById('sortSelect');
+        const applyBtn = document.getElementById('applyFiltersBtn');
+        const resetBtn = document.getElementById('resetFiltersBtn');
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const listViewBtn = document.getElementById('listViewBtn');
+        const mobileToggle = document.getElementById('mobileFilterToggle');
+        const sidebar = document.getElementById('filtersSidebar');
+
+        // ---------- ФИЛЬТРАЦИЯ ----------
+        function filterProducts() {
+            const cat = categoryFilter.value;
+            const mat = materialFilter.value;
+            const sz = sizeFilter.value;
+            const from = parseFloat(priceFrom.value) || 0;
+            const to = parseFloat(priceTo.value) || Infinity;
+
+            currentProducts = products.filter(p => {
+                const matchCat = cat === 'all' || p.category === cat;
+                const matchMat = mat === 'all' || p.material === mat;
+                const matchSize = sz === 'all' || p.size === sz;
+                const matchPrice = p.price >= from && p.price <= to;
+                return matchCat && matchMat && matchSize && matchPrice;
             });
+
+            sortProducts();
+            currentPage = 1;
+            render();
         }
 
-        // Пагинация
-        const totalPages = Math.ceil(total / perPage);
-        paginationWrap.innerHTML = '';
-        if (totalPages > 1) {
-            const prev = document.createElement('button');
-            prev.innerHTML = '«';
-            prev.disabled = currentPage === 1;
-            prev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; render(); } });
-            paginationWrap.appendChild(prev);
+        function sortProducts() {
+            const sortBy = sortSelect.value;
+            switch (sortBy) {
+                case 'popular':
+                    currentProducts.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'price-asc':
+                    currentProducts.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    currentProducts.sort((a, b) => b.price - a.price);
+                    break;
+                case 'new':
+                    currentProducts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    break;
+                default:
+                    break;
+            }
+        }
 
-            for (let i = 1; i <= totalPages; i++) {
-                const btn = document.createElement('button');
-                btn.textContent = i;
-                if (i === currentPage) btn.className = 'active';
-                btn.addEventListener('click', () => { currentPage = i; render(); });
-                paginationWrap.appendChild(btn);
+        function resetFilters() {
+            categoryFilter.value = 'all';
+            priceFrom.value = '';
+            priceTo.value = '';
+            materialFilter.value = 'all';
+            sizeFilter.value = 'all';
+            sortSelect.value = 'popular';
+            filterProducts();
+        }
+
+        // ---------- ОТРИСОВКА ----------
+        function render() {
+            const start = (currentPage - 1) * perPage;
+            const end = start + perPage;
+            const pageItems = currentProducts.slice(start, end);
+            const total = currentProducts.length;
+
+            foundCount.textContent = `Найдено: ${total}`;
+
+            grid.innerHTML = '';
+            if (pageItems.length === 0) {
+                grid.innerHTML =
+                    `<p style="grid-column:1/-1; text-align:center; padding:3rem; opacity:0.6;">Ничего не найдено. Попробуйте изменить фильтры.</p>`;
+            } else {
+                pageItems.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'glass-card product-card';
+
+                    // Плашка "Нет в наличии" (если товара нет)
+                    if (!p.inStock) {
+                        const outBadge = document.createElement('span');
+                        outBadge.className = 'badge badge-out-of-stock';
+                        outBadge.textContent = 'Нет в наличии';
+                        card.appendChild(outBadge);
+                    } else if (p.rating >= 4.7) {
+                        // Иначе если популярный (рейтинг высокий) – плашка "Популярное"
+                        const popBadge = document.createElement('span');
+                        popBadge.className = 'badge';
+                        popBadge.textContent = 'Популярное';
+                        card.appendChild(popBadge);
+                    }
+
+                    const iconClass = p.image || 'fa-solid fa-box';
+                    card.innerHTML += `
+                        <div class="icon-wrap"><i class="${iconClass}"></i></div>
+                        <div class="info">
+                            <h4>${p.name}</h4>
+                            <div class="desc">${p.description}</div>
+                            <div class="price">${p.price.toLocaleString()} ₽</div>
+                            <button class="btn btn-primary btn-sm" onclick="alert('Заказ товара: ${p.name}')">
+                                <i class="fas fa-shopping-cart"></i> Заказать
+                            </button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
             }
 
-            const next = document.createElement('button');
-            next.innerHTML = '»';
-            next.disabled = currentPage === totalPages;
-            next.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; render(); } });
-            paginationWrap.appendChild(next);
-        }
+            // Пагинация
+            const totalPages = Math.ceil(total / perPage);
+            paginationWrap.innerHTML = '';
+            if (totalPages > 1) {
+                const prev = document.createElement('button');
+                prev.innerHTML = '«';
+                prev.disabled = currentPage === 1;
+                prev.addEventListener('click', () => { if (currentPage > 1) { currentPage--;
+                        render(); } });
+                paginationWrap.appendChild(prev);
 
-        // Применить класс view
-        grid.className = 'products-grid' + (currentView === 'list' ? ' list-view' : '');
-    }
-
-    // ---------- ПЕРЕКЛЮЧЕНИЕ ВИДА ----------
-    gridViewBtn.addEventListener('click', () => {
-        currentView = 'grid';
-        gridViewBtn.className = 'active';
-        listViewBtn.className = '';
-        render();
-    });
-    listViewBtn.addEventListener('click', () => {
-        currentView = 'list';
-        listViewBtn.className = 'active';
-        gridViewBtn.className = '';
-        render();
-    });
-
-    // ---------- СОБЫТИЯ ----------
-    applyBtn.addEventListener('click', filterProducts);
-    resetBtn.addEventListener('click', resetFilters);
-    sortSelect.addEventListener('change', () => { filterProducts(); });
-
-    // Мобильное открытие фильтров
-    mobileToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('open');
-    });
-
-    // Обработка Enter в полях цены
-    priceFrom.addEventListener('keydown', (e) => { if (e.key === 'Enter') filterProducts(); });
-    priceTo.addEventListener('keydown', (e) => { if (e.key === 'Enter') filterProducts(); });
-
-    // Инициализация
-    resetFilters(); // применит все фильтры по умолчанию и отрисует
-
-    // Плавный скролл для якорных ссылок (если есть)
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-            if (targetId && targetId.startsWith('#')) {
-                e.preventDefault();
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    if (i === currentPage) btn.className = 'active';
+                    btn.addEventListener('click', () => { currentPage = i;
+                        render(); });
+                    paginationWrap.appendChild(btn);
                 }
+
+                const next = document.createElement('button');
+                next.innerHTML = '»';
+                next.disabled = currentPage === totalPages;
+                next.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++;
+                        render(); } });
+                paginationWrap.appendChild(next);
             }
-        });
-    });
 
-    // Эффект "жидкого стекла" на карточках (как на главной)
-    document.querySelectorAll('.glass-card').forEach(card => {
-        card.addEventListener('mousemove', function(e) {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const xPercent = (x / rect.width) * 100;
-            const yPercent = (y / rect.height) * 100;
-            card.style.background = `radial-gradient(circle at ${xPercent}% ${yPercent}%, rgba(255, 255, 250, 0.2), rgba(20, 30, 45, 0.65))`;
-        });
-        card.addEventListener('mouseleave', function() {
-            card.style.background = '';
-        });
-    });
-</script>
+            grid.className = 'products-grid' + (currentView === 'list' ? ' list-view' : '');
+        }
 
+        // ---------- ПЕРЕКЛЮЧЕНИЕ ВИДА ----------
+        gridViewBtn.addEventListener('click', () => {
+            currentView = 'grid';
+            gridViewBtn.className = 'active';
+            listViewBtn.className = '';
+            render();
+        });
+        listViewBtn.addEventListener('click', () => {
+            currentView = 'list';
+            listViewBtn.className = 'active';
+            gridViewBtn.className = '';
+            render();
+        });
+
+        // ---------- СОБЫТИЯ ----------
+        applyBtn.addEventListener('click', filterProducts);
+        resetBtn.addEventListener('click', resetFilters);
+        sortSelect.addEventListener('change', filterProducts);
+
+        mobileToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        priceFrom.addEventListener('keydown', (e) => { if (e.key === 'Enter') filterProducts(); });
+        priceTo.addEventListener('keydown', (e) => { if (e.key === 'Enter') filterProducts(); });
+
+        // Инициализация
+        resetFilters();
+
+        // Плавный скролл для якорных ссылок
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId && targetId.startsWith('#')) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+
+        // Эффект "жидкого стекла" на карточках
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', function(e) {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xPercent = (x / rect.width) * 100;
+                const yPercent = (y / rect.height) * 100;
+                card.style.background =
+                    `radial-gradient(circle at ${xPercent}% ${yPercent}%, rgba(255, 255, 250, 0.2), rgba(20, 30, 45, 0.65))`;
+            });
+            card.addEventListener('mouseleave', function() {
+                card.style.background = '';
+            });
+        });
+    </script>
 </body>
 </html>
