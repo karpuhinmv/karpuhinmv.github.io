@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Похоронный дом «Душа» — организация традиционных похорон с заботой и уважением. Ритуальные услуги, памятники, поминки. Только в Калуге.">
+    <meta name="description" content="Похоронный дом «Душа» — организация традиционных похорон с заботой и уважением. Ритуальные услуги, памятники, поминки.">
     <title>Душа | Похоронный дом</title>
     <!-- Google Fonts + Font Awesome 6 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
@@ -185,6 +185,16 @@
             border-color: white;
         }
 
+        .btn-call {
+            background: rgba(60, 180, 120, 0.45);
+            border-color: rgba(255,255,250,0.4);
+        }
+        .btn-call:hover {
+            background: rgba(60, 200, 130, 0.7);
+            transform: scale(1.02);
+            border-color: white;
+        }
+
         .hero {
             padding: 5rem 0 6rem;
         }
@@ -319,18 +329,10 @@
         .contact-text span {
             opacity: 0.85;
         }
-
-        .map-wrapper {
-            overflow: hidden;
-            border-radius: 1.5rem;
-            border: 1px solid rgba(255,255,240,0.15);
-            margin-top: 0.5rem;
-        }
-        .map-wrapper iframe {
-            display: block;
-            width: 100%;
-            height: 400px;
-            border: none;
+        .contact-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
         }
 
         footer {
@@ -377,9 +379,6 @@
             .logo-text {
                 font-size: 1.5rem;
             }
-            .map-wrapper iframe {
-                height: 280px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -399,9 +398,6 @@
             }
             .logo-text {
                 font-size: 1.3rem;
-            }
-            .map-wrapper iframe {
-                height: 200px;
             }
         }
 
@@ -439,7 +435,6 @@
             <ul class="nav-links">
                 <li><a href="index.html">Главная</a></li>
                 <li><a href="#about">О нас</a></li>
-                <li><a href="#region">Регион</a></li>
                 <li><a href="#services">Услуги</a></li>
                 <li><a href="catalog.html">Каталог</a></li>
                 <li><a href="#contact">Контакты</a></li>
@@ -484,18 +479,6 @@
         </div>
     </section>
 
-    <section id="region">
-        <div class="container">
-            <h2 class="section-title">Наш регион</h2>
-            <div class="glass-card" style="padding: 1.5rem; overflow: hidden; border-radius: 2rem;">
-                <p style="margin-bottom: 1rem; opacity: 0.9;">Мы оказываем услуги на территории города Калуги.</p>
-                <div class="map-wrapper">
-                    <iframe src="https://yandex.ru/map-widget/v1/?ll=36.2614%2C54.5138&z=9&pt=36.2614%2C54.5138%2Cflag&l=map" allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <section id="services">
         <div class="container">
             <h2 class="section-title">Наши услуги</h2>
@@ -505,6 +488,7 @@
                     <h3>Традиционные похороны</h3>
                     <p>Полная организация погребения: выбор места на кладбище, гроб, ритуальные принадлежности, транспорт и церемония прощания.</p>
                 </div>
+                <!-- Удалён ритуальный зал -->
                 <div class="glass-card service-card liquid-gloss">
                     <i class="fas fa-truck"></i>
                     <h3>Ритуальный транспорт</h3>
@@ -562,9 +546,12 @@
                             <span>Ежедневно, с 8:00 по 17:00</span>
                         </div>
                     </div>
-                    <a href="tel:+79106093000" class="btn btn-primary" style="width:100%; justify-content:center; margin-top: 0.5rem;">
-                        <i class="fas fa-phone"></i> Позвонить сейчас
-                    </a>
+                    <!-- Кнопка "Позвонить" -->
+                    <div class="contact-actions">
+                        <a href="tel:+79106093000" class="btn btn-call">
+                            <i class="fas fa-phone"></i> Позвонить сейчас
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
