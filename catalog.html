@@ -20,7 +20,7 @@
     </script>
 
     <style>
-        /* ---- Все стили такие же, как в предыдущей версии, плюс новые для авторизации ---- */
+        /* ---- ГЛОБАЛЬНЫЕ СТИЛИ (без изменений) ---- */
         * {
             margin: 0;
             padding: 0;
@@ -418,11 +418,25 @@
             margin-bottom: 0.8rem;
             flex: 1;
         }
-        .product-card .price {
+        .product-card .price-block {
+            margin-bottom: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .product-card .price-old {
+            font-size: 1rem;
+            text-decoration: line-through;
+            opacity: 0.6;
+            margin-bottom: 0.2rem;
+        }
+        .product-card .price-new {
             font-size: 1.4rem;
             font-weight: 700;
             color: #d4e4ff;
-            margin-bottom: 0.5rem;
+        }
+        .product-card .price-new.discounted {
+            color: #ffd93d;
         }
         .product-card .actions {
             display: flex;
@@ -465,6 +479,12 @@
             left: 10px;
             background: rgba(200, 60, 60, 0.8);
             color: #fff;
+        }
+        .badge-discount {
+            right: auto;
+            left: 10px;
+            background: rgba(255, 180, 0, 0.8);
+            color: #1a1a1a;
         }
 
         /* ---- ПАГИНАЦИЯ ---- */
@@ -825,7 +845,12 @@
         .products-grid.list-view .product-card .info {
             flex: 1;
         }
-        .products-grid.list-view .product-card .price {
+        .products-grid.list-view .product-card .price-block {
+            flex-direction: row;
+            gap: 0.8rem;
+            align-items: center;
+        }
+        .products-grid.list-view .product-card .price-old {
             margin-bottom: 0;
         }
         .products-grid.list-view .product-card .actions {
@@ -838,6 +863,9 @@
             }
             .products-grid.list-view .product-card .image-container {
                 flex: 0 0 auto;
+            }
+            .products-grid.list-view .product-card .price-block {
+                flex-direction: column;
             }
         }
 
@@ -1011,15 +1039,11 @@
                 <input type="text" id="authName" placeholder="Имя" style="display:none;" />
                 <input type="email" id="authEmail" placeholder="Email" />
                 <input type="password" id="authPassword" placeholder="Пароль" />
-                
                 <button class="btn btn-primary" id="authSubmitBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
-                
                 <div class="auth-divider"><span>или</span></div>
-                
                 <button class="btn btn-google" id="googleAuthBtn">
                     <i class="fab fa-google"></i> Войти через Google
                 </button>
-                
                 <div class="switch-link" id="authSwitch">Нет аккаунта? Зарегистрироваться</div>
             </div>
         </div>
@@ -1046,7 +1070,8 @@
             signOut,
             updateProfile,
             GoogleAuthProvider,
-            signInWithPopup
+            signInWithPopup,
+            sendEmailVerification
         } from 'firebase/auth';
         import {
             getFirestore,
@@ -1063,98 +1088,105 @@
 
         // ---------- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ----------
         let currentUser = null;
-        let cart = {}; // { productId: { id, name, price, image, imageSrc, quantity } }
+        let cart = {};
 
-        // ---------- ДАННЫЕ ТОВАРОВ (те же) ----------
+        // ---------- ДАННЫЕ ТОВАРОВ (с добавленным oldPrice) ----------
         const products = [
             { id: 1, name: 'Гроб сосновый полированный', description: 'Сосна, лак, стандартный размер', price: 8500,
-                category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.5, image: 'fa-solid fa-box',
-                imageSrc: 'grob_sosna.jpg', date: '2026-01-10', inStock: true, isPopular: true },
+                oldPrice: null, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.5,
+                image: 'fa-solid fa-box', imageSrc: 'grob_sosna.jpg', date: '2026-01-10', inStock: true,
+                isPopular: true },
             { id: 2, name: 'Гроб дубовый резной', description: 'Массив дуба, ручная резьба', price: 18500,
-                category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.8, image: 'fa-solid fa-box',
-                imageSrc: 'grob_dub.jpg', date: '2026-02-05', inStock: true, isPopular: true },
-            { id: 3, name: 'Гроб детский', description: 'Сосна, светлая отделка', price: 6200, category: 'гробы',
-                material: 'дерево', size: 'детский', rating: 4.2, image: 'fa-solid fa-box', imageSrc: '',
-                date: '2026-01-20', inStock: false, isPopular: false },
+                oldPrice: 21000, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.8,
+                image: 'fa-solid fa-box', imageSrc: 'grob_dub.jpg', date: '2026-02-05', inStock: true,
+                isPopular: true },
+            { id: 3, name: 'Гроб детский', description: 'Сосна, светлая отделка', price: 6200, oldPrice: null,
+                category: 'гробы', material: 'дерево', size: 'детский', rating: 4.2, image: 'fa-solid fa-box',
+                imageSrc: '', date: '2026-01-20', inStock: false, isPopular: false },
             { id: 4, name: 'Гроб металлический', description: 'Оцинкованная сталь, герметичный', price: 12000,
-                category: 'гробы', material: 'металл', size: 'стандартный', rating: 4.3, image: 'fa-solid fa-box',
-                imageSrc: 'grob_metal.jpg', date: '2026-02-12', inStock: true, isPopular: false },
-            { id: 5, name: 'Памятник гранитный', description: 'Чёрный гранит, полировка', price: 45000,
+                oldPrice: 13500, category: 'гробы', material: 'металл', size: 'стандартный', rating: 4.3,
+                image: 'fa-solid fa-box', imageSrc: 'grob_metal.jpg', date: '2026-02-12', inStock: true,
+                isPopular: false },
+            { id: 5, name: 'Памятник гранитный', description: 'Чёрный гранит, полировка', price: 45000, oldPrice: null,
                 category: 'памятники', material: 'гранит', size: 'большой', rating: 4.9, image: 'fa-solid fa-gem',
                 imageSrc: 'pam_granit.jpg', date: '2026-01-15', inStock: true, isPopular: true },
-            { id: 6, name: 'Памятник мраморный', description: 'Белый мрамор, фигурный', price: 38000,
+            { id: 6, name: 'Памятник мраморный', description: 'Белый мрамор, фигурный', price: 38000, oldPrice: 42000,
                 category: 'памятники', material: 'мрамор', size: 'средний', rating: 4.6, image: 'fa-solid fa-gem',
                 imageSrc: '', date: '2026-02-18', inStock: true, isPopular: false },
             { id: 7, name: 'Памятник гранитный двойной', description: 'Серый гранит, два места', price: 72000,
-                category: 'памятники', material: 'гранит', size: 'большой', rating: 4.7, image: 'fa-solid fa-gem',
-                imageSrc: 'pam_dvoynoy.jpg', date: '2026-03-01', inStock: true, isPopular: true },
+                oldPrice: null, category: 'памятники', material: 'гранит', size: 'большой', rating: 4.7,
+                image: 'fa-solid fa-gem', imageSrc: 'pam_dvoynoy.jpg', date: '2026-03-01', inStock: true,
+                isPopular: true },
             { id: 8, name: 'Памятник металлический', description: 'Кованый, с фотографией', price: 21000,
-                category: 'памятники', material: 'металл', size: 'средний', rating: 4.0, image: 'fa-solid fa-gem',
-                imageSrc: '', date: '2026-01-25', inStock: true, isPopular: false },
-            { id: 9, name: 'Венок траурный живой', description: 'Хвойные, ленты, 1 м', price: 3200,
+                oldPrice: 25000, category: 'памятники', material: 'металл', size: 'средний', rating: 4.0,
+                image: 'fa-solid fa-gem', imageSrc: '', date: '2026-01-25', inStock: true, isPopular: false },
+            { id: 9, name: 'Венок траурный живой', description: 'Хвойные, ленты, 1 м', price: 3200, oldPrice: null,
                 category: 'венки и цветы', material: 'искусственные', size: 'средний', rating: 4.4,
                 image: 'fa-solid fa-leaf', imageSrc: 'venok_zhivoy.jpg', date: '2026-02-20', inStock: true,
                 isPopular: false },
-            { id: 10, name: 'Венок искусственный', description: 'Ткань, пластик, 50 см', price: 1400,
+            { id: 10, name: 'Венок искусственный', description: 'Ткань, пластик, 50 см', price: 1400, oldPrice: null,
                 category: 'венки и цветы', material: 'искусственные', size: 'маленький', rating: 4.0,
                 image: 'fa-solid fa-leaf', imageSrc: '', date: '2026-01-30', inStock: false, isPopular: false },
-            { id: 11, name: 'Цветы живые (розы)', description: 'Букет из 25 роз', price: 2800, category: 'венки и цветы',
-                material: 'искусственные', size: 'средний', rating: 4.3, image: 'fa-solid fa-leaf', imageSrc: 'rozy.jpg',
-                date: '2026-03-05', inStock: true, isPopular: false },
-            { id: 12, name: 'Крест деревянный', description: 'Сосна, резной', price: 2100, category: 'кресты и таблички',
-                material: 'дерево', size: 'средний', rating: 4.2, image: 'fa-solid fa-cross', imageSrc: '',
-                date: '2026-01-12', inStock: true, isPopular: false },
+            { id: 11, name: 'Цветы живые (розы)', description: 'Букет из 25 роз', price: 2800, oldPrice: 3200,
+                category: 'венки и цветы', material: 'искусственные', size: 'средний', rating: 4.3,
+                image: 'fa-solid fa-leaf', imageSrc: 'rozy.jpg', date: '2026-03-05', inStock: true,
+                isPopular: false },
+            { id: 12, name: 'Крест деревянный', description: 'Сосна, резной', price: 2100, oldPrice: null,
+                category: 'кресты и таблички', material: 'дерево', size: 'средний', rating: 4.2,
+                image: 'fa-solid fa-cross', imageSrc: '', date: '2026-01-12', inStock: true, isPopular: false },
             { id: 13, name: 'Крест металлический', description: 'Сталь, порошковое покрытие', price: 3500,
-                category: 'кресты и таблички', material: 'металл', size: 'большой', rating: 4.1,
+                oldPrice: 3900, category: 'кресты и таблички', material: 'металл', size: 'большой', rating: 4.1,
                 image: 'fa-solid fa-cross', imageSrc: 'krest_metal.jpg', date: '2026-02-08', inStock: true,
                 isPopular: false },
-            { id: 14, name: 'Табличка мемориальная', description: 'Латунь, гравировка', price: 1800,
+            { id: 14, name: 'Табличка мемориальная', description: 'Латунь, гравировка', price: 1800, oldPrice: null,
                 category: 'кресты и таблички', material: 'металл', size: 'маленький', rating: 4.5,
                 image: 'fa-solid fa-id-card', imageSrc: '', date: '2026-02-25', inStock: true, isPopular: true },
-            { id: 15, name: 'Набор ритуальный', description: 'Свечи, лампа, кадило', price: 3900,
+            { id: 15, name: 'Набор ритуальный', description: 'Свечи, лампа, кадило', price: 3900, oldPrice: 4500,
                 category: 'ритуальные принадлежности', material: 'металл', size: 'средний', rating: 4.6,
                 image: 'fa-solid fa-candle', imageSrc: 'nabor_ritual.jpg', date: '2026-03-02', inStock: true,
                 isPopular: false },
-            { id: 16, name: 'Подушка для гроба', description: 'Атлас, наполнитель', price: 1200,
+            { id: 16, name: 'Подушка для гроба', description: 'Атлас, наполнитель', price: 1200, oldPrice: null,
                 category: 'ритуальные принадлежности', material: 'искусственные', size: 'маленький', rating: 4.0,
                 image: 'fa-solid fa-bed', imageSrc: '', date: '2026-01-18', inStock: true, isPopular: false },
             { id: 17, name: 'Одежда для усопшего (мужская)', description: 'Костюм, рубашка, галстук', price: 6500,
-                category: 'одежда для усопших', material: 'искусственные', size: 'стандартный', rating: 4.3,
-                image: 'fa-solid fa-user-tie', imageSrc: 'odezhda_muzh.jpg', date: '2026-02-14', inStock: true,
-                isPopular: false },
+                oldPrice: null, category: 'одежда для усопших', material: 'искусственные', size: 'стандартный',
+                rating: 4.3, image: 'fa-solid fa-user-tie', imageSrc: 'odezhda_muzh.jpg', date: '2026-02-14',
+                inStock: true, isPopular: false },
             { id: 18, name: 'Одежда для усопшей (женская)', description: 'Платье, чулки, туфли', price: 5900,
-                category: 'одежда для усопших', material: 'искусственные', size: 'стандартный', rating: 4.4,
-                image: 'fa-solid fa-female', imageSrc: '', date: '2026-01-22', inStock: true, isPopular: true },
-            { id: 19, name: 'Гроб эксклюзивный', description: 'Дуб, инкрустация', price: 32000, category: 'гробы',
-                material: 'дерево', size: 'стандартный', rating: 4.9, image: 'fa-solid fa-box', imageSrc: 'grob_excl.jpg',
-                date: '2026-03-08', inStock: true, isPopular: true },
-            { id: 20, name: 'Памятник гранитный малый', description: 'Серый гранит, 1 м', price: 22000,
+                oldPrice: 6800, category: 'одежда для усопших', material: 'искусственные', size: 'стандартный',
+                rating: 4.4, image: 'fa-solid fa-female', imageSrc: '', date: '2026-01-22', inStock: true,
+                isPopular: true },
+            { id: 19, name: 'Гроб эксклюзивный', description: 'Дуб, инкрустация', price: 32000, oldPrice: 37000,
+                category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.9, image: 'fa-solid fa-box',
+                imageSrc: 'grob_excl.jpg', date: '2026-03-08', inStock: true, isPopular: true },
+            { id: 20, name: 'Памятник гранитный малый', description: 'Серый гранит, 1 м', price: 22000, oldPrice: null,
                 category: 'памятники', material: 'гранит', size: 'маленький', rating: 4.2, image: 'fa-solid fa-gem',
                 imageSrc: '', date: '2026-02-28', inStock: true, isPopular: false },
-            { id: 21, name: 'Венок большой живой', description: 'Ель, цветы, 1.5 м', price: 5200,
+            { id: 21, name: 'Венок большой живой', description: 'Ель, цветы, 1.5 м', price: 5200, oldPrice: null,
                 category: 'венки и цветы', material: 'искусственные', size: 'большой', rating: 4.5,
                 image: 'fa-solid fa-leaf', imageSrc: 'venok_bolshoy.jpg', date: '2026-03-10', inStock: true,
                 isPopular: false },
-            { id: 22, name: 'Крест мраморный', description: 'Мрамор, резьба', price: 7800, category: 'кресты и таблички',
-                material: 'мрамор', size: 'средний', rating: 4.6, image: 'fa-solid fa-cross', imageSrc: '',
-                date: '2026-01-28', inStock: true, isPopular: true },
+            { id: 22, name: 'Крест мраморный', description: 'Мрамор, резьба', price: 7800, oldPrice: 8500,
+                category: 'кресты и таблички', material: 'мрамор', size: 'средний', rating: 4.6,
+                image: 'fa-solid fa-cross', imageSrc: '', date: '2026-01-28', inStock: true, isPopular: true },
             { id: 23, name: 'Свечи ритуальные (набор)', description: '6 свечей, подставки', price: 2500,
-                category: 'ритуальные принадлежности', material: 'искусственные', size: 'средний', rating: 4.1,
-                image: 'fa-solid fa-fire', imageSrc: 'svechi.jpg', date: '2026-02-02', inStock: true, isPopular: false },
-            { id: 24, name: 'Одежда детская', description: 'Платье/костюм для ребёнка', price: 4200,
+                oldPrice: null, category: 'ритуальные принадлежности', material: 'искусственные', size: 'средний',
+                rating: 4.1, image: 'fa-solid fa-fire', imageSrc: 'svechi.jpg', date: '2026-02-02', inStock: true,
+                isPopular: false },
+            { id: 24, name: 'Одежда детская', description: 'Платье/костюм для ребёнка', price: 4200, oldPrice: null,
                 category: 'одежда для усопших', material: 'искусственные', size: 'детский', rating: 4.3,
                 image: 'fa-solid fa-child', imageSrc: '', date: '2026-01-05', inStock: false, isPopular: false },
-            { id: 25, name: 'Гроб лакированный', description: 'Берёза, глянец', price: 9300, category: 'гробы',
-                material: 'дерево', size: 'стандартный', rating: 4.4, image: 'fa-solid fa-box', imageSrc: 'grob_lak.jpg',
-                date: '2026-03-12', inStock: true, isPopular: false },
+            { id: 25, name: 'Гроб лакированный', description: 'Берёза, глянец', price: 9300, oldPrice: 10500,
+                category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.4, image: 'fa-solid fa-box',
+                imageSrc: 'grob_lak.jpg', date: '2026-03-12', inStock: true, isPopular: false },
             { id: 26, name: 'Памятник мраморный двойной', description: 'Белый мрамор, два места', price: 66000,
-                category: 'памятники', material: 'мрамор', size: 'большой', rating: 4.8, image: 'fa-solid fa-gem',
-                imageSrc: '', date: '2026-02-16', inStock: true, isPopular: true },
-            { id: 27, name: 'Табличка гранитная', description: 'Гранит, гравировка', price: 2900,
+                oldPrice: null, category: 'памятники', material: 'мрамор', size: 'большой', rating: 4.8,
+                image: 'fa-solid fa-gem', imageSrc: '', date: '2026-02-16', inStock: true, isPopular: true },
+            { id: 27, name: 'Табличка гранитная', description: 'Гранит, гравировка', price: 2900, oldPrice: null,
                 category: 'кресты и таблички', material: 'гранит', size: 'маленький', rating: 4.2,
                 image: 'fa-solid fa-id-card', imageSrc: 'tabl_granit.jpg', date: '2026-01-08', inStock: true,
                 isPopular: false },
-            { id: 28, name: 'Набор поминальный', description: 'Посуда, скатерть, свечи', price: 4100,
+            { id: 28, name: 'Набор поминальный', description: 'Посуда, скатерть, свечи', price: 4100, oldPrice: 4800,
                 category: 'ритуальные принадлежности', material: 'искусственные', size: 'средний', rating: 4.0,
                 image: 'fa-solid fa-utensils', imageSrc: '', date: '2026-03-03', inStock: true, isPopular: false }
         ];
@@ -1199,6 +1231,14 @@
                 openAuthModal();
                 return;
             }
+            // Проверяем, подтверждён ли email через Firebase
+            if (!currentUser.emailVerified) {
+                alert('Пожалуйста, подтвердите ваш email. На вашу почту была отправлена ссылка для подтверждения.');
+                // Можно повторно отправить письмо
+                await sendEmailVerification(currentUser);
+                return;
+            }
+
             const product = products.find(p => p.id === productId);
             if (!product) return;
             if (!product.inStock) {
@@ -1314,10 +1354,10 @@
         window.removeFromCart = removeFromCart;
 
         // ============================================================
-        // 3. АВТОРИЗАЦИЯ (с полем Имя и Google)
+        // 3. АВТОРИЗАЦИЯ (с Firebase Email Verification)
         // ============================================================
 
-        let authMode = 'login'; // 'login' | 'register'
+        let authMode = 'login';
 
         const authBtn = document.getElementById('authBtn');
         const logoutBtn = document.getElementById('logoutBtn');
@@ -1353,7 +1393,6 @@
                 authSubmitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
                 authSwitch.textContent = 'Нет аккаунта? Зарегистрироваться';
                 authName.style.display = 'none';
-                // меняем текст кнопки Google
                 googleAuthBtn.innerHTML = '<i class="fab fa-google"></i> Войти через Google';
             } else {
                 authModalTitle.textContent = 'Регистрация';
@@ -1389,16 +1428,28 @@
                 }
                 try {
                     const userCred = await createUserWithEmailAndPassword(auth, email, password);
-                    // Обновляем профиль с именем
                     await updateProfile(userCred.user, { displayName: name });
+                    // Отправляем письмо для подтверждения
+                    await sendEmailVerification(userCred.user);
+                    alert('На вашу почту отправлена ссылка для подтверждения. Пожалуйста, перейдите по ней, чтобы завершить регистрацию.');
                     closeAuthModal();
+                    // Разлогиниваем пользователя, чтобы он не остался в системе без подтверждения
+                    await signOut(auth);
                 } catch (err) {
                     authError.textContent = err.message;
                 }
             } else {
                 // Вход
                 try {
-                    await signInWithEmailAndPassword(auth, email, password);
+                    const userCred = await signInWithEmailAndPassword(auth, email, password);
+                    if (!userCred.user.emailVerified) {
+                        // Если email не подтверждён – разлогиниваем и просим подтвердить
+                        await signOut(auth);
+                        authError.textContent = 'Ваш email не подтверждён. Пожалуйста, проверьте почту и перейдите по ссылке для подтверждения.';
+                        // Можно повторно отправить письмо
+                        await sendEmailVerification(userCred.user);
+                        return;
+                    }
                     closeAuthModal();
                 } catch (err) {
                     authError.textContent = err.message;
@@ -1409,7 +1460,9 @@
         // Вход через Google
         googleAuthBtn.addEventListener('click', async () => {
             try {
-                await signInWithPopup(auth, provider);
+                const result = await signInWithPopup(auth, provider);
+                // Для Google пользователи считаются подтверждёнными автоматически
+                // (у них emailVerified = true, если аккаунт Google подтверждён)
                 closeAuthModal();
             } catch (err) {
                 authError.textContent = err.message;
@@ -1427,8 +1480,13 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                if (!user.emailVerified) {
+                    // Если пользователь залогинился, но email не подтверждён – разлогиниваем и просим подтвердить
+                    await signOut(auth);
+                    alert('Пожалуйста, подтвердите ваш email, перейдя по ссылке в письме.');
+                    return;
+                }
                 currentUser = user;
-                // Отображаем имя (displayName) или email
                 const displayName = user.displayName || user.email;
                 userName.textContent = displayName;
                 authBtn.style.display = 'none';
@@ -1479,7 +1537,7 @@
         });
 
         // ============================================================
-        // 6. ЛОГИКА КАТАЛОГА (фильтры, рендер, пагинация)
+        // 6. ЛОГИКА КАТАЛОГА (фильтры, рендер, пагинация) С УЧЁТОМ СКИДОК
         // ============================================================
 
         let currentProducts = [...products];
@@ -1586,6 +1644,14 @@
                         popBadge.textContent = 'Популярное';
                         card.appendChild(popBadge);
                     }
+                    // Плашка скидки
+                    if (p.oldPrice && p.oldPrice > p.price) {
+                        const discBadge = document.createElement('span');
+                        discBadge.className = 'badge badge-discount';
+                        const discountPercent = Math.round((1 - p.price / p.oldPrice) * 100);
+                        discBadge.textContent = `−${discountPercent}%`;
+                        card.appendChild(discBadge);
+                    }
 
                     // Изображение
                     const imgContainer = document.createElement('div');
@@ -1614,21 +1680,40 @@
                         imgContainer.appendChild(iconWrap);
                     }
 
+                    // Блок цены
+                    const priceBlock = document.createElement('div');
+                    priceBlock.className = 'price-block';
+                    if (p.oldPrice && p.oldPrice > p.price) {
+                        priceBlock.innerHTML = `
+                            <div class="price-old">${p.oldPrice.toLocaleString()} ₽</div>
+                            <div class="price-new discounted">${p.price.toLocaleString()} ₽</div>
+                        `;
+                    } else {
+                        priceBlock.innerHTML = `
+                            <div class="price-new">${p.price.toLocaleString()} ₽</div>
+                        `;
+                    }
+
                     const info = document.createElement('div');
                     info.className = 'info';
                     info.innerHTML = `
                         <h4>${p.name}</h4>
                         <div class="desc">${p.description}</div>
-                        <div class="price">${p.price.toLocaleString()} ₽</div>
-                        <div class="actions">
-                            <button class="btn btn-sm btn-add-cart" onclick="window.addToCart(${p.id})" ${!p.inStock ? 'disabled style="opacity:0.5;"' : ''}>
-                                <i class="fas fa-cart-plus"></i> В корзину
-                            </button>
-                            <button class="btn btn-sm" onclick="alert('Подробнее о товаре: ${p.name}')">
-                                <i class="fas fa-info-circle"></i> Подробнее
-                            </button>
-                        </div>
                     `;
+                    info.appendChild(priceBlock);
+
+                    const actions = document.createElement('div');
+                    actions.className = 'actions';
+                    actions.innerHTML = `
+                        <button class="btn btn-sm btn-add-cart" onclick="window.addToCart(${p.id})" ${!p.inStock ? 'disabled style="opacity:0.5;"' : ''}>
+                            <i class="fas fa-cart-plus"></i> В корзину
+                        </button>
+                        <button class="btn btn-sm" onclick="alert('Подробнее о товаре: ${p.name}')">
+                            <i class="fas fa-info-circle"></i> Подробнее
+                        </button>
+                    `;
+                    info.appendChild(actions);
+
                     card.appendChild(imgContainer);
                     card.appendChild(info);
                     grid.appendChild(card);
