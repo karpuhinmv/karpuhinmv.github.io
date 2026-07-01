@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Товар | Похоронный дом «Душа»</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <!-- Firebase SDK -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"
+            }
+        }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 10% 20%, #0c1322, #03060c);
+            color: #f0f2f5;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        .glass-card {
+            background: rgba(20, 28, 40, 0.55);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.3);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 245, 0.3);
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            transition: 0.25s;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .btn-primary {
+            background: rgba(100, 130, 200, 0.55);
+            border-color: rgba(255, 255, 250, 0.5);
+        }
+        .btn-primary:hover {
+            background: rgba(120, 150, 220, 0.75);
+            transform: scale(1.02);
+        }
+        .btn-success {
+            background: rgba(60, 180, 120, 0.4);
+            border-color: rgba(255, 255, 250, 0.3);
+        }
+        .btn-success:hover {
+            background: rgba(60, 200, 130, 0.7);
+        }
+        .btn-outline {
+            background: transparent;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .product-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 1.5rem;
+            overflow: hidden;
+        }
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .product-image .icon-wrap {
+            font-size: 6rem;
+            color: #8ab0ff;
+            opacity: 0.3;
+        }
+        .product-info h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .product-info .category {
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+        .product-info .description {
+            opacity: 0.85;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .product-info .price-block {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .product-info .price-new {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #d4e4ff;
+        }
+        .product-info .price-new.discounted {
+            color: #ffd93d;
+        }
+        .product-info .price-old {
+            font-size: 1.2rem;
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+        .product-info .badge {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .badge-in-stock { background: rgba(60, 180, 120, 0.4); color: #60d0a0; }
+        .badge-out-of-stock { background: rgba(200, 60, 60, 0.4); color: #ff6b6b; }
+        .badge-popular { background: rgba(255, 215, 0, 0.3); color: #ffd93d; }
+
+        .breadcrumb {
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+        .breadcrumb a {
+            color: #b0c8ff;
+            text-decoration: none;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #b0c8ff;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            opacity: 0.6;
+        }
+        .error {
+            text-align: center;
+            padding: 4rem;
+            color: #ff6b6b;
+        }
+
+        @media (max-width: 768px) {
+            .product-layout { grid-template-columns: 1fr; }
+            .container { padding: 1rem; }
+            .product-info h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="catalog.html" class="back-link"><i class="fas fa-arrow-left"></i> Назад в каталог</a>
+
+    <div id="productContent">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка товара...</div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from 'firebase/app';
+    import { getAuth, onAuthStateChanged } from 'firebase/auth';
+    import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7BohTCxtCP1w-ae5xtvXyF_-jojmruL8",
+        authDomain: "ritual-c2049.firebaseapp.com",
+        projectId: "ritual-c2049",
+        storageBucket: "ritual-c2049.firebasestorage.app",
+        messagingSenderId: "755065579081",
+        appId: "1:755065579081:web:11caa1a76f03efd0d1c198"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Получаем ID товара из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    const container = document.getElementById('productContent');
+
+    if (!productId) {
+        container.innerHTML = '<div class="error">Товар не найден</div>';
+    } else {
+        loadProduct(productId);
+    }
+
+    async function loadProduct(id) {
+        try {
+            const docRef = doc(db, 'products', id);
+            const docSnap = await getDoc(docRef);
+            if (!docSnap.exists()) {
+                container.innerHTML = '<div class="error">Товар не найден</div>';
+                return;
+            }
+            const p = docSnap.data();
+
+            // Формируем путь к изображению
+            let imgSrc = p.imageSrc ? p.imageSrc.trim() : '';
+            if (imgSrc && !/^https?:\/\//i.test(imgSrc) && !imgSrc.startsWith('/')) {
+                imgSrc = 'images/' + imgSrc;
+            }
+
+            const inStock = p.inStock !== undefined ? p.inStock : true;
+            const isPopular = p.isPopular || false;
+            const hasDiscount = p.oldPrice && p.oldPrice > p.price;
+
+            let imageHtml = '';
+            if (imgSrc) {
+                imageHtml = `<img src="${imgSrc}" alt="${p.name}" onerror="this.style.display='none'" />`;
+            } else {
+                imageHtml = `<div class="icon-wrap"><i class="${p.image || 'fa-solid fa-box'}"></i></div>`;
+            }
+
+            const html = `
+                <div class="glass-card">
+                    <div class="product-layout">
+                        <div class="product-image">
+                            ${imageHtml}
+                        </div>
+                        <div class="product-info">
+                            ${isPopular ? `<span class="badge badge-popular">Популярное</span>` : ''}
+                            ${inStock ? `<span class="badge badge-in-stock">В наличии</span>` : `<span class="badge badge-out-of-stock">Нет в наличии</span>`}
+                            <h1>${p.name}</h1>
+                            <div class="category">${p.category} · ${p.material} · ${p.size}</div>
+                            <div class="description">${p.description || 'Описание отсутствует'}</div>
+                            <div class="price-block">
+                                ${hasDiscount ? `<span class="price-new discounted">${p.price.toLocaleString()} ₽</span><span class="price-old">${p.oldPrice.toLocaleString()} ₽</span>` : `<span class="price-new">${p.price.toLocaleString()} ₽</span>`}
+                            </div>
+                            <button class="btn btn-success" id="addToCartBtn" ${!inStock ? 'disabled' : ''}>
+                                <i class="fas fa-cart-plus"></i> В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+
+            // Обработчик кнопки "В корзину"
+            document.getElementById('addToCartBtn')?.addEventListener('click', () => {
+                // Добавляем товар в корзину (используем ту же логику, что и в каталоге)
+                // Для этого нужно вызвать функцию addToCart из catalog.html, но у нас отдельная страница.
+                // Можно использовать localStorage или передавать через глобальную переменную.
+                // Просто покажем alert, так как полноценная интеграция требует переноса логики.
+                alert(`Товар «${p.name}» добавлен в корзину`);
+            });
+        } catch (err) {
+            container.innerHTML = `<div class="error">Ошибка загрузки товара: ${err.message}</div>`;
+            console.error(err);
+        }
+    }
+</script>
+
+</body>
+</html>

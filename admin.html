@@ -25,6 +25,24 @@
             padding: 1.5rem;
             margin-bottom: 1.5rem;
         }
+        .tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .tab-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 40px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #b0c8ff;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        .tab-btn.active { background: rgba(100,130,200,0.4); border-color: #8ab0ff; color: white; }
+        .tab-btn:hover { background: rgba(255,255,255,0.1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
         .order-item {
             display: flex;
             flex-wrap: wrap;
@@ -48,8 +66,41 @@
         .status-processing { background: rgba(100,130,200,0.3); color: #8ab0ff; }
         .status-completed { background: rgba(60,200,130,0.3); color: #60d0a0; }
         .status-cancelled { background: rgba(200,60,60,0.3); color: #ff6b6b; }
-        select { padding: 0.4rem 1rem; border-radius: 30px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2); color: white; font-family: inherit; font-size: 0.9rem; outline: none; }
-        select option { background: #1a253a; }
+
+        /* Таблица товаров */
+        .product-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .product-item .p-info { flex: 1; min-width: 150px; }
+        .product-item .p-price { font-weight: 600; margin: 0 1rem; }
+        .product-item .p-actions { display: flex; gap: 0.4rem; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .form-grid .full-width { grid-column: 1 / -1; }
+        .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+        .form-group label { font-size: 0.9rem; opacity: 0.8; }
+        .form-group input, .form-group select {
+            padding: 0.5rem 0.8rem;
+            border-radius: 40px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: #8ab0ff; background: rgba(255,255,255,0.12); }
+        .form-group select option { background: #1a253a; }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -71,15 +122,56 @@
         .btn-success:hover { background: rgba(60,200,130,0.7); }
         .btn-danger { background: rgba(200,60,60,0.4); border-color: rgba(255,255,250,0.3); }
         .btn-danger:hover { background: rgba(200,60,60,0.7); }
-        .actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .btn-sm { padding: 0.2rem 0.8rem; font-size: 0.8rem; }
+
         .auth-box { max-width: 400px; margin: 2rem auto; padding: 2rem; text-align: center; }
         .auth-box input { width: 100%; padding: 0.7rem 1rem; margin-bottom: 0.8rem; border-radius: 40px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1rem; outline: none; }
         .auth-box input:focus { border-color: #8ab0ff; background: rgba(255,255,255,0.14); }
         .auth-error { color: #ff6b6b; font-size: 0.9rem; margin-bottom: 0.5rem; }
         .loading { text-align: center; padding: 2rem; opacity: 0.6; }
+
+        /* Модальное окно для редактирования */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            background: rgba(12,20,35,0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2.5rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            position: relative;
+        }
+        .modal-box .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #aaa;
+            background: none;
+            border: none;
+            transition: 0.2s;
+        }
+        .modal-box .close-btn:hover { color: #fff; transform: rotate(90deg); }
+
         @media (max-width: 768px) {
-            .order-item { flex-direction: column; align-items: stretch; }
+            .order-item, .product-item { flex-direction: column; align-items: stretch; }
             .actions { margin-top: 0.5rem; justify-content: flex-start; }
+            .form-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -97,15 +189,197 @@
         <button class="btn btn-primary" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
     </div>
 
-    <!-- Блок с заказами (показывается после входа) -->
-    <div id="ordersBlock" style="display:none;">
+    <!-- Блок администрирования -->
+    <div id="adminBlock" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
-            <span id="ordersCount"></span>
+            <span id="adminName"></span>
             <button class="btn btn-danger" id="logoutAdminBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
         </div>
-        <div id="ordersList" class="glass-card">
-            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка заказов...</div>
+
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="orders"><i class="fas fa-list"></i> Заказы</button>
+            <button class="tab-btn" data-tab="products"><i class="fas fa-boxes"></i> Товары</button>
         </div>
+
+        <!-- Заказы -->
+        <div id="tab-orders" class="tab-content active">
+            <div id="ordersList" class="glass-card">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка заказов...</div>
+            </div>
+        </div>
+
+        <!-- Товары -->
+        <div id="tab-products" class="tab-content">
+            <!-- Форма добавления -->
+            <div class="glass-card">
+                <h3><i class="fas fa-plus-circle"></i> Добавить товар</h3>
+                <form id="addProductForm" class="form-grid">
+                    <div class="form-group">
+                        <label for="pName">Название *</label>
+                        <input type="text" id="pName" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="pPrice">Цена (₽) *</label>
+                        <input type="number" id="pPrice" required min="0" step="100" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pOldPrice">Старая цена (₽)</label>
+                        <input type="number" id="pOldPrice" min="0" step="100" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pCategory">Категория *</label>
+                        <select id="pCategory" required>
+                            <option value="гробы">Гробы</option>
+                            <option value="памятники">Памятники</option>
+                            <option value="венки и цветы">Венки и цветы</option>
+                            <option value="кресты и таблички">Кресты и таблички</option>
+                            <option value="ритуальные принадлежности">Ритуальные принадлежности</option>
+                            <option value="одежда для усопших">Одежда для усопших</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pMaterial">Материал *</label>
+                        <select id="pMaterial" required>
+                            <option value="дерево">Дерево</option>
+                            <option value="металл">Металл</option>
+                            <option value="гранит">Гранит</option>
+                            <option value="мрамор">Мрамор</option>
+                            <option value="искусственные">Искусственные</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pSize">Размер *</label>
+                        <select id="pSize" required>
+                            <option value="маленький">Маленький</option>
+                            <option value="средний">Средний</option>
+                            <option value="большой">Большой</option>
+                            <option value="стандартный">Стандартный</option>
+                            <option value="детский">Детский</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pImage">Иконка (FontAwesome класс)</label>
+                        <input type="text" id="pImage" placeholder="fa-solid fa-box" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pImageSrc">Изображение (имя файла)</label>
+                        <input type="text" id="pImageSrc" placeholder="grob_sosna.jpg" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pDescription">Описание</label>
+                        <input type="text" id="pDescription" placeholder="Краткое описание" />
+                    </div>
+                    <div class="form-group">
+                        <label for="pInStock">В наличии</label>
+                        <select id="pInStock">
+                            <option value="true">Да</option>
+                            <option value="false">Нет</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pIsPopular">Популярное</label>
+                        <select id="pIsPopular">
+                            <option value="true">Да</option>
+                            <option value="false">Нет</option>
+                        </select>
+                    </div>
+                    <div class="full-width" style="display:flex; gap:1rem;">
+                        <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Добавить</button>
+                        <button type="reset" class="btn">Очистить</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Список товаров -->
+            <div id="productsList" class="glass-card">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка товаров...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно редактирования товара -->
+<div class="modal-overlay" id="editProductModal">
+    <div class="modal-box">
+        <button class="close-btn" id="editModalClose">&times;</button>
+        <h2>Редактировать товар</h2>
+        <form id="editProductForm" class="form-grid">
+            <input type="hidden" id="editProductId" />
+            <div class="form-group">
+                <label for="editName">Название *</label>
+                <input type="text" id="editName" required />
+            </div>
+            <div class="form-group">
+                <label for="editPrice">Цена (₽) *</label>
+                <input type="number" id="editPrice" required min="0" step="100" />
+            </div>
+            <div class="form-group">
+                <label for="editOldPrice">Старая цена (₽)</label>
+                <input type="number" id="editOldPrice" min="0" step="100" />
+            </div>
+            <div class="form-group">
+                <label for="editCategory">Категория *</label>
+                <select id="editCategory" required>
+                    <option value="гробы">Гробы</option>
+                    <option value="памятники">Памятники</option>
+                    <option value="венки и цветы">Венки и цветы</option>
+                    <option value="кресты и таблички">Кресты и таблички</option>
+                    <option value="ритуальные принадлежности">Ритуальные принадлежности</option>
+                    <option value="одежда для усопших">Одежда для усопших</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editMaterial">Материал *</label>
+                <select id="editMaterial" required>
+                    <option value="дерево">Дерево</option>
+                    <option value="металл">Металл</option>
+                    <option value="гранит">Гранит</option>
+                    <option value="мрамор">Мрамор</option>
+                    <option value="искусственные">Искусственные</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editSize">Размер *</label>
+                <select id="editSize" required>
+                    <option value="маленький">Маленький</option>
+                    <option value="средний">Средний</option>
+                    <option value="большой">Большой</option>
+                    <option value="стандартный">Стандартный</option>
+                    <option value="детский">Детский</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editImage">Иконка</label>
+                <input type="text" id="editImage" placeholder="fa-solid fa-box" />
+            </div>
+            <div class="form-group">
+                <label for="editImageSrc">Изображение</label>
+                <input type="text" id="editImageSrc" placeholder="grob_sosna.jpg" />
+            </div>
+            <div class="form-group">
+                <label for="editDescription">Описание</label>
+                <input type="text" id="editDescription" placeholder="Краткое описание" />
+            </div>
+            <div class="form-group">
+                <label for="editInStock">В наличии</label>
+                <select id="editInStock">
+                    <option value="true">Да</option>
+                    <option value="false">Нет</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editIsPopular">Популярное</label>
+                <select id="editIsPopular">
+                    <option value="true">Да</option>
+                    <option value="false">Нет</option>
+                </select>
+            </div>
+            <div class="full-width" style="display:flex; gap:1rem;">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Сохранить</button>
+                <button type="button" class="btn" id="editModalCancel">Отмена</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -123,7 +397,7 @@
 <script type="module">
     import { initializeApp } from 'firebase/app';
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
-    import { getFirestore, collection, query, getDocs, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+    import { getFirestore, collection, query, getDocs, doc, updateDoc, onSnapshot, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 
     const firebaseConfig = {
         apiKey: "AIzaSyC7BohTCxtCP1w-ae5xtvXyF_-jojmruL8",
@@ -138,43 +412,84 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // ЗАМЕНИТЕ НА ВАШ EMAIL АДМИНИСТРАТОРА
-    const ADMIN_EMAIL = 'karpuhinmaxim@gmail.com';
+    const ADMIN_EMAIL = 'karpuhinmaxim@gmail.com'; // ЗАМЕНИТЕ НА ВАШ EMAIL
 
+    // DOM элементы
     const authBlock = document.getElementById('authBlock');
-    const ordersBlock = document.getElementById('ordersBlock');
-    const ordersList = document.getElementById('ordersList');
-    const ordersCount = document.getElementById('ordersCount');
+    const adminBlock = document.getElementById('adminBlock');
+    const adminName = document.getElementById('adminName');
     const authError = document.getElementById('authError');
     const adminEmail = document.getElementById('adminEmail');
     const adminPassword = document.getElementById('adminPassword');
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const logoutAdminBtn = document.getElementById('logoutAdminBtn');
 
+    // Вкладки
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = {
+        orders: document.getElementById('tab-orders'),
+        products: document.getElementById('tab-products')
+    };
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            Object.keys(tabContents).forEach(key => {
+                tabContents[key].classList.toggle('active', key === btn.dataset.tab);
+            });
+        });
+    });
+
+    // Ссылки на элементы заказов
+    const ordersList = document.getElementById('ordersList');
+
+    // Элементы товаров
+    const productsList = document.getElementById('productsList');
+    const addProductForm = document.getElementById('addProductForm');
+
+    // Элементы редактирования
+    const editModal = document.getElementById('editProductModal');
+    const editModalClose = document.getElementById('editModalClose');
+    const editModalCancel = document.getElementById('editModalCancel');
+    const editProductForm = document.getElementById('editProductForm');
+    const editProductId = document.getElementById('editProductId');
+    const editName = document.getElementById('editName');
+    const editPrice = document.getElementById('editPrice');
+    const editOldPrice = document.getElementById('editOldPrice');
+    const editCategory = document.getElementById('editCategory');
+    const editMaterial = document.getElementById('editMaterial');
+    const editSize = document.getElementById('editSize');
+    const editImage = document.getElementById('editImage');
+    const editImageSrc = document.getElementById('editImageSrc');
+    const editDescription = document.getElementById('editDescription');
+    const editInStock = document.getElementById('editInStock');
+    const editIsPopular = document.getElementById('editIsPopular');
+
     let currentAdmin = null;
     let unsubscribeOrders = null;
+    let unsubscribeProducts = null;
 
-    // Обработчик изменения статуса авторизации
+    // ---------- АВТОРИЗАЦИЯ ----------
     onAuthStateChanged(auth, (user) => {
         if (user && user.email === ADMIN_EMAIL) {
             currentAdmin = user;
             authBlock.style.display = 'none';
-            ordersBlock.style.display = 'block';
+            adminBlock.style.display = 'block';
+            adminName.textContent = `Администратор: ${user.email}`;
             loadOrders();
+            loadProducts();
         } else {
             currentAdmin = null;
             authBlock.style.display = 'block';
-            ordersBlock.style.display = 'none';
-            if (unsubscribeOrders) {
-                unsubscribeOrders();
-                unsubscribeOrders = null;
-            }
+            adminBlock.style.display = 'none';
+            if (unsubscribeOrders) { unsubscribeOrders(); unsubscribeOrders = null; }
+            if (unsubscribeProducts) { unsubscribeProducts(); unsubscribeProducts = null; }
             ordersList.innerHTML = '<div class="loading">Войдите как администратор</div>';
-            ordersCount.textContent = '';
+            productsList.innerHTML = '<div class="loading">Войдите как администратор</div>';
         }
     });
 
-    // Вход
     adminLoginBtn.addEventListener('click', async () => {
         const email = adminEmail.value.trim();
         const password = adminPassword.value.trim();
@@ -190,55 +505,31 @@
         }
     });
 
-    // Выход
     logoutAdminBtn.addEventListener('click', async () => {
         await signOut(auth);
     });
 
-    // Загрузка заказов в реальном времени (без orderBy)
+    // ---------- ЗАКАЗЫ ----------
     function loadOrders() {
-        if (unsubscribeOrders) {
-            unsubscribeOrders();
-            unsubscribeOrders = null;
-        }
-        const q = query(collection(db, 'orders')); // без сортировки, чтобы не нужен индекс
+        if (unsubscribeOrders) unsubscribeOrders();
+        const q = query(collection(db, 'orders'));
         unsubscribeOrders = onSnapshot(q, (snapshot) => {
             if (snapshot.empty) {
                 ordersList.innerHTML = '<p style="opacity:0.6; text-align:center;">Заказов пока нет.</p>';
-                ordersCount.textContent = '';
                 return;
             }
-            // Собираем все заказы в массив
             let orders = [];
-            snapshot.forEach(doc => {
-                orders.push({ id: doc.id, ...doc.data() });
-            });
-            // Сортируем по дате (убывание)
-            orders.sort((a, b) => {
-                const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
-                const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
-                return dateB - dateA;
-            });
+            snapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+            orders.sort((a, b) => (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0));
 
-            // Рендерим
             let html = '';
             orders.forEach(order => {
                 const data = order;
                 const id = order.id;
                 const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ru-RU') : 'неизвестно';
                 const time = data.createdAt ? data.createdAt.toDate().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}) : '';
-                const statusMap = {
-                    'new': 'Новый',
-                    'processing': 'В обработке',
-                    'completed': 'Завершён',
-                    'cancelled': 'Отменён'
-                };
-                const statusClass = {
-                    'new': 'status-new',
-                    'processing': 'status-processing',
-                    'completed': 'status-completed',
-                    'cancelled': 'status-cancelled'
-                };
+                const statusMap = { 'new': 'Новый', 'processing': 'В обработке', 'completed': 'Завершён', 'cancelled': 'Отменён' };
+                const statusClass = { 'new': 'status-new', 'processing': 'status-processing', 'completed': 'status-completed', 'cancelled': 'status-cancelled' };
                 const phone = data.phone || 'не указан';
                 const name = data.userName || 'Клиент';
                 html += `
@@ -265,18 +556,13 @@
                 `;
             });
             ordersList.innerHTML = html;
-            ordersCount.textContent = `Всего заказов: ${snapshot.size}`;
-
-            // Обработчики для кнопок обновления статуса
             document.querySelectorAll('.update-status-btn').forEach(btn => {
                 btn.addEventListener('click', async () => {
                     const orderId = btn.dataset.id;
                     const select = document.querySelector(`.status-select[data-id="${orderId}"]`);
                     const newStatus = select.value;
                     try {
-                        await updateDoc(doc(db, 'orders', orderId), {
-                            status: newStatus
-                        });
+                        await updateDoc(doc(db, 'orders', orderId), { status: newStatus });
                         btn.innerHTML = '<i class="fas fa-check"></i> Обновлено';
                         btn.style.opacity = '0.6';
                         setTimeout(() => {
@@ -289,10 +575,167 @@
                 });
             });
         }, (error) => {
-            console.error('Ошибка загрузки заказов:', error);
             ordersList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки заказов: ${error.message}</p>`;
         });
     }
+
+    // ---------- ТОВАРЫ ----------
+    async function loadProducts() {
+        if (unsubscribeProducts) unsubscribeProducts();
+        const q = query(collection(db, 'products'));
+        unsubscribeProducts = onSnapshot(q, (snapshot) => {
+            if (snapshot.empty) {
+                productsList.innerHTML = '<p style="opacity:0.6; text-align:center;">Товаров пока нет.</p>';
+                return;
+            }
+            let html = '';
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                const id = doc.id;
+                html += `
+                    <div class="product-item" data-id="${id}">
+                        <div class="p-info">
+                            <strong>${p.name}</strong>
+                            <span style="opacity:0.7; margin-left:0.5rem;">${p.category}</span>
+                        </div>
+                        <div class="p-price">${p.price.toLocaleString()} ₽</div>
+                        <div class="p-actions">
+                            <button class="btn btn-sm btn-primary edit-product-btn" data-id="${id}"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger delete-product-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            productsList.innerHTML = html;
+
+            // Обработчики редактирования
+            document.querySelectorAll('.edit-product-btn').forEach(btn => {
+                btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+            });
+
+            // Обработчики удаления
+            document.querySelectorAll('.delete-product-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if (confirm('Удалить товар?')) {
+                        try {
+                            await deleteDoc(doc(db, 'products', btn.dataset.id));
+                        } catch (err) {
+                            alert('Ошибка удаления: ' + err.message);
+                        }
+                    }
+                });
+            });
+        }, (error) => {
+            productsList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки товаров: ${error.message}</p>`;
+        });
+    }
+
+    // ---------- ДОБАВЛЕНИЕ ТОВАРА ----------
+    addProductForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('pName').value.trim();
+        const price = parseFloat(document.getElementById('pPrice').value);
+        const oldPrice = parseFloat(document.getElementById('pOldPrice').value) || null;
+        const category = document.getElementById('pCategory').value;
+        const material = document.getElementById('pMaterial').value;
+        const size = document.getElementById('pSize').value;
+        const image = document.getElementById('pImage').value.trim() || 'fa-solid fa-box';
+        const imageSrc = document.getElementById('pImageSrc').value.trim() || '';
+        const description = document.getElementById('pDescription').value.trim() || '';
+        const inStock = document.getElementById('pInStock').value === 'true';
+        const isPopular = document.getElementById('pIsPopular').value === 'true';
+        const rating = 0; // можно добавить поле, но пока 0
+
+        if (!name || !price) {
+            alert('Название и цена обязательны');
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, 'products'), {
+                name,
+                price,
+                oldPrice,
+                category,
+                material,
+                size,
+                image,
+                imageSrc,
+                description,
+                inStock,
+                isPopular,
+                rating,
+                createdAt: serverTimestamp()
+            });
+            addProductForm.reset();
+            alert('Товар добавлен!');
+        } catch (err) {
+            alert('Ошибка добавления: ' + err.message);
+        }
+    });
+
+    // ---------- РЕДАКТИРОВАНИЕ ТОВАРА ----------
+    async function openEditModal(productId) {
+        const docRef = doc(db, 'products', productId);
+        const docSnap = await getDoc(docRef);
+        if (!docSnap.exists()) {
+            alert('Товар не найден');
+            return;
+        }
+        const p = docSnap.data();
+        editProductId.value = productId;
+        editName.value = p.name || '';
+        editPrice.value = p.price || '';
+        editOldPrice.value = p.oldPrice || '';
+        editCategory.value = p.category || 'гробы';
+        editMaterial.value = p.material || 'дерево';
+        editSize.value = p.size || 'стандартный';
+        editImage.value = p.image || 'fa-solid fa-box';
+        editImageSrc.value = p.imageSrc || '';
+        editDescription.value = p.description || '';
+        editInStock.value = p.inStock ? 'true' : 'false';
+        editIsPopular.value = p.isPopular ? 'true' : 'false';
+        editModal.classList.add('active');
+    }
+
+    function closeEditModal() {
+        editModal.classList.remove('active');
+    }
+
+    editModalClose.addEventListener('click', closeEditModal);
+    editModalCancel.addEventListener('click', closeEditModal);
+    editModal.addEventListener('click', (e) => { if (e.target === editModal) closeEditModal(); });
+
+    editProductForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = editProductId.value;
+        const name = editName.value.trim();
+        const price = parseFloat(editPrice.value);
+        const oldPrice = parseFloat(editOldPrice.value) || null;
+        const category = editCategory.value;
+        const material = editMaterial.value;
+        const size = editSize.value;
+        const image = editImage.value.trim() || 'fa-solid fa-box';
+        const imageSrc = editImageSrc.value.trim() || '';
+        const description = editDescription.value.trim() || '';
+        const inStock = editInStock.value === 'true';
+        const isPopular = editIsPopular.value === 'true';
+
+        if (!name || !price) {
+            alert('Название и цена обязательны');
+            return;
+        }
+
+        try {
+            await updateDoc(doc(db, 'products', id), {
+                name, price, oldPrice, category, material, size, image, imageSrc, description, inStock, isPopular
+            });
+            closeEditModal();
+            alert('Товар обновлён!');
+        } catch (err) {
+            alert('Ошибка обновления: ' + err.message);
+        }
+    });
 
     // Если пользователь уже авторизован, но не администратор, выходим
     if (auth.currentUser && auth.currentUser.email !== ADMIN_EMAIL) {
