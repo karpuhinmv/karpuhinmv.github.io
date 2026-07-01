@@ -477,6 +477,46 @@
             text-decoration: line-through;
             color: rgba(255,255,255,0.4);
         }
+
+        /* Контрол количества в карточке */
+        .product-card .info .qty-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: auto;
+            padding: 0.3rem 0.8rem;
+            border-radius: 40px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            width: 100%;
+        }
+        .product-card .info .qty-control button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.1rem 0.4rem;
+            transition: 0.2s;
+            font-weight: 700;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-card .info .qty-control button:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        .product-card .info .qty-control span {
+            min-width: 24px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
         .product-card .info .btn-add-cart {
             margin-top: auto;
             padding: 0.5rem 0.8rem;
@@ -634,6 +674,42 @@
             display: inline-block;
         }
         .product-detail .detail-meta strong { opacity: 0.6; margin-right: 0.3rem; }
+        .product-detail .qty-control-detail {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            width: fit-content;
+            margin: 0.5rem auto;
+        }
+        .product-detail .qty-control-detail button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0.1rem 0.6rem;
+            transition: 0.2s;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-detail .qty-control-detail button:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        .product-detail .qty-control-detail span {
+            min-width: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
         .product-detail .btn-add-cart-detail {
             width: 100%;
             padding: 0.7rem;
@@ -1156,7 +1232,7 @@
         // ---------- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ----------
         let currentUser = null;
         let cart = {};
-        let products = []; // массив товаров из Firestore
+        let products = [];
 
         // ---------- ИНИЦИАЛИЗАЦИЯ ТОВАРОВ ИЗ FIRESTORE ----------
         const productsRef = collection(db, 'products');
@@ -1169,7 +1245,6 @@
                 snapshot.forEach(doc => {
                     products.push({ id: doc.id, ...doc.data() });
                 });
-                // Обновляем каталог
                 if (typeof filterProducts === 'function') {
                     filterProducts();
                 }
@@ -1206,7 +1281,6 @@
             const title = document.getElementById('detailTitle');
             title.textContent = product.name || 'Детали товара';
 
-            // Формируем путь к изображению
             let imgSrc = product.imageSrc ? product.imageSrc.trim() : '';
             if (imgSrc && !/^https?:\/\//i.test(imgSrc) && !imgSrc.startsWith('/') && !imgSrc.includes('/')) {
                 imgSrc = 'images/' + imgSrc;
@@ -1219,6 +1293,30 @@
             const inStock = product.inStock !== false;
             const stockText = inStock ? 'В наличии' : 'Нет в наличии';
             const stockColor = inStock ? '#60d0a0' : '#ff6b6b';
+
+            // Проверяем, есть ли товар в корзине
+            const cartItem = cart[product.id];
+            const inCart = cartItem !== undefined;
+
+            let actionHtml;
+            if (!inStock) {
+                actionHtml = `<button class="btn-add-cart-detail" disabled>Нет в наличии</button>`;
+            } else if (inCart) {
+                const qty = cartItem.quantity;
+                actionHtml = `
+                    <div class="qty-control-detail">
+                        <button onclick="window.updateQuantity('${product.id}', -1)">−</button>
+                        <span>${qty}</span>
+                        <button onclick="window.updateQuantity('${product.id}', 1)">+</button>
+                    </div>
+                `;
+            } else {
+                actionHtml = `
+                    <button class="btn-add-cart-detail" onclick="window.addToCart('${product.id}')">
+                        <i class="fas fa-cart-plus"></i> В корзину
+                    </button>
+                `;
+            }
 
             container.innerHTML = `
                 <div class="detail-image">
@@ -1237,9 +1335,7 @@
                     <span><strong>Статус:</strong> <span style="color:${stockColor};">${stockText}</span></span>
                     ${product.isPopular ? `<span><strong>⭐ Популярное</strong></span>` : ''}
                 </div>
-                <button class="btn-add-cart-detail" onclick="window.addToCart('${product.id}')" ${!inStock ? 'disabled' : ''}>
-                    <i class="fas fa-cart-plus"></i> В корзину
-                </button>
+                ${actionHtml}
             `;
         }
 
@@ -1361,6 +1457,19 @@
         function updateCartUI() {
             const count = getCartTotalItems();
             document.getElementById('cartCount').textContent = count;
+            // Перерисовываем каталог, чтобы обновить кнопки
+            if (typeof render === 'function') {
+                render(); // перерисуем с новым состоянием корзины
+            }
+            // Если открыта модалка деталей, обновим её
+            const detailModal = document.getElementById('productDetailModal');
+            if (detailModal.classList.contains('active')) {
+                const productId = detailModal.dataset.productId;
+                if (productId) {
+                    const product = products.find(p => p.id === productId);
+                    if (product) renderProductDetail(product);
+                }
+            }
         }
 
         function renderCartModal() {
@@ -1754,7 +1863,6 @@
             suggestionsGrid.classList.toggle('visible', show);
         }
 
-        // Предложения (чипсы)
         function renderSuggestions(searchTerm) {
             const term = searchTerm.trim().toLowerCase();
             if (!term) {
@@ -1961,18 +2069,35 @@
                         `;
                     }
 
-                    const btn = document.createElement('button');
-                    btn.className = 'btn-add-cart';
-                    btn.innerHTML = '<i class="fas fa-cart-plus"></i> В корзину';
-                    btn.disabled = !p.inStock;
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        window.addToCart(p.id);
-                    });
+                    // Проверяем, есть ли товар в корзине
+                    const inCart = cart[p.id] !== undefined;
+                    let actionHtml;
+                    if (!p.inStock) {
+                        actionHtml = `<button class="btn-add-cart" disabled>Нет в наличии</button>`;
+                    } else if (inCart) {
+                        const qty = cart[p.id].quantity;
+                        actionHtml = `
+                            <div class="qty-control">
+                                <button onclick="window.updateQuantity('${p.id}', -1)">−</button>
+                                <span>${qty}</span>
+                                <button onclick="window.updateQuantity('${p.id}', 1)">+</button>
+                            </div>
+                        `;
+                    } else {
+                        actionHtml = `
+                            <button class="btn-add-cart" onclick="window.addToCart('${p.id}')">
+                                <i class="fas fa-cart-plus"></i> В корзину
+                            </button>
+                        `;
+                    }
 
                     info.appendChild(nameEl);
                     info.appendChild(priceBlock);
-                    info.appendChild(btn);
+                    // Добавляем actionHtml как HTML
+                    const actionWrapper = document.createElement('div');
+                    actionWrapper.innerHTML = actionHtml;
+                    const actionElement = actionWrapper.firstElementChild;
+                    info.appendChild(actionElement);
 
                     card.appendChild(imgContainer);
                     card.appendChild(info);
@@ -2038,7 +2163,7 @@
         resetBtn.addEventListener('click', resetFilters);
 
         // ---- Запуск ----
-        listenProducts(); // подписка на товары из Firestore
+        listenProducts();
 
         // ---- Тосты ----
         const toastContainer = document.getElementById('toastContainer');
