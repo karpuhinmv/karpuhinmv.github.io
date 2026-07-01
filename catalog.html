@@ -162,6 +162,17 @@
             padding: 0.4rem 1rem;
             font-size: 0.8rem;
         }
+        .nav-links .user-area .profile-icon {
+            display: none;
+            cursor: pointer;
+            font-size: 1.8rem;
+            color: #eef3ff;
+            transition: 0.2s;
+        }
+        .nav-links .user-area .profile-icon:hover {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
         .cart-icon {
             position: relative;
             cursor: pointer;
@@ -342,7 +353,7 @@
         /* ---- РЕКЛАМНАЯ ПЛАШКА ---- */
         .ad-banner {
             width: 100%;
-            padding: 1.2rem 2rem;
+            padding: 2.5rem 2rem;
             margin-bottom: 2rem;
             border-radius: 2rem;
             background: linear-gradient(135deg, rgba(30, 50, 80, 0.7), rgba(10, 20, 40, 0.8));
@@ -360,11 +371,12 @@
         .ad-banner .ad-text {
             font-weight: 300;
             letter-spacing: 0.5px;
+            font-size: 1.3rem;
         }
         .ad-banner .ad-sub {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             opacity: 0.7;
-            margin-top: 0.2rem;
+            margin-top: 0.4rem;
         }
 
         /* ---- СОРТИРОВКА ---- */
@@ -533,7 +545,7 @@
             cursor: default;
         }
 
-        /* ---- МОДАЛЬНЫЕ ОКНА (корзина + авторизация) ---- */
+        /* ---- МОДАЛЬНЫЕ ОКНА (корзина, авторизация, профиль) ---- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -584,7 +596,7 @@
             font-weight: 600;
         }
 
-        /* Корзина */
+        /* ---- Корзина ---- */
         .cart-item {
             display: flex;
             align-items: center;
@@ -668,7 +680,27 @@
             opacity: 0.6;
         }
 
-        /* Форма авторизации */
+        /* ---- Профиль ---- */
+        .profile-info p {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        .profile-info strong {
+            opacity: 0.7;
+        }
+        .order-item {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.9rem;
+        }
+        .order-item .order-date {
+            opacity: 0.6;
+        }
+        .order-item .order-total {
+            float: right;
+        }
+
+        /* ---- Форма авторизации ---- */
         .auth-form input {
             width: 100%;
             padding: 0.7rem 1rem;
@@ -765,11 +797,21 @@
             .suggestions-grid {
                 justify-content: center;
             }
+            .ad-banner {
+                padding: 2rem 1.5rem;
+                font-size: 1rem;
+            }
+            .ad-banner .ad-text {
+                font-size: 1.1rem;
+            }
         }
         @media (max-width: 768px) {
             .products-grid { grid-template-columns: repeat(2, 1fr); }
             .ad-banner {
-                padding: 1rem;
+                padding: 1.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            .ad-banner .ad-text {
                 font-size: 1rem;
             }
         }
@@ -779,6 +821,13 @@
             .nav-links { justify-content: center; gap: 1rem; }
             .logo-text { font-size: 1.5rem; }
             .container { padding: 0 16px; }
+            .ad-banner {
+                padding: 1.5rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            .ad-banner .ad-text {
+                font-size: 0.95rem;
+            }
         }
 
         /* ---- ОБЩИЕ КНОПКИ ---- */
@@ -835,7 +884,7 @@
                     <li class="user-area">
                         <span id="userName" style="font-size:0.9rem; opacity:0.8;"></span>
                         <button class="btn btn-sm" id="authBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
-                        <button class="btn btn-sm" id="logoutBtn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+                        <span id="profileIcon" class="profile-icon"><i class="fas fa-user-circle"></i></span>
                         <span class="cart-icon" id="cartIcon">
                             <i class="fas fa-shopping-cart"></i>
                             <span class="badge-count" id="cartCount">0</span>
@@ -852,7 +901,7 @@
                 <!-- ПОИСКОВАЯ ПЛАШКА -->
                 <div class="search-wrapper glass-card">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Поиск товаров..." />
+                    <input type="text" id="searchInput" placeholder="Введите запрос и нажмите Enter..." />
                 </div>
 
                 <!-- ПРЕДЛОЖЕНИЯ (чипсы) -->
@@ -979,6 +1028,25 @@
         </div>
     </div>
 
+    <!-- ========== МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ========== -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-box">
+            <button class="close-btn" id="profileModalClose">&times;</button>
+            <h2>Профиль</h2>
+            <div class="profile-info" id="profileInfo">
+                <p><strong>Имя:</strong> <span id="profileName"></span></p>
+                <p><strong>Email:</strong> <span id="profileEmail"></span></p>
+            </div>
+            <h3 style="margin-top:1.5rem;">История заказов</h3>
+            <div id="orderHistory">
+                <p style="opacity:0.6;">У вас пока нет заказов.</p>
+            </div>
+            <button class="btn btn-primary" id="logoutFromProfileBtn" style="width:100%; margin-top:1.5rem;">
+                <i class="fas fa-sign-out-alt"></i> Выйти
+            </button>
+        </div>
+    </div>
+
     <!-- ========== ИМПОРТ FIREBASE и логика ========== -->
     <script type="module">
         // ---------- Настройка Firebase ----------
@@ -1008,7 +1076,11 @@
             doc,
             getDoc,
             setDoc,
-            onSnapshot
+            onSnapshot,
+            collection,
+            query,
+            where,
+            getDocs
         } from 'firebase/firestore';
 
         const app = initializeApp(firebaseConfig);
@@ -1284,8 +1356,9 @@
         let authMode = 'login';
 
         const authBtn = document.getElementById('authBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
         const userName = document.getElementById('userName');
+        const profileIcon = document.getElementById('profileIcon');
+
         const authModal = document.getElementById('authModal');
         const authModalClose = document.getElementById('authModalClose');
         const authModalTitle = document.getElementById('authModalTitle');
@@ -1296,6 +1369,14 @@
         const authPassword = document.getElementById('authPassword');
         const authName = document.getElementById('authName');
         const googleAuthBtn = document.getElementById('googleAuthBtn');
+
+        // Профиль
+        const profileModal = document.getElementById('profileModal');
+        const profileModalClose = document.getElementById('profileModalClose');
+        const profileName = document.getElementById('profileName');
+        const profileEmail = document.getElementById('profileEmail');
+        const orderHistory = document.getElementById('orderHistory');
+        const logoutFromProfileBtn = document.getElementById('logoutFromProfileBtn');
 
         function openAuthModal() {
             authModal.classList.add('active');
@@ -1384,12 +1465,39 @@
             }
         });
 
-        logoutBtn.addEventListener('click', async () => {
+        // ============================================================
+        // 3. УПРАВЛЕНИЕ ПРОФИЛЕМ
+        // ============================================================
+
+        function openProfileModal() {
+            if (!currentUser) return;
+            // Заполняем данные пользователя
+            profileName.textContent = currentUser.displayName || currentUser.email;
+            profileEmail.textContent = currentUser.email;
+
+            // Загружаем историю заказов (пока заглушка)
+            // В будущем можно будет загрузить из коллекции 'orders'
+            orderHistory.innerHTML = `<p style="opacity:0.6;">У вас пока нет заказов.</p>`;
+
+            profileModal.classList.add('active');
+        }
+
+        function closeProfileModal() {
+            profileModal.classList.remove('active');
+        }
+
+        profileIcon.addEventListener('click', openProfileModal);
+        profileModalClose.addEventListener('click', closeProfileModal);
+        profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeProfileModal(); });
+
+        // Выход из профиля
+        logoutFromProfileBtn.addEventListener('click', async () => {
             await signOut(auth);
+            closeProfileModal();
         });
 
         // ============================================================
-        // 3. СОСТОЯНИЕ АВТОРИЗАЦИИ
+        // 4. СОСТОЯНИЕ АВТОРИЗАЦИИ И ПОДПИСКА НА КОРЗИНУ
         // ============================================================
 
         onAuthStateChanged(auth, async (user) => {
@@ -1403,7 +1511,7 @@
                 const displayName = user.displayName || user.email;
                 userName.textContent = displayName;
                 authBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline-flex';
+                profileIcon.style.display = 'inline-block';
 
                 await loadCartFromFirestore(user.uid);
                 const ref = getCartRef(user.uid);
@@ -1420,15 +1528,16 @@
                 currentUser = null;
                 userName.textContent = '';
                 authBtn.style.display = 'inline-flex';
-                logoutBtn.style.display = 'none';
+                profileIcon.style.display = 'none';
                 cart = {};
                 updateCartUI();
                 document.getElementById('cartModal').classList.remove('active');
+                closeProfileModal();
             }
         });
 
         // ============================================================
-        // 4. ОТКРЫТИЕ КОРЗИНЫ
+        // 5. ОТКРЫТИЕ КОРЗИНЫ
         // ============================================================
 
         document.getElementById('cartIcon').addEventListener('click', () => {
@@ -1450,7 +1559,7 @@
         });
 
         // ============================================================
-        // 5. ЛОГИКА КАТАЛОГА (фильтры, поиск, предложения, пагинация, 5 колонок)
+        // 6. ЛОГИКА КАТАЛОГА (фильтры по Enter, предложения при вводе)
         // ============================================================
 
         let currentProducts = [...products];
@@ -1472,14 +1581,14 @@
         const filtersGrid = document.getElementById('filtersGrid');
         const suggestionsGrid = document.getElementById('suggestionsGrid');
 
-        // Показывать/скрывать фильтры и предложения в зависимости от наличия текста в поиске
-        function toggleFiltersAndSuggestions(searchTerm) {
-            const hasText = searchTerm.trim().length > 0;
-            filtersGrid.classList.toggle('visible', hasText);
-            suggestionsGrid.classList.toggle('visible', hasText);
-            if (!hasText) {
-                suggestionsGrid.innerHTML = ''; // очищаем предложения
-            }
+        // Показывать/скрывать фильтры
+        function toggleFilters(show) {
+            filtersGrid.classList.toggle('visible', show);
+        }
+
+        // Показывать/скрывать предложения
+        function toggleSuggestions(show) {
+            suggestionsGrid.classList.toggle('visible', show);
         }
 
         // Генерация предложений (чипсы) на основе введённого текста
@@ -1487,18 +1596,19 @@
             const term = searchTerm.trim().toLowerCase();
             if (!term) {
                 suggestionsGrid.innerHTML = '';
+                toggleSuggestions(false);
                 return;
             }
 
-            // Собираем уникальные названия товаров, содержащие подстроку (без учёта регистра)
             const matches = products
                 .filter(p => p.name.toLowerCase().includes(term))
                 .map(p => p.name)
-                .filter((value, index, self) => self.indexOf(value) === index) // уникальные
-                .slice(0, 8); // максимум 8 предложений
+                .filter((value, index, self) => self.indexOf(value) === index)
+                .slice(0, 8);
 
             if (matches.length === 0) {
-                suggestionsGrid.innerHTML = ''; // нет совпадений
+                suggestionsGrid.innerHTML = '';
+                toggleSuggestions(false);
                 return;
             }
 
@@ -1506,17 +1616,43 @@
                 `<span class="suggestion-chip" data-name="${name}">${name}</span>`
             ).join('');
 
-            // При клике на чипс подставляем название в поиск и запускаем фильтрацию
+            toggleSuggestions(true);
+
             suggestionsGrid.querySelectorAll('.suggestion-chip').forEach(chip => {
                 chip.addEventListener('click', () => {
                     searchInput.value = chip.dataset.name;
-                    // Триггерим событие input для применения фильтров
-                    searchInput.dispatchEvent(new Event('input'));
+                    performSearch();
                 });
             });
         }
 
-        // Основная функция фильтрации (вызывается при любом изменении)
+        // Функция, выполняющая поиск (показывает фильтры, обновляет товары)
+        function performSearch() {
+            const searchTerm = searchInput.value.trim();
+            const hasText = searchTerm.length > 0;
+            toggleFilters(hasText);
+            if (!hasText) {
+                suggestionsGrid.innerHTML = '';
+                toggleSuggestions(false);
+            }
+            filterProducts();
+        }
+
+        // Сброс поиска и фильтров (оставляем сортировку)
+        function clearSearchAndFilters() {
+            searchInput.value = '';
+            categoryFilter.value = 'all';
+            materialFilter.value = 'all';
+            sizeFilter.value = 'all';
+            priceFrom.value = '';
+            priceTo.value = '';
+            toggleFilters(false);
+            suggestionsGrid.innerHTML = '';
+            toggleSuggestions(false);
+            filterProducts(); // покажет все товары
+        }
+
+        // Основная функция фильтрации
         function filterProducts() {
             const searchTerm = searchInput.value.trim().toLowerCase();
             const cat = categoryFilter.value;
@@ -1571,8 +1707,9 @@
             materialFilter.value = 'all';
             sizeFilter.value = 'all';
             sortSelect.value = 'popular';
-            toggleFiltersAndSuggestions('');
+            toggleFilters(false);
             suggestionsGrid.innerHTML = '';
+            toggleSuggestions(false);
             filterProducts();
         }
 
@@ -1591,7 +1728,6 @@
                     const card = document.createElement('div');
                     card.className = 'glass-card product-card';
 
-                    // Плашки
                     if (!p.inStock) {
                         const outBadge = document.createElement('span');
                         outBadge.className = 'badge badge-out-of-stock';
@@ -1611,7 +1747,6 @@
                         card.appendChild(discBadge);
                     }
 
-                    // Изображение
                     const imgContainer = document.createElement('div');
                     imgContainer.className = 'image-container';
                     const iconWrap = document.createElement('div');
@@ -1638,7 +1773,6 @@
                         imgContainer.appendChild(iconWrap);
                     }
 
-                    // Цена
                     const priceBlock = document.createElement('div');
                     priceBlock.className = 'price-block';
                     if (p.oldPrice && p.oldPrice > p.price) {
@@ -1700,29 +1834,41 @@
             }
         }
 
-        // Обработчик ввода в поиск: обновляем фильтры, предложения и видимость
-        function onSearchInput() {
-            const searchTerm = searchInput.value;
-            toggleFiltersAndSuggestions(searchTerm);
-            renderSuggestions(searchTerm);
-            filterProducts(); // выполняем фильтрацию (обновляет товары)
-        }
+        // ---- Обработчики событий ----
 
-        // Навешиваем событие на поиск
-        searchInput.addEventListener('input', onSearchInput);
+        // При вводе текста: обновляем предложения
+        searchInput.addEventListener('input', function() {
+            const term = this.value;
+            renderSuggestions(term);
+            if (term.trim() === '') {
+                clearSearchAndFilters();
+            }
+        });
 
-        // Обработчики для фильтров (при их изменении тоже фильтруем, но они видны только при наличии текста)
+        // При нажатии Enter: показываем фильтры и выполняем поиск
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                performSearch();
+            }
+        });
+
+        // При изменении фильтров (когда они видны) – обновляем товары
         categoryFilter.addEventListener('change', filterProducts);
         materialFilter.addEventListener('change', filterProducts);
         sizeFilter.addEventListener('change', filterProducts);
         priceFrom.addEventListener('change', filterProducts);
         priceTo.addEventListener('change', filterProducts);
         sortSelect.addEventListener('change', filterProducts);
+
+        // Сброс фильтров (кнопка)
         resetBtn.addEventListener('click', resetFilters);
 
         // Инициализация (фильтры скрыты, предложений нет)
-        toggleFiltersAndSuggestions('');
-        resetFilters();
+        toggleFilters(false);
+        suggestionsGrid.innerHTML = '';
+        toggleSuggestions(false);
+        filterProducts();
 
         // Эффект "жидкого стекла" на карточках
         document.querySelectorAll('.glass-card').forEach(card => {
