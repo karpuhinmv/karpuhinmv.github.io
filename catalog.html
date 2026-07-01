@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-    <!-- Firebase SDK (9-я версия, модульная) -->
+    <!-- Firebase SDK -->
     <script type="importmap">
         {
             "imports": {
@@ -92,7 +92,7 @@
             z-index: 3;
         }
 
-        /* ---- HEADER ---- */
+        /* ---- HEADER (без изменений) ---- */
         .header {
             padding: 1.25rem 0;
             position: sticky;
@@ -202,7 +202,7 @@
             padding: 1.5rem 0 3rem;
         }
 
-        /* ---- ПОИСКОВАЯ ПЛАШКА ---- */
+        /* ---- ПОИСК, ФИЛЬТРЫ, РЕКЛАМА (без изменений) ---- */
         .search-wrapper {
             margin-bottom: 1rem;
             padding: 1.2rem 1.5rem;
@@ -239,7 +239,6 @@
             color: rgba(255, 255, 255, 0.4);
         }
 
-        /* ---- ПРЕДЛОЖЕНИЯ (чипсы) ---- */
         .suggestions-grid {
             display: none;
             flex-wrap: wrap;
@@ -267,7 +266,6 @@
             transform: scale(1.02);
         }
 
-        /* ---- ФИЛЬТРЫ (отдельными карточками-чипсами) ---- */
         .filters-grid {
             display: none;
             flex-wrap: wrap;
@@ -350,36 +348,22 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* ---- РЕКЛАМНАЯ ПЛАШКА ---- */
         .ad-banner {
             width: 100%;
-            padding: 2.5rem 2rem;
+            padding: 0;
             margin-bottom: 2rem;
             border-radius: 2rem;
-            background: linear-gradient(135deg, rgba(30, 50, 80, 0.7), rgba(10, 20, 40, 0.8));
             border: 1px solid rgba(255, 215, 0, 0.3);
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.05);
-            text-align: center;
-            font-size: 1.1rem;
-            color: #f0e6c0;
-            backdrop-filter: blur(8px);
+            overflow: hidden;
         }
-        .ad-banner i {
-            margin-right: 0.8rem;
-            color: #ffd700;
-        }
-        .ad-banner .ad-text {
-            font-weight: 300;
-            letter-spacing: 0.5px;
-            font-size: 1.3rem;
-        }
-        .ad-banner .ad-sub {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 0.4rem;
+        .ad-banner img {
+            width: 100%;
+            display: block;
+            border: none;
+            border-radius: 2rem;
         }
 
-        /* ---- СОРТИРОВКА ---- */
         .catalog-toolbar {
             display: flex;
             justify-content: flex-end;
@@ -401,13 +385,11 @@
             color: white;
         }
 
-        /* ---- СЕТКА ТОВАРОВ (5 колонок) ---- */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 1.5rem;
         }
-
         .product-card {
             padding: 1.2rem;
             display: flex;
@@ -487,7 +469,6 @@
             cursor: not-allowed;
         }
 
-        /* Плашки */
         .badge {
             position: absolute;
             top: 8px;
@@ -513,7 +494,6 @@
             color: #1a1a1a;
         }
 
-        /* ---- ПАГИНАЦИЯ ---- */
         .pagination-wrap {
             display: flex;
             justify-content: center;
@@ -545,7 +525,7 @@
             cursor: default;
         }
 
-        /* ---- МОДАЛЬНЫЕ ОКНА (корзина, авторизация, профиль) ---- */
+        /* ---- МОДАЛЬНЫЕ ОКНА (корзина, авторизация, профиль, заказ) ---- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -596,7 +576,6 @@
             font-weight: 600;
         }
 
-        /* ---- Корзина ---- */
         .cart-item {
             display: flex;
             align-items: center;
@@ -680,7 +659,6 @@
             opacity: 0.6;
         }
 
-        /* ---- Профиль ---- */
         .profile-info p {
             margin-bottom: 0.5rem;
             font-size: 1rem;
@@ -699,8 +677,48 @@
         .order-item .order-total {
             float: right;
         }
+        .order-item .order-status {
+            display: inline-block;
+            padding: 0.1rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .order-status-new {
+            background: rgba(255, 215, 0, 0.3);
+            color: #ffd93d;
+        }
+        .order-status-processing {
+            background: rgba(100, 130, 200, 0.3);
+            color: #8ab0ff;
+        }
+        .order-status-completed {
+            background: rgba(60, 200, 130, 0.3);
+            color: #60d0a0;
+        }
 
-        /* ---- Форма авторизации ---- */
+        .order-form input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .order-form input:focus {
+            border-color: #8ab0ff;
+            background: rgba(255, 255, 255, 0.14);
+        }
+        .order-form .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
         .auth-form input {
             width: 100%;
             padding: 0.7rem 1rem;
@@ -763,6 +781,73 @@
             font-size: 0.9rem;
         }
 
+        /* ---- УВЕДОМЛЕНИЯ (TOAST) ---- */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            width: 100%;
+        }
+        .toast {
+            padding: 1rem 1.2rem;
+            border-radius: 1.5rem;
+            background: rgba(12, 20, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideInRight 0.4s ease;
+            transition: opacity 0.3s, transform 0.3s;
+            font-size: 0.95rem;
+        }
+        .toast.hide {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        .toast i {
+            font-size: 1.4rem;
+        }
+        .toast-success i {
+            color: #60d0a0;
+        }
+        .toast-error i {
+            color: #ff6b6b;
+        }
+        .toast-info i {
+            color: #8ab0ff;
+        }
+        .toast .toast-close {
+            margin-left: auto;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: 0.2s;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+        .toast .toast-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideInRight {
+            0% {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* ---- АДАПТИВНОСТЬ ---- */
         @media (max-width: 1200px) {
             .products-grid { grid-template-columns: repeat(4, 1fr); }
@@ -797,23 +882,18 @@
             .suggestions-grid {
                 justify-content: center;
             }
-            .ad-banner {
-                padding: 2rem 1.5rem;
-                font-size: 1rem;
+            .toast-container {
+                max-width: 300px;
+                right: 10px;
+                top: 70px;
             }
-            .ad-banner .ad-text {
-                font-size: 1.1rem;
+            .toast {
+                font-size: 0.85rem;
+                padding: 0.8rem 1rem;
             }
         }
         @media (max-width: 768px) {
             .products-grid { grid-template-columns: repeat(2, 1fr); }
-            .ad-banner {
-                padding: 1.5rem 1rem;
-                font-size: 0.9rem;
-            }
-            .ad-banner .ad-text {
-                font-size: 1rem;
-            }
         }
         @media (max-width: 480px) {
             .products-grid { grid-template-columns: 1fr; }
@@ -821,16 +901,13 @@
             .nav-links { justify-content: center; gap: 1rem; }
             .logo-text { font-size: 1.5rem; }
             .container { padding: 0 16px; }
-            .ad-banner {
-                padding: 1.5rem 0.8rem;
-                font-size: 0.9rem;
-            }
-            .ad-banner .ad-text {
-                font-size: 0.95rem;
+            .toast-container {
+                max-width: 280px;
+                right: 8px;
+                top: 65px;
             }
         }
 
-        /* ---- ОБЩИЕ КНОПКИ ---- */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -855,7 +932,6 @@
             background: rgba(120, 150, 220, 0.75);
             transform: scale(1.02);
         }
-
         footer {
             padding: 2rem 0;
             border-top: 1px solid rgba(255, 255, 240, 0.15);
@@ -898,16 +974,11 @@
     <main>
         <div class="container">
             <div class="catalog-layout">
-                <!-- ПОИСКОВАЯ ПЛАШКА -->
                 <div class="search-wrapper glass-card">
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="Введите запрос и нажмите Enter..." />
                 </div>
-
-                <!-- ПРЕДЛОЖЕНИЯ (чипсы) -->
                 <div class="suggestions-grid" id="suggestionsGrid"></div>
-
-                <!-- ФИЛЬТРЫ (отдельными чипсами) -->
                 <div class="filters-grid" id="filtersGrid">
                     <div class="filter-chip">
                         <label for="categoryFilter">Категория</label>
@@ -921,7 +992,6 @@
                             <option value="одежда для усопших">Одежда для усопших</option>
                         </select>
                     </div>
-
                     <div class="filter-chip">
                         <label for="materialFilter">Материал</label>
                         <select id="materialFilter">
@@ -933,7 +1003,6 @@
                             <option value="искусственные">Искусственные</option>
                         </select>
                     </div>
-
                     <div class="filter-chip">
                         <label for="sizeFilter">Размер</label>
                         <select id="sizeFilter">
@@ -945,7 +1014,6 @@
                             <option value="детский">Детский</option>
                         </select>
                     </div>
-
                     <div class="filter-chip">
                         <label>Цена</label>
                         <div class="price-range">
@@ -954,20 +1022,16 @@
                             <input type="number" id="priceTo" placeholder="до" min="0" step="100" />
                         </div>
                     </div>
-
                     <div class="filter-chip">
                         <button class="btn-reset" id="resetFiltersBtn"><i class="fas fa-undo"></i> Сброс</button>
                     </div>
                 </div>
 
-                <!-- РЕКЛАМНАЯ ПЛАШКА -->
-                <div class="ad-banner" style="padding: 0;">
-    <img src="images/reklama.jpg" alt="Реклама" style="width: 100%; display: block; border: none; border-radius: 2rem;" />
-</div>
+                <div class="ad-banner">
+                    <img src="images/reklama.jpg" alt="Реклама" />
+                </div>
 
-                <!-- ОСНОВНАЯ ЧАСТЬ -->
                 <section class="catalog-main">
-                    <!-- Сортировка (без счётчика и переключателя вида) -->
                     <div class="catalog-toolbar">
                         <div class="toolbar-right">
                             <select id="sortSelect">
@@ -978,7 +1042,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="products-grid" id="productsGrid"></div>
                     <div class="pagination-wrap" id="paginationWrap"></div>
                 </section>
@@ -993,20 +1056,35 @@
         </div>
     </footer>
 
-    <!-- ========== МОДАЛЬНОЕ ОКНО КОРЗИНЫ ========== -->
+    <!-- ========== МОДАЛЬНЫЕ ОКНА (корзина, заказ, авторизация, профиль) ========== -->
+    <!-- Корзина -->
     <div class="modal-overlay" id="cartModal">
         <div class="modal-box">
             <button class="close-btn" id="cartModalClose">&times;</button>
             <h2>Корзина</h2>
             <div id="cartItems"></div>
             <div class="cart-total" id="cartTotal">Итого: 0 ₽</div>
-            <button class="btn btn-primary" style="width:100%; margin-top:1.5rem;" onclick="alert('Оформление заказа: функция в разработке')">
+            <button class="btn btn-primary" id="checkoutBtn" style="width:100%; margin-top:1.5rem;">
                 <i class="fas fa-check"></i> Оформить заказ
             </button>
         </div>
     </div>
 
-    <!-- ========== МОДАЛЬНОЕ ОКНО АВТОРИЗАЦИИ ========== -->
+    <!-- Оформление заказа -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-box">
+            <button class="close-btn" id="orderModalClose">&times;</button>
+            <h2>Оформление заказа</h2>
+            <div class="order-form">
+                <div id="orderError" style="color:#ff6b6b; font-size:0.9rem; margin-bottom:0.5rem;"></div>
+                <input type="text" id="orderName" placeholder="Ваше имя (необязательно)" />
+                <input type="tel" id="orderPhone" placeholder="Номер телефона *" required />
+                <button class="btn btn-primary" id="submitOrderBtn"><i class="fas fa-check"></i> Подтвердить заказ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Авторизация -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-box">
             <button class="close-btn" id="authModalClose">&times;</button>
@@ -1026,7 +1104,7 @@
         </div>
     </div>
 
-    <!-- ========== МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ========== -->
+    <!-- Профиль -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-box">
             <button class="close-btn" id="profileModalClose">&times;</button>
@@ -1036,14 +1114,15 @@
                 <p><strong>Email:</strong> <span id="profileEmail"></span></p>
             </div>
             <h3 style="margin-top:1.5rem;">История заказов</h3>
-            <div id="orderHistory">
-                <p style="opacity:0.6;">У вас пока нет заказов.</p>
-            </div>
+            <div id="orderHistory"></div>
             <button class="btn btn-primary" id="logoutFromProfileBtn" style="width:100%; margin-top:1.5rem;">
                 <i class="fas fa-sign-out-alt"></i> Выйти
             </button>
         </div>
     </div>
+
+    <!-- ========== КОНТЕЙНЕР ДЛЯ УВЕДОМЛЕНИЙ ========== -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <!-- ========== ИМПОРТ FIREBASE и логика ========== -->
     <script type="module">
@@ -1078,7 +1157,10 @@
             collection,
             query,
             where,
-            getDocs
+            getDocs,
+            addDoc,
+            serverTimestamp,
+            orderBy
         } from 'firebase/firestore';
 
         const app = initializeApp(firebaseConfig);
@@ -1090,7 +1172,7 @@
         let currentUser = null;
         let cart = {};
 
-        // ---------- ДАННЫЕ ТОВАРОВ (с oldPrice для скидок) ----------
+        // ---------- ДАННЫЕ ТОВАРОВ ----------
         const products = [
             { id: 1, name: 'Гроб сосновый полированный', description: 'Сосна, лак, стандартный размер', price: 8500,
                 oldPrice: null, category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.5,
@@ -1227,12 +1309,12 @@
 
         async function addToCart(productId) {
             if (!currentUser) {
-                alert('Пожалуйста, войдите в аккаунт, чтобы добавить товар в корзину.');
+                showToast('Пожалуйста, войдите в аккаунт.', 'error');
                 openAuthModal();
                 return;
             }
             if (!currentUser.emailVerified) {
-                alert('Пожалуйста, подтвердите ваш email. На вашу почту была отправлена ссылка для подтверждения.');
+                showToast('Подтвердите email, проверьте почту.', 'error');
                 await sendEmailVerification(currentUser);
                 return;
             }
@@ -1240,7 +1322,7 @@
             const product = products.find(p => p.id === productId);
             if (!product) return;
             if (!product.inStock) {
-                alert('Товара нет в наличии.');
+                showToast('Товара нет в наличии.', 'error');
                 return;
             }
 
@@ -1258,6 +1340,7 @@
             }
             await saveCartToFirestore(currentUser.uid);
             updateCartUI();
+            showToast(`Товар «${product.name}» добавлен в корзину`, 'success');
         }
 
         async function updateQuantity(productId, delta) {
@@ -1311,7 +1394,10 @@
             if (keys.length === 0) {
                 container.innerHTML = '<div class="cart-empty">Корзина пуста</div>';
                 totalEl.textContent = 'Итого: 0 ₽';
+                document.getElementById('checkoutBtn').style.display = 'none';
                 return;
+            } else {
+                document.getElementById('checkoutBtn').style.display = 'inline-flex';
             }
 
             let html = '';
@@ -1348,7 +1434,85 @@
         window.removeFromCart = removeFromCart;
 
         // ============================================================
-        // 2. АВТОРИЗАЦИЯ (Firebase)
+        // 2. ОФОРМЛЕНИЕ ЗАКАЗА
+        // ============================================================
+
+        const orderModal = document.getElementById('orderModal');
+        const orderModalClose = document.getElementById('orderModalClose');
+        const orderName = document.getElementById('orderName');
+        const orderPhone = document.getElementById('orderPhone');
+        const orderError = document.getElementById('orderError');
+        const submitOrderBtn = document.getElementById('submitOrderBtn');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+
+        function openOrderModal() {
+            if (Object.keys(cart).length === 0) {
+                showToast('Корзина пуста.', 'error');
+                return;
+            }
+            if (currentUser && currentUser.displayName) {
+                orderName.value = currentUser.displayName;
+            } else {
+                orderName.value = '';
+            }
+            orderPhone.value = '';
+            orderError.textContent = '';
+            orderModal.classList.add('active');
+            document.getElementById('cartModal').classList.remove('active');
+        }
+
+        function closeOrderModal() {
+            orderModal.classList.remove('active');
+        }
+
+        orderModalClose.addEventListener('click', closeOrderModal);
+        orderModal.addEventListener('click', (e) => { if (e.target === orderModal) closeOrderModal(); });
+
+        checkoutBtn.addEventListener('click', openOrderModal);
+
+        submitOrderBtn.addEventListener('click', async () => {
+            const phone = orderPhone.value.trim();
+            if (!phone) {
+                orderError.textContent = 'Укажите номер телефона для связи.';
+                return;
+            }
+            const name = orderName.value.trim() || (currentUser ? currentUser.displayName : '') || 'Клиент';
+
+            const items = Object.values(cart).map(item => ({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity
+            }));
+
+            const total = getCartTotalPrice();
+
+            try {
+                const orderData = {
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    userName: name,
+                    phone: phone,
+                    items: items,
+                    total: total,
+                    status: 'new',
+                    createdAt: serverTimestamp()
+                };
+                await addDoc(collection(db, 'orders'), orderData);
+
+                cart = {};
+                await saveCartToFirestore(currentUser.uid);
+                updateCartUI();
+
+                closeOrderModal();
+                showToast('Заказ успешно оформлен! Оператор свяжется с вами.', 'success');
+            } catch (err) {
+                orderError.textContent = 'Ошибка: ' + err.message;
+            }
+        });
+
+        // ============================================================
+        // 3. АВТОРИЗАЦИЯ (с тостами)
         // ============================================================
 
         let authMode = 'login';
@@ -1419,7 +1583,7 @@
             const email = authEmail.value.trim();
             const password = authPassword.value.trim();
             if (!email || !password) {
-                authError.textContent = 'Заполните все обязательные поля';
+                authError.textContent = 'Заполните все поля';
                 return;
             }
             if (authMode === 'register') {
@@ -1432,8 +1596,8 @@
                     const userCred = await createUserWithEmailAndPassword(auth, email, password);
                     await updateProfile(userCred.user, { displayName: name });
                     await sendEmailVerification(userCred.user);
-                    alert('На вашу почту отправлена ссылка для подтверждения. Перейдите по ней, чтобы завершить регистрацию.');
                     closeAuthModal();
+                    showToast(`Регистрация успешна! Письмо с подтверждением отправлено на ${email}`, 'success');
                     await signOut(auth);
                 } catch (err) {
                     authError.textContent = err.message;
@@ -1443,11 +1607,13 @@
                     const userCred = await signInWithEmailAndPassword(auth, email, password);
                     if (!userCred.user.emailVerified) {
                         await signOut(auth);
-                        authError.textContent = 'Ваш email не подтверждён. Проверьте почту и перейдите по ссылке для подтверждения.';
+                        authError.textContent = 'Подтвердите email. Проверьте почту.';
                         await sendEmailVerification(userCred.user);
                         return;
                     }
                     closeAuthModal();
+                    const displayName = userCred.user.displayName || userCred.user.email;
+                    showToast(`Добро пожаловать, ${displayName}!`, 'success');
                 } catch (err) {
                     authError.textContent = err.message;
                 }
@@ -1456,27 +1622,69 @@
 
         googleAuthBtn.addEventListener('click', async () => {
             try {
-                await signInWithPopup(auth, provider);
+                const result = await signInWithPopup(auth, provider);
+                const displayName = result.user.displayName || result.user.email;
                 closeAuthModal();
+                showToast(`Добро пожаловать, ${displayName}!`, 'success');
             } catch (err) {
                 authError.textContent = err.message;
             }
         });
 
         // ============================================================
-        // 3. УПРАВЛЕНИЕ ПРОФИЛЕМ
+        // 4. УПРАВЛЕНИЕ ПРОФИЛЕМ
         // ============================================================
+
+        async function loadOrders() {
+            if (!currentUser) return;
+            try {
+                const q = query(
+                    collection(db, 'orders'),
+                    where('userId', '==', currentUser.uid),
+                    orderBy('createdAt', 'desc')
+                );
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    orderHistory.innerHTML = '<p style="opacity:0.6;">У вас пока нет заказов.</p>';
+                    return;
+                }
+                let html = '';
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ru-RU') : 'неизвестно';
+                    const statusMap = {
+                        'new': 'Новый',
+                        'processing': 'В обработке',
+                        'completed': 'Завершён'
+                    };
+                    const statusClass = {
+                        'new': 'order-status-new',
+                        'processing': 'order-status-processing',
+                        'completed': 'order-status-completed'
+                    };
+                    html += `
+                        <div class="order-item">
+                            <span class="order-date">${date}</span>
+                            <span class="order-total">${data.total.toLocaleString()} ₽</span>
+                            <span class="order-status ${statusClass[data.status] || 'order-status-new'}">${statusMap[data.status] || data.status}</span>
+                            <div style="font-size:0.8rem; opacity:0.7; margin-top:0.2rem;">
+                                ${data.items.map(item => `${item.name} × ${item.quantity}`).join(', ')}
+                            </div>
+                        </div>
+                    `;
+                });
+                orderHistory.innerHTML = html;
+            } catch (err) {
+                console.error('Ошибка загрузки заказов:', err);
+                orderHistory.innerHTML = '<p style="opacity:0.6;">Ошибка загрузки заказов.</p>';
+            }
+        }
 
         function openProfileModal() {
             if (!currentUser) return;
-            // Заполняем данные пользователя
             profileName.textContent = currentUser.displayName || currentUser.email;
             profileEmail.textContent = currentUser.email;
-
-            // Загружаем историю заказов (пока заглушка)
-            // В будущем можно будет загрузить из коллекции 'orders'
-            orderHistory.innerHTML = `<p style="opacity:0.6;">У вас пока нет заказов.</p>`;
-
+            loadOrders();
             profileModal.classList.add('active');
         }
 
@@ -1488,21 +1696,21 @@
         profileModalClose.addEventListener('click', closeProfileModal);
         profileModal.addEventListener('click', (e) => { if (e.target === profileModal) closeProfileModal(); });
 
-        // Выход из профиля
         logoutFromProfileBtn.addEventListener('click', async () => {
             await signOut(auth);
             closeProfileModal();
+            showToast('Вы вышли из аккаунта.', 'info');
         });
 
         // ============================================================
-        // 4. СОСТОЯНИЕ АВТОРИЗАЦИИ И ПОДПИСКА НА КОРЗИНУ
+        // 5. СОСТОЯНИЕ АВТОРИЗАЦИИ И ПОДПИСКА НА КОРЗИНУ
         // ============================================================
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 if (!user.emailVerified) {
                     await signOut(auth);
-                    alert('Подтвердите email, перейдя по ссылке в письме.');
+                    showToast('Подтвердите email, перейдя по ссылке в письме.', 'error');
                     return;
                 }
                 currentUser = user;
@@ -1531,16 +1739,17 @@
                 updateCartUI();
                 document.getElementById('cartModal').classList.remove('active');
                 closeProfileModal();
+                closeOrderModal();
             }
         });
 
         // ============================================================
-        // 5. ОТКРЫТИЕ КОРЗИНЫ
+        // 6. ОТКРЫТИЕ КОРЗИНЫ
         // ============================================================
 
         document.getElementById('cartIcon').addEventListener('click', () => {
             if (!currentUser) {
-                alert('Пожалуйста, войдите в аккаунт, чтобы просмотреть корзину.');
+                showToast('Войдите в аккаунт, чтобы просмотреть корзину.', 'error');
                 openAuthModal();
                 return;
             }
@@ -1557,7 +1766,7 @@
         });
 
         // ============================================================
-        // 6. ЛОГИКА КАТАЛОГА (фильтры по Enter, предложения при вводе)
+        // 7. ЛОГИКА КАТАЛОГА (фильтры, поиск, пагинация)
         // ============================================================
 
         let currentProducts = [...products];
@@ -1579,17 +1788,14 @@
         const filtersGrid = document.getElementById('filtersGrid');
         const suggestionsGrid = document.getElementById('suggestionsGrid');
 
-        // Показывать/скрывать фильтры
         function toggleFilters(show) {
             filtersGrid.classList.toggle('visible', show);
         }
 
-        // Показывать/скрывать предложения
         function toggleSuggestions(show) {
             suggestionsGrid.classList.toggle('visible', show);
         }
 
-        // Генерация предложений (чипсы) на основе введённого текста
         function renderSuggestions(searchTerm) {
             const term = searchTerm.trim().toLowerCase();
             if (!term) {
@@ -1624,7 +1830,6 @@
             });
         }
 
-        // Функция, выполняющая поиск (показывает фильтры, обновляет товары)
         function performSearch() {
             const searchTerm = searchInput.value.trim();
             const hasText = searchTerm.length > 0;
@@ -1636,7 +1841,6 @@
             filterProducts();
         }
 
-        // Сброс поиска и фильтров (оставляем сортировку)
         function clearSearchAndFilters() {
             searchInput.value = '';
             categoryFilter.value = 'all';
@@ -1647,10 +1851,9 @@
             toggleFilters(false);
             suggestionsGrid.innerHTML = '';
             toggleSuggestions(false);
-            filterProducts(); // покажет все товары
+            filterProducts();
         }
 
-        // Основная функция фильтрации
         function filterProducts() {
             const searchTerm = searchInput.value.trim().toLowerCase();
             const cat = categoryFilter.value;
@@ -1832,9 +2035,7 @@
             }
         }
 
-        // ---- Обработчики событий ----
-
-        // При вводе текста: обновляем предложения
+        // ---- Обработчики ----
         searchInput.addEventListener('input', function() {
             const term = this.value;
             renderSuggestions(term);
@@ -1843,7 +2044,6 @@
             }
         });
 
-        // При нажатии Enter: показываем фильтры и выполняем поиск
         searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -1851,7 +2051,6 @@
             }
         });
 
-        // При изменении фильтров (когда они видны) – обновляем товары
         categoryFilter.addEventListener('change', filterProducts);
         materialFilter.addEventListener('change', filterProducts);
         sizeFilter.addEventListener('change', filterProducts);
@@ -1859,16 +2058,55 @@
         priceTo.addEventListener('change', filterProducts);
         sortSelect.addEventListener('change', filterProducts);
 
-        // Сброс фильтров (кнопка)
         resetBtn.addEventListener('click', resetFilters);
 
-        // Инициализация (фильтры скрыты, предложений нет)
         toggleFilters(false);
         suggestionsGrid.innerHTML = '';
         toggleSuggestions(false);
         filterProducts();
 
-        // Эффект "жидкого стекла" на карточках
+        // ---- Функция для тост-уведомлений ----
+        const toastContainer = document.getElementById('toastContainer');
+
+        function showToast(message, type = 'info', duration = 4000) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const iconMap = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                info: 'fa-info-circle'
+            };
+            toast.innerHTML = `
+                <i class="fas ${iconMap[type] || 'fa-info-circle'}"></i>
+                <span>${message}</span>
+                <button class="toast-close"><i class="fas fa-times"></i></button>
+            `;
+            toastContainer.appendChild(toast);
+
+            const closeBtn = toast.querySelector('.toast-close');
+            const removeToast = () => {
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 300);
+            };
+
+            closeBtn.addEventListener('click', removeToast);
+            setTimeout(removeToast, duration);
+
+            // Ограничим количество одновременно видимых тостов
+            const toasts = toastContainer.querySelectorAll('.toast:not(.hide)');
+            if (toasts.length > 4) {
+                toasts[0].classList.add('hide');
+                setTimeout(() => {
+                    if (toasts[0].parentNode) toasts[0].remove();
+                }, 300);
+            }
+        }
+
+        window.showToast = showToast;
+
+        // ---- Эффект "жидкого стекла" ----
         document.querySelectorAll('.glass-card').forEach(card => {
             card.addEventListener('mousemove', function(e) {
                 const rect = card.getBoundingClientRect();
