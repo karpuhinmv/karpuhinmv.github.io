@@ -328,6 +328,7 @@
             font-weight: 500;
         }
         .filter-chip .btn-reset:hover { background: rgba(255,255,255,0.15); }
+
         /* Новые фильтры-чеки */
         .filter-chip .filter-checkbox {
             display: flex;
@@ -482,34 +483,6 @@
             color: #fff;
         }
 
-        /* Сердечко избранного */
-        .product-card .favorite-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.4);
-            font-size: 1.4rem;
-            cursor: pointer;
-            transition: 0.3s;
-            z-index: 3;
-            text-shadow: 0 0 8px rgba(0,0,0,0.5);
-            padding: 4px;
-        }
-        .product-card .favorite-btn:hover {
-            transform: scale(1.2);
-        }
-        .product-card .favorite-btn.active {
-            color: #ff6b6b;
-            animation: heartBeat 0.4s ease;
-        }
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
-        }
-
         .product-card .info {
             padding: 0.8rem 1rem 1rem;
             display: flex;
@@ -637,52 +610,6 @@
         }
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-
-        /* ---- ИСТОРИЯ ПРОСМОТРОВ ---- */
-        .history-section {
-            margin-top: 3rem;
-            padding: 1.5rem 0;
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-        .history-section h3 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            font-weight: 500;
-        }
-        .history-section .history-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 1rem;
-        }
-        .history-item {
-            background: rgba(20,28,40,0.4);
-            border-radius: 1rem;
-            padding: 0.5rem;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .history-item:hover {
-            background: rgba(20,28,40,0.6);
-            border-color: rgba(255,255,255,0.15);
-            transform: scale(1.02);
-        }
-        .history-item img {
-            max-width: 100%;
-            max-height: 70px;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-        .history-item .h-name {
-            font-size: 0.75rem;
-            margin-top: 0.3rem;
-            opacity: 0.8;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
         }
 
         /* ---- МОДАЛЬНЫЕ ОКНА ---- */
@@ -845,21 +772,6 @@
         .product-detail .btn-add-cart-detail:disabled {
             opacity: 0.4;
             cursor: not-allowed;
-        }
-        .product-detail .detail-favorite {
-            background: none;
-            border: none;
-            color: rgba(255,255,255,0.4);
-            font-size: 2rem;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-left: 1rem;
-        }
-        .product-detail .detail-favorite.active {
-            color: #ff6b6b;
-        }
-        .product-detail .detail-favorite:hover {
-            transform: scale(1.1);
         }
 
         /* ---- КОРЗИНА ---- */
@@ -1042,9 +954,9 @@
         }
 
         /* ---- АДАПТИВНОСТЬ ---- */
-        @media (max-width: 1200px) { .products-grid, .history-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 1200px) { .products-grid { grid-template-columns: repeat(4, 1fr); } }
         @media (max-width: 992px) {
-            .products-grid, .history-grid { grid-template-columns: repeat(3, 1fr); }
+            .products-grid { grid-template-columns: repeat(3, 1fr); }
             .filters-grid {
                 flex-direction: column;
                 align-items: stretch;
@@ -1070,9 +982,9 @@
             }
             .toast { font-size: 0.85rem; padding: 0.8rem 1rem; }
         }
-        @media (max-width: 768px) { .products-grid, .history-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 480px) {
-            .products-grid, .history-grid { grid-template-columns: 1fr; }
+            .products-grid { grid-template-columns: 1fr; }
             .header-flex { flex-direction: column; }
             .nav-links { justify-content: center; gap: 1rem; }
             .logo-text { font-size: 1.5rem; }
@@ -1155,7 +1067,7 @@
                 </div>
                 <!-- ПРЕДЛОЖЕНИЯ -->
                 <div class="suggestions-grid" id="suggestionsGrid"></div>
-                <!-- ФИЛЬТРЫ (расширены) -->
+                <!-- ФИЛЬТРЫ -->
                 <div class="filters-grid" id="filtersGrid">
                     <div class="filter-chip">
                         <label for="categoryFilter">Категория</label>
@@ -1310,7 +1222,6 @@
             <div class="profile-info" id="profileInfo">
                 <p><strong>Имя:</strong> <span id="profileName"></span></p>
                 <p><strong>Email:</strong> <span id="profileEmail"></span></p>
-                <p><strong>Избранное:</strong> <span id="favoritesCount">0</span></p>
             </div>
             <h3 style="margin-top:1.5rem;">История заказов</h3>
             <div id="orderHistory"></div>
@@ -1368,11 +1279,7 @@
             getDocs,
             addDoc,
             serverTimestamp,
-            orderBy,
-            deleteDoc,
-            arrayUnion,
-            arrayRemove,
-            updateDoc
+            orderBy
         } from 'firebase/firestore';
 
         const app = initializeApp(firebaseConfig);
@@ -1384,104 +1291,11 @@
         let currentUser = null;
         let cart = {};
         let products = [];
-        let favorites = new Set(); // хранение ID избранных товаров
-
-        // ---------- ИСТОРИЯ ПРОСМОТРОВ (localStorage) ----------
-        const HISTORY_KEY = 'viewedProducts';
-        let viewedProducts = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-
-        function addToHistory(productId) {
-            viewedProducts = viewedProducts.filter(id => id !== productId);
-            viewedProducts.unshift(productId);
-            if (viewedProducts.length > 10) viewedProducts.pop();
-            localStorage.setItem(HISTORY_KEY, JSON.stringify(viewedProducts));
-        }
 
         // ---------- ИНИЦИАЛИЗАЦИЯ ТОВАРОВ ИЗ FIRESTORE ----------
         const productsRef = collection(db, 'products');
         let unsubscribeProducts = null;
 
-        // ----- УПРАВЛЕНИЕ ИЗБРАННЫМ -----
-        const favoritesRef = collection(db, 'favorites');
-
-        async function loadFavorites() {
-            if (!currentUser) return;
-            try {
-                const q = query(favoritesRef, where('userId', '==', currentUser.uid));
-                const snapshot = await getDocs(q);
-                favorites.clear();
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.productId) favorites.add(data.productId);
-                });
-                updateFavoritesUI();
-                document.getElementById('favoritesCount').textContent = favorites.size;
-            } catch (e) {
-                console.error('Ошибка загрузки избранного:', e);
-            }
-        }
-
-        async function toggleFavorite(productId) {
-            if (!currentUser) {
-                showToast('Войдите в аккаунт, чтобы добавить в избранное.', 'error');
-                return;
-            }
-            const isFavorite = favorites.has(productId);
-            try {
-                const q = query(favoritesRef, where('userId', '==', currentUser.uid), where('productId', '==', productId));
-                const snapshot = await getDocs(q);
-                if (isFavorite) {
-                    // удаляем
-                    snapshot.forEach(doc => deleteDoc(doc.ref));
-                    favorites.delete(productId);
-                    showToast('Удалено из избранного', 'info');
-                } else {
-                    // добавляем
-                    if (snapshot.empty) {
-                        await addDoc(favoritesRef, {
-                            userId: currentUser.uid,
-                            productId: productId,
-                            createdAt: serverTimestamp()
-                        });
-                    }
-                    favorites.add(productId);
-                    showToast('Добавлено в избранное!', 'success');
-                }
-                updateFavoritesUI();
-                document.getElementById('favoritesCount').textContent = favorites.size;
-            } catch (e) {
-                console.error('Ошибка переключения избранного:', e);
-                showToast('Ошибка', 'error');
-            }
-        }
-
-        function updateFavoritesUI() {
-            // Обновить сердечки на карточках и в деталях
-            document.querySelectorAll('.product-card').forEach(card => {
-                const id = card.dataset.id;
-                if (id) {
-                    const btn = card.querySelector('.favorite-btn');
-                    if (btn) {
-                        btn.classList.toggle('active', favorites.has(id));
-                        btn.innerHTML = favorites.has(id) ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
-                    }
-                }
-            });
-            // Если модалка деталей открыта, обновим и там
-            const detailModal = document.getElementById('productDetailModal');
-            if (detailModal.classList.contains('active')) {
-                const productId = detailModal.dataset.productId;
-                if (productId) {
-                    const favBtn = document.querySelector('.detail-favorite');
-                    if (favBtn) {
-                        favBtn.classList.toggle('active', favorites.has(productId));
-                        favBtn.innerHTML = favorites.has(productId) ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
-                    }
-                }
-            }
-        }
-
-        // ----- ПОДПИСКА НА ТОВАРЫ -----
         function listenProducts() {
             if (unsubscribeProducts) unsubscribeProducts();
             unsubscribeProducts = onSnapshot(productsRef, (snapshot) => {
@@ -1489,10 +1303,8 @@
                 snapshot.forEach(doc => {
                     products.push({ id: doc.id, ...doc.data() });
                 });
-                // При загрузке товаров сбрасываем состояние бесконечной прокрутки
-                allProductsLoaded = false;
-                currentPage = 1;
-                render();
+                // Сброс и перезагрузка каталога
+                resetPagination();
             }, (error) => {
                 console.error('Ошибка загрузки товаров:', error);
                 showToast('Ошибка загрузки товаров', 'error');
@@ -1506,8 +1318,6 @@
                 showToast('Товар не найден', 'error');
                 return;
             }
-            // Добавляем в историю просмотров
-            addToHistory(productId);
             renderProductDetail(product);
             const modal = document.getElementById('productDetailModal');
             modal.dataset.productId = productId;
@@ -1555,17 +1365,11 @@
                 `;
             }
 
-            const isFav = favorites.has(product.id);
             container.innerHTML = `
                 <div class="detail-image">
                     ${imgSrc ? `<img src="${imgSrc}" alt="${product.name}" onerror="this.style.display='none'" />` : `<div class="icon-wrap"><i class="${product.image || 'fa-solid fa-box'}"></i></div>`}
                 </div>
-                <div style="display:flex; align-items:center; justify-content:space-between;">
-                    <div class="detail-name">${product.name}</div>
-                    <button class="detail-favorite ${isFav ? 'active' : ''}" onclick="window.toggleFavorite('${product.id}')">
-                        ${isFav ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>'}
-                    </button>
-                </div>
+                <div class="detail-name">${product.name}</div>
                 <div class="detail-price ${priceClass}">
                     ${product.price.toLocaleString()} ₽
                     ${oldPriceHtml}
@@ -1623,6 +1427,68 @@
             }
         }
 
+        // Функция обновления конкретной карточки (без перерисовки всех)
+        function updateCard(productId) {
+            const card = document.querySelector(`.product-card[data-id="${productId}"]`);
+            if (!card) return;
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            // Находим контейнер для действия (кнопка или qty-control)
+            const info = card.querySelector('.info');
+            const actionContainer = info.querySelector('.qty-control, .btn-add-cart');
+            if (!actionContainer) return;
+
+            const inCart = cart[productId] !== undefined;
+
+            let newAction;
+            if (!product.inStock) {
+                const btn = document.createElement('button');
+                btn.className = 'btn-add-cart';
+                btn.disabled = true;
+                btn.textContent = 'Нет в наличии';
+                newAction = btn;
+            } else if (inCart) {
+                const qty = cart[productId].quantity;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'qty-control';
+                wrapper.addEventListener('click', (e) => e.stopPropagation());
+
+                const minusBtn = document.createElement('button');
+                minusBtn.textContent = '−';
+                minusBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.updateQuantity(productId, -1);
+                });
+
+                const qtySpan = document.createElement('span');
+                qtySpan.textContent = qty;
+
+                const plusBtn = document.createElement('button');
+                plusBtn.textContent = '+';
+                plusBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.updateQuantity(productId, 1);
+                });
+
+                wrapper.appendChild(minusBtn);
+                wrapper.appendChild(qtySpan);
+                wrapper.appendChild(plusBtn);
+                newAction = wrapper;
+            } else {
+                const btn = document.createElement('button');
+                btn.className = 'btn-add-cart';
+                btn.innerHTML = '<i class="fas fa-cart-plus"></i> В корзину';
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.addToCart(productId);
+                });
+                newAction = btn;
+            }
+
+            actionContainer.replaceWith(newAction);
+        }
+
         async function addToCart(productId) {
             if (!currentUser) {
                 showToast('Пожалуйста, войдите в аккаунт.', 'error');
@@ -1655,8 +1521,19 @@
                 };
             }
             await saveCartToFirestore(currentUser.uid);
+            // обновляем конкретную карточку
+            updateCard(productId);
+            // Обновляем бейдж корзины и модалку, если открыта
             updateCartUI();
-            // Анимация: иконка корзины
+            if (document.getElementById('cartModal').classList.contains('active')) {
+                renderCartModal();
+            }
+            // Если открыта модалка деталей – обновим её
+            const detailModal = document.getElementById('productDetailModal');
+            if (detailModal.classList.contains('active') && detailModal.dataset.productId === productId) {
+                renderProductDetail(product);
+            }
+            // Анимация корзины
             const cartIcon = document.getElementById('cartIcon');
             cartIcon.style.transform = 'scale(1.3)';
             setTimeout(() => { cartIcon.style.transform = 'scale(1)'; }, 200);
@@ -1673,16 +1550,34 @@
                 cart[productId].quantity = newQty;
             }
             await saveCartToFirestore(currentUser.uid);
+            // Обновляем конкретную карточку
+            updateCard(productId);
+            // Обновляем UI корзины
             updateCartUI();
-            renderCartModal();
+            if (document.getElementById('cartModal').classList.contains('active')) {
+                renderCartModal();
+            }
+            const detailModal = document.getElementById('productDetailModal');
+            if (detailModal.classList.contains('active') && detailModal.dataset.productId === productId) {
+                const product = products.find(p => p.id === productId);
+                if (product) renderProductDetail(product);
+            }
         }
 
         async function removeFromCart(productId) {
             if (!currentUser) return;
             delete cart[productId];
             await saveCartToFirestore(currentUser.uid);
+            updateCard(productId);
             updateCartUI();
-            renderCartModal();
+            if (document.getElementById('cartModal').classList.contains('active')) {
+                renderCartModal();
+            }
+            const detailModal = document.getElementById('productDetailModal');
+            if (detailModal.classList.contains('active') && detailModal.dataset.productId === productId) {
+                const product = products.find(p => p.id === productId);
+                if (product) renderProductDetail(product);
+            }
         }
 
         function getCartTotalItems() {
@@ -1709,17 +1604,6 @@
                 badge.classList.add('hidden');
             } else {
                 badge.classList.remove('hidden');
-            }
-            if (typeof render === 'function') {
-                render();
-            }
-            const detailModal = document.getElementById('productDetailModal');
-            if (detailModal.classList.contains('active')) {
-                const productId = detailModal.dataset.productId;
-                if (productId) {
-                    const product = products.find(p => p.id === productId);
-                    if (product) renderProductDetail(product);
-                }
             }
         }
 
@@ -1769,7 +1653,6 @@
         window.addToCart = addToCart;
         window.updateQuantity = updateQuantity;
         window.removeFromCart = removeFromCart;
-        window.toggleFavorite = toggleFavorite;
 
         // ---------- ОФОРМЛЕНИЕ ЗАКАЗА ----------
         const orderModal = document.getElementById('orderModal');
@@ -2012,7 +1895,6 @@
             if (!currentUser) return;
             profileName.textContent = currentUser.displayName || currentUser.email;
             profileEmail.textContent = currentUser.email;
-            document.getElementById('favoritesCount').textContent = favorites.size;
             loadOrders();
             profileModal.classList.add('active');
         }
@@ -2046,7 +1928,6 @@
                 profileIcon.style.display = 'inline-block';
 
                 await loadCartFromFirestore(user.uid);
-                await loadFavorites();
                 const ref = getCartRef(user.uid);
                 onSnapshot(ref, (docSnap) => {
                     if (docSnap.exists()) {
@@ -2055,6 +1936,11 @@
                         if (document.getElementById('cartModal').classList.contains('active')) {
                             renderCartModal();
                         }
+                        // Обновляем все карточки, которые сейчас отображаются (чтобы синхронизировать кнопки)
+                        document.querySelectorAll('.product-card').forEach(card => {
+                            const id = card.dataset.id;
+                            if (id) updateCard(id);
+                        });
                     }
                 });
             } else {
@@ -2063,11 +1949,15 @@
                 authBtn.style.display = 'inline-flex';
                 profileIcon.style.display = 'none';
                 cart = {};
-                favorites.clear();
                 updateCartUI();
                 document.getElementById('cartModal').classList.remove('active');
                 closeProfileModal();
                 closeOrderModal();
+                // Перерисовываем кнопки (все карточки)
+                document.querySelectorAll('.product-card').forEach(card => {
+                    const id = card.dataset.id;
+                    if (id) updateCard(id);
+                });
             }
         });
 
@@ -2091,12 +1981,11 @@
         });
 
         // ---------- БЕСКОНЕЧНАЯ ПРОКРУТКА И ФИЛЬТРАЦИЯ ----------
-        let currentProducts = [];
+        let filteredProductsCache = [];
         let currentPage = 1;
         const perPage = 12;
         let loading = false;
         let allProductsLoaded = false;
-        let filteredProductsCache = [];
 
         const grid = document.getElementById('productsGrid');
         const scrollLoader = document.getElementById('scrollLoader');
@@ -2274,7 +2163,6 @@
             loading = false;
             scrollLoader.classList.remove('active');
 
-            // Если загружены все товары
             if (end >= filteredProductsCache.length) {
                 allProductsLoaded = true;
                 scrollLoader.classList.remove('active');
@@ -2311,16 +2199,6 @@
                     imgContainer.appendChild(badge);
                 }
             }
-
-            // Кнопка избранного
-            const favBtn = document.createElement('button');
-            favBtn.className = 'favorite-btn' + (favorites.has(p.id) ? ' active' : '');
-            favBtn.innerHTML = favorites.has(p.id) ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
-            favBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleFavorite(p.id);
-            });
-            imgContainer.appendChild(favBtn);
 
             // Изображение
             const iconWrap = document.createElement('div');
@@ -2426,7 +2304,7 @@
 
             card.addEventListener('click', (e) => {
                 const target = e.target;
-                if (target.closest('.btn-add-cart') || target.closest('.qty-control') || target.closest('.favorite-btn')) {
+                if (target.closest('.btn-add-cart') || target.closest('.qty-control')) {
                     return;
                 }
                 openProductDetail(p.id);
@@ -2445,7 +2323,6 @@
                     loadMore();
                 }
             }, { rootMargin: '200px' });
-            // Наблюдаем за лоадером
             if (scrollLoader) {
                 observer.observe(scrollLoader);
             }
@@ -2483,135 +2360,6 @@
 
         // ---- Запуск ----
         listenProducts();
-
-        // Переопределим render для начальной загрузки (она будет вызываться из listenProducts)
-        // Сделаем функцию render, которая будет сбрасывать состояние и начинать загрузку.
-        function render() {
-            // При обновлении товаров (например, при изменении корзины) нужно перерисовать текущие карточки?
-            // Но у нас бесконечная прокрутка, поэтому просто обновим отображение кнопок без перерисовки всей сетки.
-            // Чтобы обновить кнопки и сердечки, можно пересоздать карточки или обновить их.
-            // Проще: обновить существующие карточки (пересоздать).
-            // Для простоты — перезагрузить каталог с текущими фильтрами.
-            resetPagination();
-        }
-
-        // После загрузки товаров инициализируем бесконечную прокрутку
-        // Но лучше сделать это после первой загрузки.
-        // Подпишемся на изменения products и при первой загрузке вызовем resetPagination и setupObserver.
-        // Поскольку listenProducts уже вызывает filterProducts (через resetPagination), но мы переопределим.
-
-        // Переопределим filterProducts и loadMore
-        // В итоге resetPagination → filterProducts → loadMore
-
-        // Также нужно добавить историю просмотров в профиль: отображаем последние просмотренные товары.
-        // Сделаем блок внизу каталога, если есть история.
-        // Добавим функцию renderHistory().
-
-        function renderHistory() {
-            const historyContainer = document.querySelector('.history-grid');
-            if (!historyContainer) return;
-            const historyIds = viewedProducts.slice(0, 10);
-            if (historyIds.length === 0) {
-                document.querySelector('.history-section').style.display = 'none';
-                return;
-            }
-            document.querySelector('.history-section').style.display = 'block';
-            historyContainer.innerHTML = '';
-            historyIds.forEach(id => {
-                const product = products.find(p => p.id === id);
-                if (!product) return;
-                const item = document.createElement('div');
-                item.className = 'history-item';
-                let imgSrc = product.imageSrc ? product.imageSrc.trim() : '';
-                if (imgSrc && !/^https?:\/\//i.test(imgSrc) && !imgSrc.startsWith('/') && !imgSrc.includes('/')) {
-                    imgSrc = 'images/' + imgSrc;
-                }
-                item.innerHTML = `
-                    ${imgSrc ? `<img src="${imgSrc}" alt="${product.name}" />` : `<div style="height:70px; display:flex; align-items:center; justify-content:center;"><i class="${product.image || 'fa-solid fa-box'}" style="font-size:2rem; color:#8ab0ff;"></i></div>`}
-                    <div class="h-name">${product.name}</div>
-                `;
-                item.addEventListener('click', () => openProductDetail(product.id));
-                historyContainer.appendChild(item);
-            });
-        }
-
-        // Переопределим listenProducts, чтобы после загрузки вызывать renderHistory
-        const originalListen = listenProducts;
-        listenProducts = function() {
-            if (unsubscribeProducts) unsubscribeProducts();
-            unsubscribeProducts = onSnapshot(productsRef, (snapshot) => {
-                products = [];
-                snapshot.forEach(doc => {
-                    products.push({ id: doc.id, ...doc.data() });
-                });
-                // Инициализация каталога
-                resetPagination();
-                // После загрузки товаров, обновить историю
-                renderHistory();
-                // Также обновить избранное, если пользователь авторизован
-                if (currentUser) loadFavorites();
-            }, (error) => {
-                console.error('Ошибка загрузки товаров:', error);
-                showToast('Ошибка загрузки товаров', 'error');
-            });
-        };
-
-        // Запускаем прослушивание
-        listenProducts();
-
-        // После загрузки страницы, если есть история, покажем секцию
-        setTimeout(() => {
-            renderHistory();
-        }, 500);
-
-        // При открытии модалки деталей тоже обновляем историю
-        const originalOpenDetail = openProductDetail;
-        openProductDetail = function(productId) {
-            addToHistory(productId);
-            renderHistory();
-            originalOpenDetail(productId);
-        };
-
-        // При изменении корзины или избранного обновляем карточки (перерисовка)
-        // Но чтобы не перерисовывать всё, можно обновить только затронутые карточки.
-        // Будем обновлять все карточки при изменении корзины/избранного (пересоздавать)
-        // Для этого переопределим updateCartUI и updateFavoritesUI, чтобы они вызывали перерисовку текущей страницы.
-        // Но это сложно. Сделаем проще: при изменении корзины или избранного перезагружаем текущую страницу (сброс).
-        // Однако это может сбросить прокрутку. Альтернатива: обновить DOM вручную.
-
-        // Я создам функцию refreshCurrentCards, которая будет пересоздавать все карточки на текущей странице (не подгружая новые)
-        // Но поскольку у нас бесконечная прокрутка, мы можем просто заново загрузить первую страницу.
-        // Это проще.
-
-        // Переопределим updateCartUI и toggleFavorite, чтобы они вызывали resetPagination (перезагрузка).
-        // Это не идеально, но работает.
-
-        // Для избранного: после toggleFavorite обновляем иконки, перерисовывать не обязательно, но для единообразия перезагрузим каталог.
-
-        // Изменим toggleFavorite, чтобы после изменения вызывать resetPagination (или перерисовывать карточки).
-        // Но частое перезагрузка раздражает. Лучше обновить только кнопки избранного.
-        // Оставим текущую логику: updateFavoritesUI обновляет кнопки, а при переключении избранного не перезагружаем каталог.
-        // Это сделано в updateFavoritesUI.
-
-        // Для корзины: при добавлении/удалении товара обновляем только кнопки количества.
-        // Это сложно, но в нашей текущей реализации render перезагружает весь каталог.
-        // Сделаем так: при изменении корзины вызываем resetPagination (что перезагружает каталог).
-        // Это просто и надёжно.
-
-        // Переопределим saveCartToFirestore, чтобы после сохранения вызывать resetPagination.
-        const originalSaveCart = saveCartToFirestore;
-        saveCartToFirestore = async function(uid) {
-            await originalSaveCart(uid);
-            // После сохранения корзины обновляем каталог (перезагрузка)
-            resetPagination();
-        };
-
-        // Также при загрузке корзины (onSnapshot) у нас уже есть updateCartUI, который вызывает render.
-        // В render мы перезагружаем каталог.
-
-        // Чтобы не было конфликтов, оставляем как есть.
-
-        // Наконец, при инициализации устанавливаем IntersectionObserver.
         setupIntersectionObserver();
 
         // ---- Тосты ----
@@ -2670,24 +2418,7 @@
             });
         });
 
-        // Добавим секцию истории в DOM (если её нет)
-        const historySection = document.createElement('div');
-        historySection.className = 'history-section';
-        historySection.style.display = 'none';
-        historySection.innerHTML = `
-            <h3>Недавно просмотренные</h3>
-            <div class="history-grid"></div>
-        `;
-        document.querySelector('.catalog-layout').appendChild(historySection);
-        // Обновим renderHistory, чтобы использовать этот контейнер
-        // уже использует .history-grid
-
-        // Вызовем renderHistory при загрузке
-        // уже вызвано в listenProducts
-
-        // Удаляем лишнее объявление history-grid в стилях, оно уже есть.
-
-        console.log('✅ Каталог обновлён: избранное, история, бесконечная прокрутка, фильтры, анимации');
+        console.log('✅ Каталог обновлён: убраны избранное и история, исправлен баг с мерцанием');
     </script>
 </body>
 </html>
