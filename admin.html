@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Душа партнёрс | Админ-панель</title>
+    <title>Dusha Partners | Админ-панель</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
@@ -360,6 +360,73 @@
             margin-bottom: 0.5rem;
         }
 
+        /* ---- УВЕДОМЛЕНИЯ (TOAST) ---- */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            width: 100%;
+        }
+        .toast {
+            padding: 1rem 1.2rem;
+            border-radius: 1.5rem;
+            background: rgba(12, 20, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideInRight 0.4s ease;
+            transition: opacity 0.3s, transform 0.3s;
+            font-size: 0.95rem;
+        }
+        .toast.hide {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        .toast i {
+            font-size: 1.4rem;
+        }
+        .toast-success i {
+            color: #60d0a0;
+        }
+        .toast-error i {
+            color: #ff6b6b;
+        }
+        .toast-info i {
+            color: #8ab0ff;
+        }
+        .toast .toast-close {
+            margin-left: auto;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: 0.2s;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+        .toast .toast-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideInRight {
+            0% {
+                opacity: 0;
+                transform: translateX(60px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* ---- ПРОЧЕЕ ---- */
         .loading {
             text-align: center;
@@ -413,6 +480,22 @@
                 margin-top: 0.5rem;
                 justify-content: flex-start;
             }
+            .toast-container {
+                max-width: 300px;
+                right: 10px;
+                top: 70px;
+            }
+            .toast {
+                font-size: 0.85rem;
+                padding: 0.8rem 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .toast-container {
+                max-width: 280px;
+                right: 8px;
+                top: 65px;
+            }
         }
     </style>
 </head>
@@ -420,7 +503,7 @@
 
     <!-- ШАПКА -->
     <header class="admin-header">
-        <h1>Душа партнёрс</h1>
+        <h1>Dusha Partners</h1>
         <div class="user-info" id="userInfo">
             <span id="adminName"></span>
             <button class="btn btn-sm btn-danger" id="logoutAdminBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
@@ -559,7 +642,7 @@
         </div>
     </div>
 
-    <!-- ===== МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ТОВАРА ===== -->
+    <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ТОВАРА -->
     <div class="modal-overlay" id="editProductModal">
         <div class="modal-box">
             <button class="close-btn" id="editModalClose">&times;</button>
@@ -642,6 +725,9 @@
             </form>
         </div>
     </div>
+
+    <!-- КОНТЕЙНЕР ДЛЯ УВЕДОМЛЕНИЙ -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <!-- Firebase SDK -->
     <script type="importmap">
@@ -731,6 +817,44 @@
         const editInStock = document.getElementById('editInStock');
         const editIsPopular = document.getElementById('editIsPopular');
 
+        // --- УВЕДОМЛЕНИЯ (TOAST) ---
+        const toastContainer = document.getElementById('toastContainer');
+
+        function showToast(message, type = 'info', duration = 4000) {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const iconMap = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                info: 'fa-info-circle'
+            };
+            toast.innerHTML = `
+                    <i class="fas ${iconMap[type] || 'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                    <button class="toast-close"><i class="fas fa-times"></i></button>
+                `;
+            toastContainer.appendChild(toast);
+
+            const closeBtn = toast.querySelector('.toast-close');
+            const removeToast = () => {
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 300);
+            };
+
+            closeBtn.addEventListener('click', removeToast);
+            setTimeout(removeToast, duration);
+
+            const toasts = toastContainer.querySelectorAll('.toast:not(.hide)');
+            if (toasts.length > 4) {
+                toasts[0].classList.add('hide');
+                setTimeout(() => {
+                    if (toasts[0].parentNode) toasts[0].remove();
+                }, 300);
+            }
+        }
+
         // --- Переключение вкладок ---
         menuItems.forEach(item => {
             item.addEventListener('click', () => {
@@ -749,6 +873,7 @@
                 authBlock.style.display = 'none';
                 adminInterface.style.display = 'flex';
                 adminName.textContent = user.email;
+                showToast(`Добро пожаловать, администратор!`, 'success');
                 loadOrders();
                 loadProducts();
             } else {
@@ -775,13 +900,16 @@
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 authError.textContent = '';
+                showToast(`Успешный вход, ${email}`, 'success');
             } catch (err) {
                 authError.textContent = err.message;
+                showToast('Ошибка входа: ' + err.message, 'error');
             }
         });
 
         logoutAdminBtn.addEventListener('click', async () => {
             await signOut(auth);
+            showToast('Вы вышли из аккаунта.', 'info');
         });
 
         // --- ЗАКАЗЫ ---
@@ -848,17 +976,20 @@
                             await updateDoc(doc(db, 'orders', orderId), { status: newStatus });
                             btn.innerHTML = '<i class="fas fa-check"></i> Обновлено';
                             btn.style.opacity = '0.6';
+                            showToast('Статус заказа обновлён', 'success');
                             setTimeout(() => {
                                 btn.innerHTML = '<i class="fas fa-save"></i> Обновить';
                                 btn.style.opacity = '1';
                             }, 1500);
                         } catch (err) {
                             alert('Ошибка обновления статуса: ' + err.message);
+                            showToast('Ошибка обновления статуса', 'error');
                         }
                     });
                 });
             }, (error) => {
                 ordersList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки заказов: ${error.message}</p>`;
+                showToast('Ошибка загрузки заказов', 'error');
             });
         }
 
@@ -906,14 +1037,17 @@
                         if (confirm('Удалить товар?')) {
                             try {
                                 await deleteDoc(doc(db, 'products', btn.dataset.id));
+                                showToast('Товар удалён', 'success');
                             } catch (err) {
                                 alert('Ошибка удаления: ' + err.message);
+                                showToast('Ошибка удаления товара', 'error');
                             }
                         }
                     });
                 });
             }, (error) => {
                 productsList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки товаров: ${error.message}</p>`;
+                showToast('Ошибка загрузки товаров', 'error');
             });
         }
 
@@ -955,13 +1089,13 @@
                     createdAt: serverTimestamp()
                 });
                 addProductForm.reset();
-                // Установим значения по умолчанию для иконки и наличия
                 document.getElementById('pImage').value = 'fa-solid fa-box';
                 document.getElementById('pInStock').value = 'true';
                 document.getElementById('pIsPopular').value = 'false';
-                alert('Товар добавлен!');
+                showToast('Товар успешно добавлен!', 'success');
             } catch (err) {
                 alert('Ошибка добавления: ' + err.message);
+                showToast('Ошибка добавления товара', 'error');
             }
         });
 
@@ -990,6 +1124,7 @@
                 editModal.classList.add('active');
             } catch (err) {
                 alert('Ошибка загрузки товара: ' + err.message);
+                showToast('Ошибка загрузки товара', 'error');
             }
         }
 
@@ -1036,9 +1171,10 @@
                     isPopular
                 });
                 closeEditModal();
-                alert('Товар обновлён!');
+                showToast('Товар успешно обновлён!', 'success');
             } catch (err) {
                 alert('Ошибка обновления: ' + err.message);
+                showToast('Ошибка обновления товара', 'error');
             }
         });
 
