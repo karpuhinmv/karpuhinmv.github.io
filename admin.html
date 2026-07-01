@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Админ-панель | Похоронный дом «Душа»</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 10% 20%, #0c1322, #03060c);
+            color: #f0f2f5;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { font-size: 2.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #fff, #cbd5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-card {
+            background: rgba(20,28,40,0.55);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .order-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .order-item:last-child { border-bottom: none; }
+        .order-info { flex: 1; }
+        .order-info .date { opacity: 0.6; font-size: 0.9rem; }
+        .order-info .total { font-weight: 700; }
+        .order-status {
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        .status-new { background: rgba(255,215,0,0.3); color: #ffd93d; }
+        .status-processing { background: rgba(100,130,200,0.3); color: #8ab0ff; }
+        .status-completed { background: rgba(60,200,130,0.3); color: #60d0a0; }
+        .status-cancelled { background: rgba(200,60,60,0.3); color: #ff6b6b; }
+        select { padding: 0.4rem 1rem; border-radius: 30px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2); color: white; font-family: inherit; font-size: 0.9rem; outline: none; }
+        select option { background: #1a253a; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,245,0.3);
+            padding: 0.5rem 1.5rem;
+            border-radius: 60px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.25s;
+            font-size: 0.9rem;
+        }
+        .btn-primary { background: rgba(100,130,200,0.55); border-color: rgba(255,255,250,0.5); }
+        .btn-primary:hover { background: rgba(120,150,220,0.75); transform: scale(1.02); }
+        .btn-success { background: rgba(60,200,130,0.4); border-color: rgba(255,255,250,0.3); }
+        .btn-success:hover { background: rgba(60,200,130,0.7); }
+        .btn-danger { background: rgba(200,60,60,0.4); border-color: rgba(255,255,250,0.3); }
+        .btn-danger:hover { background: rgba(200,60,60,0.7); }
+        .actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        .auth-box { max-width: 400px; margin: 2rem auto; padding: 2rem; text-align: center; }
+        .auth-box input { width: 100%; padding: 0.7rem 1rem; margin-bottom: 0.8rem; border-radius: 40px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1rem; outline: none; }
+        .auth-box input:focus { border-color: #8ab0ff; background: rgba(255,255,255,0.14); }
+        .auth-error { color: #ff6b6b; font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .loading { text-align: center; padding: 2rem; opacity: 0.6; }
+        @media (max-width: 768px) {
+            .order-item { flex-direction: column; align-items: stretch; }
+            .actions { margin-top: 0.5rem; justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <h1><i class="fas fa-crown"></i> Админ-панель</h1>
+
+    <!-- Блок авторизации -->
+    <div id="authBlock" class="glass-card auth-box">
+        <h2>Вход для администратора</h2>
+        <div class="auth-error" id="authError"></div>
+        <input type="email" id="adminEmail" placeholder="Email администратора" />
+        <input type="password" id="adminPassword" placeholder="Пароль" />
+        <button class="btn btn-primary" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
+    </div>
+
+    <!-- Блок с заказами (показывается после входа) -->
+    <div id="ordersBlock" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+            <span id="ordersCount"></span>
+            <button class="btn btn-danger" id="logoutAdminBtn"><i class="fas fa-sign-out-alt"></i> Выйти</button>
+        </div>
+        <div id="ordersList" class="glass-card">
+            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка заказов...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="importmap">
+    {
+        "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js",
+            "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js"
+        }
+    }
+</script>
+
+<script type="module">
+    import { initializeApp } from 'firebase/app';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
+    import { getFirestore, collection, query, getDocs, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7BohTCxtCP1w-ae5xtvXyF_-jojmruL8",
+        authDomain: "ritual-c2049.firebaseapp.com",
+        projectId: "ritual-c2049",
+        storageBucket: "ritual-c2049.firebasestorage.app",
+        messagingSenderId: "755065579081",
+        appId: "1:755065579081:web:11caa1a76f03efd0d1c198"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ЗАМЕНИТЕ НА ВАШ EMAIL АДМИНИСТРАТОРА
+    const ADMIN_EMAIL = 'karpuhinmaxim@gmail.com';
+
+    const authBlock = document.getElementById('authBlock');
+    const ordersBlock = document.getElementById('ordersBlock');
+    const ordersList = document.getElementById('ordersList');
+    const ordersCount = document.getElementById('ordersCount');
+    const authError = document.getElementById('authError');
+    const adminEmail = document.getElementById('adminEmail');
+    const adminPassword = document.getElementById('adminPassword');
+    const adminLoginBtn = document.getElementById('adminLoginBtn');
+    const logoutAdminBtn = document.getElementById('logoutAdminBtn');
+
+    let currentAdmin = null;
+    let unsubscribeOrders = null;
+
+    // Обработчик изменения статуса авторизации
+    onAuthStateChanged(auth, (user) => {
+        if (user && user.email === ADMIN_EMAIL) {
+            currentAdmin = user;
+            authBlock.style.display = 'none';
+            ordersBlock.style.display = 'block';
+            loadOrders();
+        } else {
+            currentAdmin = null;
+            authBlock.style.display = 'block';
+            ordersBlock.style.display = 'none';
+            if (unsubscribeOrders) {
+                unsubscribeOrders();
+                unsubscribeOrders = null;
+            }
+            ordersList.innerHTML = '<div class="loading">Войдите как администратор</div>';
+            ordersCount.textContent = '';
+        }
+    });
+
+    // Вход
+    adminLoginBtn.addEventListener('click', async () => {
+        const email = adminEmail.value.trim();
+        const password = adminPassword.value.trim();
+        if (!email || !password) {
+            authError.textContent = 'Заполните все поля';
+            return;
+        }
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            authError.textContent = '';
+        } catch (err) {
+            authError.textContent = err.message;
+        }
+    });
+
+    // Выход
+    logoutAdminBtn.addEventListener('click', async () => {
+        await signOut(auth);
+    });
+
+    // Загрузка заказов в реальном времени (без orderBy)
+    function loadOrders() {
+        if (unsubscribeOrders) {
+            unsubscribeOrders();
+            unsubscribeOrders = null;
+        }
+        const q = query(collection(db, 'orders')); // без сортировки, чтобы не нужен индекс
+        unsubscribeOrders = onSnapshot(q, (snapshot) => {
+            if (snapshot.empty) {
+                ordersList.innerHTML = '<p style="opacity:0.6; text-align:center;">Заказов пока нет.</p>';
+                ordersCount.textContent = '';
+                return;
+            }
+            // Собираем все заказы в массив
+            let orders = [];
+            snapshot.forEach(doc => {
+                orders.push({ id: doc.id, ...doc.data() });
+            });
+            // Сортируем по дате (убывание)
+            orders.sort((a, b) => {
+                const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                return dateB - dateA;
+            });
+
+            // Рендерим
+            let html = '';
+            orders.forEach(order => {
+                const data = order;
+                const id = order.id;
+                const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ru-RU') : 'неизвестно';
+                const time = data.createdAt ? data.createdAt.toDate().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}) : '';
+                const statusMap = {
+                    'new': 'Новый',
+                    'processing': 'В обработке',
+                    'completed': 'Завершён',
+                    'cancelled': 'Отменён'
+                };
+                const statusClass = {
+                    'new': 'status-new',
+                    'processing': 'status-processing',
+                    'completed': 'status-completed',
+                    'cancelled': 'status-cancelled'
+                };
+                const phone = data.phone || 'не указан';
+                const name = data.userName || 'Клиент';
+                html += `
+                    <div class="order-item" data-id="${id}">
+                        <div class="order-info">
+                            <div><strong>${name}</strong> (${data.userEmail})</div>
+                            <div class="date">${date} ${time} · Телефон: ${phone}</div>
+                            <div style="font-size:0.85rem; opacity:0.7; margin-top:0.2rem;">
+                                ${data.items.map(item => `${item.name} × ${item.quantity}`).join(', ')}
+                            </div>
+                            <div class="total">${data.total.toLocaleString()} ₽</div>
+                        </div>
+                        <div class="actions">
+                            <span class="order-status ${statusClass[data.status] || 'status-new'}">${statusMap[data.status] || data.status}</span>
+                            <select data-id="${id}" class="status-select">
+                                <option value="new" ${data.status === 'new' ? 'selected' : ''}>Новый</option>
+                                <option value="processing" ${data.status === 'processing' ? 'selected' : ''}>В обработке</option>
+                                <option value="completed" ${data.status === 'completed' ? 'selected' : ''}>Завершён</option>
+                                <option value="cancelled" ${data.status === 'cancelled' ? 'selected' : ''}>Отменён</option>
+                            </select>
+                            <button class="btn btn-success update-status-btn" data-id="${id}"><i class="fas fa-save"></i> Обновить</button>
+                        </div>
+                    </div>
+                `;
+            });
+            ordersList.innerHTML = html;
+            ordersCount.textContent = `Всего заказов: ${snapshot.size}`;
+
+            // Обработчики для кнопок обновления статуса
+            document.querySelectorAll('.update-status-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const orderId = btn.dataset.id;
+                    const select = document.querySelector(`.status-select[data-id="${orderId}"]`);
+                    const newStatus = select.value;
+                    try {
+                        await updateDoc(doc(db, 'orders', orderId), {
+                            status: newStatus
+                        });
+                        btn.innerHTML = '<i class="fas fa-check"></i> Обновлено';
+                        btn.style.opacity = '0.6';
+                        setTimeout(() => {
+                            btn.innerHTML = '<i class="fas fa-save"></i> Обновить';
+                            btn.style.opacity = '1';
+                        }, 1500);
+                    } catch (err) {
+                        alert('Ошибка обновления статуса: ' + err.message);
+                    }
+                });
+            });
+        }, (error) => {
+            console.error('Ошибка загрузки заказов:', error);
+            ordersList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки заказов: ${error.message}</p>`;
+        });
+    }
+
+    // Если пользователь уже авторизован, но не администратор, выходим
+    if (auth.currentUser && auth.currentUser.email !== ADMIN_EMAIL) {
+        signOut(auth);
+    }
+</script>
+</body>
+</html>
