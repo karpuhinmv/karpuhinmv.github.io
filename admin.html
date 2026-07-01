@@ -21,7 +21,6 @@
             flex-direction: column;
         }
 
-        /* ---- ШАПКА ---- */
         .admin-header {
             background: rgba(8, 12, 20, 0.8);
             backdrop-filter: blur(16px);
@@ -50,7 +49,6 @@
             opacity: 0.8;
         }
 
-        /* ---- ОСНОВНОЙ ЛЕЙАУТ ---- */
         .admin-layout {
             display: flex;
             flex: 1;
@@ -58,7 +56,6 @@
             overflow: hidden;
         }
 
-        /* ---- БОКОВОЕ МЕНЮ ---- */
         .sidebar {
             width: 250px;
             background: rgba(10, 16, 26, 0.6);
@@ -95,7 +92,6 @@
             color: #fff;
         }
 
-        /* ---- ОСНОВНАЯ ОБЛАСТЬ ---- */
         .main-content {
             flex: 1;
             padding: 2rem;
@@ -108,7 +104,6 @@
             display: block;
         }
 
-        /* ---- КАРТОЧКИ (glass) ---- */
         .glass-card {
             background: rgba(20, 28, 40, 0.55);
             backdrop-filter: blur(12px);
@@ -121,17 +116,30 @@
             font-size: 1.5rem;
             margin-bottom: 1rem;
         }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
 
-        /* ---- ЗАКАЗЫ ---- */
-        .order-item {
+        /* Заказы, товары */
+        .order-item,
+        .product-item,
+        .category-item,
+        .discount-item {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem 0;
+            padding: 0.8rem 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .order-item:last-child {
+        .order-item:last-child,
+        .product-item:last-child,
+        .category-item:last-child,
+        .discount-item:last-child {
             border-bottom: none;
         }
         .order-info {
@@ -174,29 +182,6 @@
             flex-wrap: wrap;
         }
 
-        /* ---- ТОВАРЫ ---- */
-        .product-item {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .product-item .p-info {
-            flex: 1;
-            min-width: 150px;
-        }
-        .product-item .p-price {
-            font-weight: 600;
-            margin: 0 1rem;
-        }
-        .product-item .p-actions {
-            display: flex;
-            gap: 0.4rem;
-        }
-
-        /* ---- ФОРМА ДОБАВЛЕНИЯ ТОВАРА ---- */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -233,8 +218,15 @@
         .form-group select option {
             background: #1a253a;
         }
+        .form-group .inline-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .form-group .inline-group input {
+            flex: 1;
+        }
 
-        /* ---- КНОПКИ ---- */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -281,7 +273,6 @@
             justify-content: center;
         }
 
-        /* ---- МОДАЛЬНОЕ ОКНО (редактирование) ---- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -332,7 +323,6 @@
             font-weight: 600;
         }
 
-        /* ---- АВТОРИЗАЦИЯ ---- */
         .auth-box {
             max-width: 400px;
             margin: 2rem auto;
@@ -360,7 +350,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* ---- УВЕДОМЛЕНИЯ (TOAST) ---- */
         .toast-container {
             position: fixed;
             top: 80px;
@@ -415,7 +404,6 @@
         .toast .toast-close:hover {
             opacity: 1;
         }
-
         @keyframes slideInRight {
             0% {
                 opacity: 0;
@@ -427,21 +415,12 @@
             }
         }
 
-        /* ---- ПРОЧЕЕ ---- */
         .loading {
             text-align: center;
             padding: 2rem;
             opacity: 0.6;
         }
-        .flex-between {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
 
-        /* ---- АДАПТИВ ---- */
         @media (max-width: 768px) {
             .admin-layout {
                 flex-direction: column;
@@ -472,7 +451,9 @@
                 grid-template-columns: 1fr;
             }
             .order-item,
-            .product-item {
+            .product-item,
+            .category-item,
+            .discount-item {
                 flex-direction: column;
                 align-items: stretch;
             }
@@ -501,7 +482,6 @@
 </head>
 <body>
 
-    <!-- ШАПКА -->
     <header class="admin-header">
         <h1>Dusha Partners</h1>
         <div class="user-info" id="userInfo">
@@ -510,7 +490,7 @@
         </div>
     </header>
 
-    <!-- Блок авторизации (показывается, пока не вошли) -->
+    <!-- Блок авторизации -->
     <div id="authBlock" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
         <div class="glass-card auth-box">
             <h2>Вход для администратора</h2>
@@ -521,33 +501,32 @@
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ ИНТЕРФЕЙС (показывается после входа) -->
+    <!-- Основной интерфейс -->
     <div id="adminInterface" style="display: none; flex-direction: column; height: calc(100vh - 80px);">
         <div class="admin-layout">
-            <!-- Боковое меню -->
             <nav class="sidebar" id="sidebar">
                 <a class="menu-item active" data-tab="orders"><i class="fas fa-list"></i> Заказы</a>
                 <a class="menu-item" data-tab="products"><i class="fas fa-boxes"></i> Товары</a>
+                <a class="menu-item" data-tab="settings"><i class="fas fa-cog"></i> Настройки</a>
+                <a class="menu-item" data-tab="categories"><i class="fas fa-tags"></i> Категории</a>
+                <a class="menu-item" data-tab="references"><i class="fas fa-book"></i> Справочники</a>
+                <a class="menu-item" data-tab="discounts"><i class="fas fa-percent"></i> Скидки</a>
             </nav>
 
-            <!-- Основной контент -->
             <div class="main-content">
-                <!-- Вкладка ЗАКАЗЫ -->
+                <!-- Заказы -->
                 <div class="tab-content active" id="tab-orders">
                     <div class="glass-card">
                         <div class="flex-between">
                             <h2>Заказы</h2>
                             <span id="ordersCount"></span>
                         </div>
-                        <div id="ordersList">
-                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка заказов...</div>
-                        </div>
+                        <div id="ordersList"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка заказов...</div></div>
                     </div>
                 </div>
 
-                <!-- Вкладка ТОВАРЫ -->
+                <!-- Товары -->
                 <div class="tab-content" id="tab-products">
-                    <!-- Форма добавления -->
                     <div class="glass-card">
                         <h2><i class="fas fa-plus-circle"></i> Добавить товар</h2>
                         <form id="addProductForm" class="form-grid">
@@ -565,34 +544,15 @@
                             </div>
                             <div class="form-group">
                                 <label for="pCategory">Категория *</label>
-                                <select id="pCategory" required>
-                                    <option value="гробы">Гробы</option>
-                                    <option value="памятники">Памятники</option>
-                                    <option value="венки и цветы">Венки и цветы</option>
-                                    <option value="кресты и таблички">Кресты и таблички</option>
-                                    <option value="ритуальные принадлежности">Ритуальные принадлежности</option>
-                                    <option value="одежда для усопших">Одежда для усопших</option>
-                                </select>
+                                <select id="pCategory" required></select>
                             </div>
                             <div class="form-group">
                                 <label for="pMaterial">Материал *</label>
-                                <select id="pMaterial" required>
-                                    <option value="дерево">Дерево</option>
-                                    <option value="металл">Металл</option>
-                                    <option value="гранит">Гранит</option>
-                                    <option value="мрамор">Мрамор</option>
-                                    <option value="искусственные">Искусственные</option>
-                                </select>
+                                <select id="pMaterial" required></select>
                             </div>
                             <div class="form-group">
                                 <label for="pSize">Размер *</label>
-                                <select id="pSize" required>
-                                    <option value="маленький">Маленький</option>
-                                    <option value="средний">Средний</option>
-                                    <option value="большой">Большой</option>
-                                    <option value="стандартный">Стандартный</option>
-                                    <option value="детский">Детский</option>
-                                </select>
+                                <select id="pSize" required></select>
                             </div>
                             <div class="form-group">
                                 <label for="pImage">Иконка (FontAwesome класс)</label>
@@ -626,23 +586,124 @@
                             </div>
                         </form>
                     </div>
-
-                    <!-- Список товаров -->
                     <div class="glass-card">
                         <div class="flex-between">
                             <h2>Все товары</h2>
                             <span id="productsCount"></span>
                         </div>
-                        <div id="productsList">
-                            <div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка товаров...</div>
+                        <div id="productsList"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка товаров...</div></div>
+                    </div>
+                </div>
+
+                <!-- Настройки -->
+                <div class="tab-content" id="tab-settings">
+                    <div class="glass-card">
+                        <h2>Настройки сайта</h2>
+                        <form id="settingsForm" class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="bannerImage">Ссылка на рекламный баннер</label>
+                                <input type="text" id="bannerImage" placeholder="https://example.com/banner.jpg" />
+                                <small style="opacity:0.6;">Вставьте прямую ссылку на изображение (можно загрузить в Firebase Storage или внешний хостинг)</small>
+                            </div>
+                            <div class="full-width" style="display:flex; gap:1rem;">
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Сохранить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Категории -->
+                <div class="tab-content" id="tab-categories">
+                    <div class="glass-card">
+                        <h2><i class="fas fa-plus-circle"></i> Добавить категорию</h2>
+                        <form id="addCategoryForm" style="display:flex; gap:1rem; flex-wrap:wrap;">
+                            <input type="text" id="categoryName" placeholder="Название категории" style="flex:1; padding:0.5rem 1rem; border-radius:40px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:white; outline:none;" />
+                            <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Добавить</button>
+                        </form>
+                    </div>
+                    <div class="glass-card">
+                        <div class="flex-between">
+                            <h2>Список категорий</h2>
+                            <span id="categoriesCount"></span>
                         </div>
+                        <div id="categoriesList"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка...</div></div>
+                    </div>
+                </div>
+
+                <!-- Справочники (материалы и размеры) -->
+                <div class="tab-content" id="tab-references">
+                    <div class="glass-card">
+                        <h2>Материалы</h2>
+                        <form id="addMaterialForm" style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+                            <input type="text" id="materialName" placeholder="Название материала" style="flex:1; padding:0.5rem 1rem; border-radius:40px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:white; outline:none;" />
+                            <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Добавить</button>
+                        </form>
+                        <div id="materialsList"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка...</div></div>
+                    </div>
+                    <div class="glass-card">
+                        <h2>Размеры</h2>
+                        <form id="addSizeForm" style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+                            <input type="text" id="sizeName" placeholder="Название размера" style="flex:1; padding:0.5rem 1rem; border-radius:40px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:white; outline:none;" />
+                            <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Добавить</button>
+                        </form>
+                        <div id="sizesList"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка...</div></div>
+                    </div>
+                </div>
+
+                <!-- Скидки -->
+                <div class="tab-content" id="tab-discounts">
+                    <div class="glass-card">
+                        <h2><i class="fas fa-plus-circle"></i> Добавить скидку</h2>
+                        <form id="addDiscountForm" class="form-grid">
+                            <div class="form-group">
+                                <label for="discountName">Название</label>
+                                <input type="text" id="discountName" placeholder="Название скидки" />
+                            </div>
+                            <div class="form-group">
+                                <label for="discountType">Тип</label>
+                                <select id="discountType">
+                                    <option value="percent">Процент</option>
+                                    <option value="fixed">Фиксированная сумма</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="discountValue">Значение</label>
+                                <input type="number" id="discountValue" placeholder="10" step="0.01" min="0" />
+                            </div>
+                            <div class="form-group">
+                                <label for="discountScope">Область применения</label>
+                                <select id="discountScope">
+                                    <option value="all">Все товары</option>
+                                    <option value="category">Категория</option>
+                                    <option value="product">Конкретный товар</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="discountCategoryGroup" style="display:none;">
+                                <label for="discountCategory">Категория</label>
+                                <select id="discountCategory"></select>
+                            </div>
+                            <div class="form-group" id="discountProductGroup" style="display:none;">
+                                <label for="discountProduct">Товар</label>
+                                <select id="discountProduct"></select>
+                            </div>
+                            <div class="form-group full-width">
+                                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Добавить скидку</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="glass-card">
+                        <div class="flex-between">
+                            <h2>Активные скидки</h2>
+                            <span id="discountsCount"></span>
+                        </div>
+                        <div id="discountsList"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Загрузка...</div></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ТОВАРА -->
+    <!-- Модальное окно редактирования товара -->
     <div class="modal-overlay" id="editProductModal">
         <div class="modal-box">
             <button class="close-btn" id="editModalClose">&times;</button>
@@ -663,34 +724,15 @@
                 </div>
                 <div class="form-group">
                     <label for="editCategory">Категория *</label>
-                    <select id="editCategory" required>
-                        <option value="гробы">Гробы</option>
-                        <option value="памятники">Памятники</option>
-                        <option value="венки и цветы">Венки и цветы</option>
-                        <option value="кресты и таблички">Кресты и таблички</option>
-                        <option value="ритуальные принадлежности">Ритуальные принадлежности</option>
-                        <option value="одежда для усопших">Одежда для усопших</option>
-                    </select>
+                    <select id="editCategory" required></select>
                 </div>
                 <div class="form-group">
                     <label for="editMaterial">Материал *</label>
-                    <select id="editMaterial" required>
-                        <option value="дерево">Дерево</option>
-                        <option value="металл">Металл</option>
-                        <option value="гранит">Гранит</option>
-                        <option value="мрамор">Мрамор</option>
-                        <option value="искусственные">Искусственные</option>
-                    </select>
+                    <select id="editMaterial" required></select>
                 </div>
                 <div class="form-group">
                     <label for="editSize">Размер *</label>
-                    <select id="editSize" required>
-                        <option value="маленький">Маленький</option>
-                        <option value="средний">Средний</option>
-                        <option value="большой">Большой</option>
-                        <option value="стандартный">Стандартный</option>
-                        <option value="детский">Детский</option>
-                    </select>
+                    <select id="editSize" required></select>
                 </div>
                 <div class="form-group">
                     <label for="editImage">Иконка</label>
@@ -726,10 +768,74 @@
         </div>
     </div>
 
-    <!-- КОНТЕЙНЕР ДЛЯ УВЕДОМЛЕНИЙ -->
+    <!-- Модальное окно редактирования категории -->
+    <div class="modal-overlay" id="editCategoryModal">
+        <div class="modal-box">
+            <button class="close-btn" id="editCategoryModalClose">&times;</button>
+            <h2>Редактировать категорию</h2>
+            <form id="editCategoryForm">
+                <input type="hidden" id="editCategoryId" />
+                <div class="form-group">
+                    <label for="editCategoryName">Название</label>
+                    <input type="text" id="editCategoryName" required />
+                </div>
+                <div style="display:flex; gap:1rem; margin-top:1rem;">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Сохранить</button>
+                    <button type="button" class="btn" id="editCategoryCancel">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования скидки -->
+    <div class="modal-overlay" id="editDiscountModal">
+        <div class="modal-box">
+            <button class="close-btn" id="editDiscountModalClose">&times;</button>
+            <h2>Редактировать скидку</h2>
+            <form id="editDiscountForm" class="form-grid">
+                <input type="hidden" id="editDiscountId" />
+                <div class="form-group">
+                    <label for="editDiscountName">Название</label>
+                    <input type="text" id="editDiscountName" />
+                </div>
+                <div class="form-group">
+                    <label for="editDiscountType">Тип</label>
+                    <select id="editDiscountType">
+                        <option value="percent">Процент</option>
+                        <option value="fixed">Фиксированная сумма</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editDiscountValue">Значение</label>
+                    <input type="number" id="editDiscountValue" step="0.01" min="0" />
+                </div>
+                <div class="form-group">
+                    <label for="editDiscountScope">Область применения</label>
+                    <select id="editDiscountScope">
+                        <option value="all">Все товары</option>
+                        <option value="category">Категория</option>
+                        <option value="product">Конкретный товар</option>
+                    </select>
+                </div>
+                <div class="form-group" id="editDiscountCategoryGroup" style="display:none;">
+                    <label for="editDiscountCategory">Категория</label>
+                    <select id="editDiscountCategory"></select>
+                </div>
+                <div class="form-group" id="editDiscountProductGroup" style="display:none;">
+                    <label for="editDiscountProduct">Товар</label>
+                    <select id="editDiscountProduct"></select>
+                </div>
+                <div class="full-width" style="display:flex; gap:1rem;">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Сохранить</button>
+                    <button type="button" class="btn" id="editDiscountCancel">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- Firebase SDK -->
+    <!-- Firebase -->
     <script type="importmap">
         {
             "imports": {
@@ -746,15 +852,16 @@
         import {
             getFirestore,
             collection,
-            query,
-            getDocs,
             doc,
             updateDoc,
             onSnapshot,
             addDoc,
             deleteDoc,
             serverTimestamp,
-            getDoc
+            getDoc,
+            setDoc,
+            query,
+            orderBy
         } from 'firebase/firestore';
 
         const firebaseConfig = {
@@ -770,10 +877,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // === АДМИН EMAIL ===
-        const ADMIN_EMAIL = 'karpuhinmaxim@gmail.com'; // ЗАМЕНИТЕ НА ВАШ
+        const ADMIN_EMAIL = 'karpuhinmaxim@gmail.com';
 
-        // === DOM-элементы ===
+        // DOM
         const authBlock = document.getElementById('authBlock');
         const adminInterface = document.getElementById('adminInterface');
         const adminName = document.getElementById('adminName');
@@ -787,37 +893,14 @@
         const menuItems = document.querySelectorAll('.menu-item');
         const tabContents = {
             orders: document.getElementById('tab-orders'),
-            products: document.getElementById('tab-products')
+            products: document.getElementById('tab-products'),
+            settings: document.getElementById('tab-settings'),
+            categories: document.getElementById('tab-categories'),
+            references: document.getElementById('tab-references'),
+            discounts: document.getElementById('tab-discounts')
         };
 
-        // Список заказов
-        const ordersList = document.getElementById('ordersList');
-        const ordersCount = document.getElementById('ordersCount');
-
-        // Товары
-        const productsList = document.getElementById('productsList');
-        const productsCount = document.getElementById('productsCount');
-        const addProductForm = document.getElementById('addProductForm');
-
-        // Редактирование
-        const editModal = document.getElementById('editProductModal');
-        const editModalClose = document.getElementById('editModalClose');
-        const editModalCancel = document.getElementById('editModalCancel');
-        const editProductForm = document.getElementById('editProductForm');
-        const editProductId = document.getElementById('editProductId');
-        const editName = document.getElementById('editName');
-        const editPrice = document.getElementById('editPrice');
-        const editOldPrice = document.getElementById('editOldPrice');
-        const editCategory = document.getElementById('editCategory');
-        const editMaterial = document.getElementById('editMaterial');
-        const editSize = document.getElementById('editSize');
-        const editImage = document.getElementById('editImage');
-        const editImageSrc = document.getElementById('editImageSrc');
-        const editDescription = document.getElementById('editDescription');
-        const editInStock = document.getElementById('editInStock');
-        const editIsPopular = document.getElementById('editIsPopular');
-
-        // --- УВЕДОМЛЕНИЯ (TOAST) ---
+        // --- Тосты ---
         const toastContainer = document.getElementById('toastContainer');
 
         function showToast(message, type = 'info', duration = 4000) {
@@ -834,7 +917,6 @@
                     <button class="toast-close"><i class="fas fa-times"></i></button>
                 `;
             toastContainer.appendChild(toast);
-
             const closeBtn = toast.querySelector('.toast-close');
             const removeToast = () => {
                 toast.classList.add('hide');
@@ -842,10 +924,8 @@
                     if (toast.parentNode) toast.remove();
                 }, 300);
             };
-
             closeBtn.addEventListener('click', removeToast);
             setTimeout(removeToast, duration);
-
             const toasts = toastContainer.querySelectorAll('.toast:not(.hide)');
             if (toasts.length > 4) {
                 toasts[0].classList.add('hide');
@@ -864,6 +944,10 @@
                 Object.keys(tabContents).forEach(key => {
                     tabContents[key].classList.toggle('active', key === tab);
                 });
+                // Обновляем справочники в select при открытии
+                if (tab === 'products' || tab === 'discounts') {
+                    populateSelects();
+                }
             });
         });
 
@@ -873,20 +957,43 @@
                 authBlock.style.display = 'none';
                 adminInterface.style.display = 'flex';
                 adminName.textContent = user.email;
-                showToast(`Добро пожаловать, администратор!`, 'success');
+                showToast('Добро пожаловать, администратор!', 'success');
+                // Загружаем все данные
                 loadOrders();
                 loadProducts();
+                loadSettings();
+                loadCategories();
+                loadMaterials();
+                loadSizes();
+                loadDiscounts();
+                populateSelects(); // для форм
             } else {
                 authBlock.style.display = 'flex';
                 adminInterface.style.display = 'none';
+                // отписки...
                 if (unsubscribeOrders) { unsubscribeOrders();
                     unsubscribeOrders = null; }
                 if (unsubscribeProducts) { unsubscribeProducts();
                     unsubscribeProducts = null; }
-                ordersList.innerHTML = '<div class="loading">Войдите как администратор</div>';
-                productsList.innerHTML = '<div class="loading">Войдите как администратор</div>';
-                ordersCount.textContent = '';
-                productsCount.textContent = '';
+                if (unsubscribeSettings) { unsubscribeSettings();
+                    unsubscribeSettings = null; }
+                if (unsubscribeCategories) { unsubscribeCategories();
+                    unsubscribeCategories = null; }
+                if (unsubscribeMaterials) { unsubscribeMaterials();
+                    unsubscribeMaterials = null; }
+                if (unsubscribeSizes) { unsubscribeSizes();
+                    unsubscribeSizes = null; }
+                if (unsubscribeDiscounts) { unsubscribeDiscounts();
+                    unsubscribeDiscounts = null; }
+                // Очистка списков
+                document.getElementById('ordersList').innerHTML = '<div class="loading">Войдите как администратор</div>';
+                document.getElementById('productsList').innerHTML = '<div class="loading">Войдите как администратор</div>';
+                document.getElementById('categoriesList').innerHTML = '<div class="loading">Войдите как администратор</div>';
+                document.getElementById('materialsList').innerHTML = '<div class="loading">Войдите как администратор</div>';
+                document.getElementById('sizesList').innerHTML = '<div class="loading">Войдите как администратор</div>';
+                document.getElementById('discountsList').innerHTML = '<div class="loading">Войдите как администратор</div>';
+                // Очистка счётчиков
+                document.querySelectorAll('[id$=Count]').forEach(el => el.textContent = '');
             }
         });
 
@@ -900,7 +1007,7 @@
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 authError.textContent = '';
-                showToast(`Успешный вход, ${email}`, 'success');
+                showToast('Успешный вход', 'success');
             } catch (err) {
                 authError.textContent = err.message;
                 showToast('Ошибка входа: ' + err.message, 'error');
@@ -909,29 +1016,27 @@
 
         logoutAdminBtn.addEventListener('click', async () => {
             await signOut(auth);
-            showToast('Вы вышли из аккаунта.', 'info');
+            showToast('Вы вышли', 'info');
         });
 
-        // --- ЗАКАЗЫ ---
+        // --- 1. ЗАКАЗЫ ---
         let unsubscribeOrders = null;
+        const ordersList = document.getElementById('ordersList');
+        const ordersCount = document.getElementById('ordersCount');
 
         function loadOrders() {
             if (unsubscribeOrders) unsubscribeOrders();
-            const q = query(collection(db, 'orders'));
+            const q = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
             unsubscribeOrders = onSnapshot(q, (snapshot) => {
                 if (snapshot.empty) {
                     ordersList.innerHTML = '<p style="opacity:0.6; text-align:center;">Заказов пока нет.</p>';
                     ordersCount.textContent = '';
                     return;
                 }
-                let orders = [];
-                snapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
-                orders.sort((a, b) => (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0));
-
                 let html = '';
-                orders.forEach(order => {
-                    const data = order;
-                    const id = order.id;
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ru-RU') : 'неизвестно';
                     const time = data.createdAt ? data.createdAt.toDate().toLocaleTimeString('ru-RU', { hour: '2-digit',
                             minute: '2-digit' }) : '';
@@ -974,15 +1079,14 @@
                         const newStatus = select.value;
                         try {
                             await updateDoc(doc(db, 'orders', orderId), { status: newStatus });
+                            showToast('Статус заказа обновлён', 'success');
                             btn.innerHTML = '<i class="fas fa-check"></i> Обновлено';
                             btn.style.opacity = '0.6';
-                            showToast('Статус заказа обновлён', 'success');
                             setTimeout(() => {
                                 btn.innerHTML = '<i class="fas fa-save"></i> Обновить';
                                 btn.style.opacity = '1';
                             }, 1500);
                         } catch (err) {
-                            alert('Ошибка обновления статуса: ' + err.message);
                             showToast('Ошибка обновления статуса', 'error');
                         }
                     });
@@ -993,12 +1097,112 @@
             });
         }
 
-        // --- ТОВАРЫ ---
+        // --- 2. ТОВАРЫ ---
         let unsubscribeProducts = null;
+        const productsList = document.getElementById('productsList');
+        const productsCount = document.getElementById('productsCount');
+        const addProductForm = document.getElementById('addProductForm');
+        // Элементы редактирования товара
+        const editModal = document.getElementById('editProductModal');
+        const editModalClose = document.getElementById('editModalClose');
+        const editModalCancel = document.getElementById('editModalCancel');
+        const editProductForm = document.getElementById('editProductForm');
+        const editProductId = document.getElementById('editProductId');
+        const editName = document.getElementById('editName');
+        const editPrice = document.getElementById('editPrice');
+        const editOldPrice = document.getElementById('editOldPrice');
+        const editCategory = document.getElementById('editCategory');
+        const editMaterial = document.getElementById('editMaterial');
+        const editSize = document.getElementById('editSize');
+        const editImage = document.getElementById('editImage');
+        const editImageSrc = document.getElementById('editImageSrc');
+        const editDescription = document.getElementById('editDescription');
+        const editInStock = document.getElementById('editInStock');
+        const editIsPopular = document.getElementById('editIsPopular');
+
+        // Функция наполнения select'ов категориями, материалами, размерами
+        async function populateSelects() {
+            // Категории
+            const catSnap = await getDocs(collection(db, 'categories'));
+            const categories = [];
+            catSnap.forEach(doc => categories.push(doc.data().name));
+            const selects = ['pCategory', 'editCategory', 'discountCategory', 'editDiscountCategory'];
+            selects.forEach(id => {
+                const sel = document.getElementById(id);
+                if (sel) {
+                    const current = sel.value;
+                    sel.innerHTML = '';
+                    categories.forEach(cat => {
+                        const opt = document.createElement('option');
+                        opt.value = cat;
+                        opt.textContent = cat;
+                        sel.appendChild(opt);
+                    });
+                    sel.value = current;
+                }
+            });
+
+            // Материалы
+            const matSnap = await getDocs(collection(db, 'materials'));
+            const materials = [];
+            matSnap.forEach(doc => materials.push(doc.data().name));
+            ['pMaterial', 'editMaterial'].forEach(id => {
+                const sel = document.getElementById(id);
+                if (sel) {
+                    const current = sel.value;
+                    sel.innerHTML = '';
+                    materials.forEach(mat => {
+                        const opt = document.createElement('option');
+                        opt.value = mat;
+                        opt.textContent = mat;
+                        sel.appendChild(opt);
+                    });
+                    sel.value = current;
+                }
+            });
+
+            // Размеры
+            const sizeSnap = await getDocs(collection(db, 'sizes'));
+            const sizes = [];
+            sizeSnap.forEach(doc => sizes.push(doc.data().name));
+            ['pSize', 'editSize'].forEach(id => {
+                const sel = document.getElementById(id);
+                if (sel) {
+                    const current = sel.value;
+                    sel.innerHTML = '';
+                    sizes.forEach(sz => {
+                        const opt = document.createElement('option');
+                        opt.value = sz;
+                        opt.textContent = sz;
+                        sel.appendChild(opt);
+                    });
+                    sel.value = current;
+                }
+            });
+
+            // Товары для скидок (продукты)
+            const prodSnap = await getDocs(collection(db, 'products'));
+            const products = [];
+            prodSnap.forEach(doc => products.push({ id: doc.id, name: doc.data().name }));
+            ['discountProduct', 'editDiscountProduct'].forEach(id => {
+                const sel = document.getElementById(id);
+                if (sel) {
+                    const current = sel.value;
+                    sel.innerHTML = '<option value="">Выберите товар</option>';
+                    products.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.id;
+                        opt.textContent = p.name;
+                        sel.appendChild(opt);
+                    });
+                    sel.value = current;
+                }
+            });
+        }
 
         function loadProducts() {
             if (unsubscribeProducts) unsubscribeProducts();
-            const q = query(collection(db, 'products'));
+            const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
             unsubscribeProducts = onSnapshot(q, (snapshot) => {
                 if (snapshot.empty) {
                     productsList.innerHTML = '<p style="opacity:0.6; text-align:center;">Товаров пока нет.</p>';
@@ -1025,13 +1229,10 @@
                 });
                 productsList.innerHTML = html;
                 productsCount.textContent = `Всего: ${snapshot.size}`;
-
-                // Кнопки редактирования
+                // Обработчики
                 document.querySelectorAll('.edit-product-btn').forEach(btn => {
-                    btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+                    btn.addEventListener('click', () => openEditProductModal(btn.dataset.id));
                 });
-
-                // Кнопки удаления
                 document.querySelectorAll('.delete-product-btn').forEach(btn => {
                     btn.addEventListener('click', async () => {
                         if (confirm('Удалить товар?')) {
@@ -1039,19 +1240,19 @@
                                 await deleteDoc(doc(db, 'products', btn.dataset.id));
                                 showToast('Товар удалён', 'success');
                             } catch (err) {
-                                alert('Ошибка удаления: ' + err.message);
-                                showToast('Ошибка удаления товара', 'error');
+                                showToast('Ошибка удаления', 'error');
                             }
                         }
                     });
                 });
+                // Обновляем select с товарами для скидок
+                populateSelects();
             }, (error) => {
                 productsList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки товаров: ${error.message}</p>`;
                 showToast('Ошибка загрузки товаров', 'error');
             });
         }
 
-        // --- ДОБАВЛЕНИЕ ТОВАРА ---
         addProductForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('pName').value.trim();
@@ -1065,13 +1266,10 @@
             const description = document.getElementById('pDescription').value.trim() || '';
             const inStock = document.getElementById('pInStock').value === 'true';
             const isPopular = document.getElementById('pIsPopular').value === 'true';
-            const rating = 0;
-
             if (!name || !price) {
                 alert('Название и цена обязательны');
                 return;
             }
-
             try {
                 await addDoc(collection(db, 'products'), {
                     name,
@@ -1085,37 +1283,31 @@
                     description,
                     inStock,
                     isPopular,
-                    rating,
                     createdAt: serverTimestamp()
                 });
                 addProductForm.reset();
                 document.getElementById('pImage').value = 'fa-solid fa-box';
                 document.getElementById('pInStock').value = 'true';
                 document.getElementById('pIsPopular').value = 'false';
-                showToast('Товар успешно добавлен!', 'success');
+                showToast('Товар добавлен!', 'success');
             } catch (err) {
-                alert('Ошибка добавления: ' + err.message);
-                showToast('Ошибка добавления товара', 'error');
+                showToast('Ошибка добавления', 'error');
             }
         });
 
-        // --- РЕДАКТИРОВАНИЕ ТОВАРА ---
-        async function openEditModal(productId) {
+        async function openEditProductModal(productId) {
             try {
                 const docRef = doc(db, 'products', productId);
                 const docSnap = await getDoc(docRef);
-                if (!docSnap.exists()) {
-                    alert('Товар не найден');
-                    return;
-                }
+                if (!docSnap.exists()) { alert('Товар не найден'); return; }
                 const p = docSnap.data();
                 editProductId.value = productId;
                 editName.value = p.name || '';
                 editPrice.value = p.price || '';
                 editOldPrice.value = p.oldPrice || '';
-                editCategory.value = p.category || 'гробы';
-                editMaterial.value = p.material || 'дерево';
-                editSize.value = p.size || 'стандартный';
+                editCategory.value = p.category || '';
+                editMaterial.value = p.material || '';
+                editSize.value = p.size || '';
                 editImage.value = p.image || 'fa-solid fa-box';
                 editImageSrc.value = p.imageSrc || '';
                 editDescription.value = p.description || '';
@@ -1123,18 +1315,16 @@
                 editIsPopular.value = p.isPopular ? 'true' : 'false';
                 editModal.classList.add('active');
             } catch (err) {
-                alert('Ошибка загрузки товара: ' + err.message);
                 showToast('Ошибка загрузки товара', 'error');
             }
         }
 
-        function closeEditModal() {
+        function closeEditProductModal() {
             editModal.classList.remove('active');
         }
-
-        editModalClose.addEventListener('click', closeEditModal);
-        editModalCancel.addEventListener('click', closeEditModal);
-        editModal.addEventListener('click', (e) => { if (e.target === editModal) closeEditModal(); });
+        editModalClose.addEventListener('click', closeEditProductModal);
+        editModalCancel.addEventListener('click', closeEditProductModal);
+        editModal.addEventListener('click', (e) => { if (e.target === editModal) closeEditProductModal(); });
 
         editProductForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1150,12 +1340,7 @@
             const description = editDescription.value.trim() || '';
             const inStock = editInStock.value === 'true';
             const isPopular = editIsPopular.value === 'true';
-
-            if (!name || !price) {
-                alert('Название и цена обязательны');
-                return;
-            }
-
+            if (!name || !price) { alert('Название и цена обязательны'); return; }
             try {
                 await updateDoc(doc(db, 'products', id), {
                     name,
@@ -1170,15 +1355,483 @@
                     inStock,
                     isPopular
                 });
-                closeEditModal();
-                showToast('Товар успешно обновлён!', 'success');
+                closeEditProductModal();
+                showToast('Товар обновлён!', 'success');
             } catch (err) {
-                alert('Ошибка обновления: ' + err.message);
-                showToast('Ошибка обновления товара', 'error');
+                showToast('Ошибка обновления', 'error');
             }
         });
 
-        // Если пользователь уже авторизован, но не администратор – выходим
+        // --- 3. НАСТРОЙКИ (баннер) ---
+        let unsubscribeSettings = null;
+        const settingsForm = document.getElementById('settingsForm');
+        const bannerImage = document.getElementById('bannerImage');
+
+        function loadSettings() {
+            if (unsubscribeSettings) unsubscribeSettings();
+            const docRef = doc(db, 'settings', 'site');
+            unsubscribeSettings = onSnapshot(docRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    bannerImage.value = data.bannerImage || '';
+                } else {
+                    bannerImage.value = '';
+                }
+            }, (error) => {
+                showToast('Ошибка загрузки настроек', 'error');
+            });
+        }
+
+        settingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const banner = bannerImage.value.trim();
+            try {
+                await setDoc(doc(db, 'settings', 'site'), { bannerImage: banner }, { merge: true });
+                showToast('Настройки сохранены!', 'success');
+            } catch (err) {
+                showToast('Ошибка сохранения настроек', 'error');
+            }
+        });
+
+        // --- 4. КАТЕГОРИИ ---
+        let unsubscribeCategories = null;
+        const categoriesList = document.getElementById('categoriesList');
+        const categoriesCount = document.getElementById('categoriesCount');
+        const addCategoryForm = document.getElementById('addCategoryForm');
+        const categoryNameInput = document.getElementById('categoryName');
+        // Модалка редактирования категории
+        const editCategoryModal = document.getElementById('editCategoryModal');
+        const editCategoryModalClose = document.getElementById('editCategoryModalClose');
+        const editCategoryCancel = document.getElementById('editCategoryCancel');
+        const editCategoryForm = document.getElementById('editCategoryForm');
+        const editCategoryId = document.getElementById('editCategoryId');
+        const editCategoryName = document.getElementById('editCategoryName');
+
+        function loadCategories() {
+            if (unsubscribeCategories) unsubscribeCategories();
+            const q = query(collection(db, 'categories'), orderBy('name'));
+            unsubscribeCategories = onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    categoriesList.innerHTML = '<p style="opacity:0.6; text-align:center;">Категорий пока нет.</p>';
+                    categoriesCount.textContent = '';
+                    return;
+                }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    html += `
+                            <div class="category-item" data-id="${id}">
+                                <span><strong>${data.name}</strong></span>
+                                <div class="actions">
+                                    <button class="btn btn-sm btn-primary edit-category-btn" data-id="${id}"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger delete-category-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                });
+                categoriesList.innerHTML = html;
+                categoriesCount.textContent = `Всего: ${snapshot.size}`;
+                // Обработчики
+                document.querySelectorAll('.edit-category-btn').forEach(btn => {
+                    btn.addEventListener('click', () => openEditCategoryModal(btn.dataset.id));
+                });
+                document.querySelectorAll('.delete-category-btn').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (confirm('Удалить категорию?')) {
+                            try {
+                                await deleteDoc(doc(db, 'categories', btn.dataset.id));
+                                showToast('Категория удалена', 'success');
+                                populateSelects();
+                            } catch (err) {
+                                showToast('Ошибка удаления', 'error');
+                            }
+                        }
+                    });
+                });
+                populateSelects();
+            }, (error) => {
+                categoriesList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки категорий: ${error.message}</p>`;
+                showToast('Ошибка загрузки категорий', 'error');
+            });
+        }
+
+        addCategoryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = categoryNameInput.value.trim();
+            if (!name) return;
+            try {
+                await addDoc(collection(db, 'categories'), { name });
+                categoryNameInput.value = '';
+                showToast('Категория добавлена!', 'success');
+                populateSelects();
+            } catch (err) {
+                showToast('Ошибка добавления категории', 'error');
+            }
+        });
+
+        async function openEditCategoryModal(id) {
+            const docRef = doc(db, 'categories', id);
+            const docSnap = await getDoc(docRef);
+            if (!docSnap.exists()) return;
+            editCategoryId.value = id;
+            editCategoryName.value = docSnap.data().name;
+            editCategoryModal.classList.add('active');
+        }
+
+        function closeEditCategoryModal() {
+            editCategoryModal.classList.remove('active');
+        }
+        editCategoryModalClose.addEventListener('click', closeEditCategoryModal);
+        editCategoryCancel.addEventListener('click', closeEditCategoryModal);
+        editCategoryModal.addEventListener('click', (e) => { if (e.target === editCategoryModal) closeEditCategoryModal(); });
+
+        editCategoryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = editCategoryId.value;
+            const name = editCategoryName.value.trim();
+            if (!name) return;
+            try {
+                await updateDoc(doc(db, 'categories', id), { name });
+                closeEditCategoryModal();
+                showToast('Категория обновлена!', 'success');
+                populateSelects();
+            } catch (err) {
+                showToast('Ошибка обновления', 'error');
+            }
+        });
+
+        // --- 5. СПРАВОЧНИКИ (материалы, размеры) ---
+        let unsubscribeMaterials = null;
+        const materialsList = document.getElementById('materialsList');
+        const addMaterialForm = document.getElementById('addMaterialForm');
+        const materialNameInput = document.getElementById('materialName');
+
+        function loadMaterials() {
+            if (unsubscribeMaterials) unsubscribeMaterials();
+            const q = query(collection(db, 'materials'), orderBy('name'));
+            unsubscribeMaterials = onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    materialsList.innerHTML = '<p style="opacity:0.6; text-align:center;">Материалов пока нет.</p>';
+                    return;
+                }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    html += `
+                            <div class="category-item" data-id="${id}">
+                                <span>${data.name}</span>
+                                <div class="actions">
+                                    <button class="btn btn-sm btn-danger delete-material-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                });
+                materialsList.innerHTML = html;
+                document.querySelectorAll('.delete-material-btn').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (confirm('Удалить материал?')) {
+                            try {
+                                await deleteDoc(doc(db, 'materials', btn.dataset.id));
+                                showToast('Материал удалён', 'success');
+                                populateSelects();
+                            } catch (err) {
+                                showToast('Ошибка удаления', 'error');
+                            }
+                        }
+                    });
+                });
+                populateSelects();
+            }, (error) => {
+                materialsList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки материалов: ${error.message}</p>`;
+                showToast('Ошибка загрузки материалов', 'error');
+            });
+        }
+
+        addMaterialForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = materialNameInput.value.trim();
+            if (!name) return;
+            try {
+                await addDoc(collection(db, 'materials'), { name });
+                materialNameInput.value = '';
+                showToast('Материал добавлен!', 'success');
+                populateSelects();
+            } catch (err) {
+                showToast('Ошибка добавления материала', 'error');
+            }
+        });
+
+        let unsubscribeSizes = null;
+        const sizesList = document.getElementById('sizesList');
+        const addSizeForm = document.getElementById('addSizeForm');
+        const sizeNameInput = document.getElementById('sizeName');
+
+        function loadSizes() {
+            if (unsubscribeSizes) unsubscribeSizes();
+            const q = query(collection(db, 'sizes'), orderBy('name'));
+            unsubscribeSizes = onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    sizesList.innerHTML = '<p style="opacity:0.6; text-align:center;">Размеров пока нет.</p>';
+                    return;
+                }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    html += `
+                            <div class="category-item" data-id="${id}">
+                                <span>${data.name}</span>
+                                <div class="actions">
+                                    <button class="btn btn-sm btn-danger delete-size-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                });
+                sizesList.innerHTML = html;
+                document.querySelectorAll('.delete-size-btn').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (confirm('Удалить размер?')) {
+                            try {
+                                await deleteDoc(doc(db, 'sizes', btn.dataset.id));
+                                showToast('Размер удалён', 'success');
+                                populateSelects();
+                            } catch (err) {
+                                showToast('Ошибка удаления', 'error');
+                            }
+                        }
+                    });
+                });
+                populateSelects();
+            }, (error) => {
+                sizesList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки размеров: ${error.message}</p>`;
+                showToast('Ошибка загрузки размеров', 'error');
+            });
+        }
+
+        addSizeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = sizeNameInput.value.trim();
+            if (!name) return;
+            try {
+                await addDoc(collection(db, 'sizes'), { name });
+                sizeNameInput.value = '';
+                showToast('Размер добавлен!', 'success');
+                populateSelects();
+            } catch (err) {
+                showToast('Ошибка добавления размера', 'error');
+            }
+        });
+
+        // --- 6. СКИДКИ ---
+        let unsubscribeDiscounts = null;
+        const discountsList = document.getElementById('discountsList');
+        const discountsCount = document.getElementById('discountsCount');
+        const addDiscountForm = document.getElementById('addDiscountForm');
+        // Элементы модалки редактирования скидки
+        const editDiscountModal = document.getElementById('editDiscountModal');
+        const editDiscountModalClose = document.getElementById('editDiscountModalClose');
+        const editDiscountCancel = document.getElementById('editDiscountCancel');
+        const editDiscountForm = document.getElementById('editDiscountForm');
+        const editDiscountId = document.getElementById('editDiscountId');
+        const editDiscountName = document.getElementById('editDiscountName');
+        const editDiscountType = document.getElementById('editDiscountType');
+        const editDiscountValue = document.getElementById('editDiscountValue');
+        const editDiscountScope = document.getElementById('editDiscountScope');
+        const editDiscountCategory = document.getElementById('editDiscountCategory');
+        const editDiscountProduct = document.getElementById('editDiscountProduct');
+        const editDiscountCategoryGroup = document.getElementById('editDiscountCategoryGroup');
+        const editDiscountProductGroup = document.getElementById('editDiscountProductGroup');
+
+        // Показ/скрытие полей в зависимости от scope
+        function toggleDiscountFields(scope, prefix = '') {
+            const catGroup = document.getElementById(prefix + 'DiscountCategoryGroup');
+            const prodGroup = document.getElementById(prefix + 'DiscountProductGroup');
+            if (scope === 'category') {
+                catGroup.style.display = 'block';
+                prodGroup.style.display = 'none';
+            } else if (scope === 'product') {
+                catGroup.style.display = 'none';
+                prodGroup.style.display = 'block';
+            } else {
+                catGroup.style.display = 'none';
+                prodGroup.style.display = 'none';
+            }
+        }
+
+        document.getElementById('discountScope').addEventListener('change', function() {
+            toggleDiscountFields(this.value, '');
+        });
+        document.getElementById('editDiscountScope').addEventListener('change', function() {
+            toggleDiscountFields(this.value, 'edit');
+        });
+
+        function loadDiscounts() {
+            if (unsubscribeDiscounts) unsubscribeDiscounts();
+            const q = query(collection(db, 'discounts'), orderBy('createdAt', 'desc'));
+            unsubscribeDiscounts = onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    discountsList.innerHTML = '<p style="opacity:0.6; text-align:center;">Скидок пока нет.</p>';
+                    discountsCount.textContent = '';
+                    return;
+                }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    const scopeText = data.scope === 'all' ? 'Все товары' :
+                        data.scope === 'category' ? `Категория: ${data.category}` :
+                        `Товар: ${data.productName || data.product}`;
+                    html += `
+                            <div class="discount-item" data-id="${id}">
+                                <div>
+                                    <strong>${data.name || 'Без названия'}</strong>
+                                    <span style="opacity:0.7; margin-left:0.5rem;">${data.type === 'percent' ? data.value + '%' : data.value + ' ₽'}</span>
+                                    <span style="opacity:0.6; margin-left:0.5rem; font-size:0.85rem;">${scopeText}</span>
+                                </div>
+                                <div class="actions">
+                                    <button class="btn btn-sm btn-primary edit-discount-btn" data-id="${id}"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger delete-discount-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                });
+                discountsList.innerHTML = html;
+                discountsCount.textContent = `Всего: ${snapshot.size}`;
+                // Обработчики
+                document.querySelectorAll('.edit-discount-btn').forEach(btn => {
+                    btn.addEventListener('click', () => openEditDiscountModal(btn.dataset.id));
+                });
+                document.querySelectorAll('.delete-discount-btn').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (confirm('Удалить скидку?')) {
+                            try {
+                                await deleteDoc(doc(db, 'discounts', btn.dataset.id));
+                                showToast('Скидка удалена', 'success');
+                            } catch (err) {
+                                showToast('Ошибка удаления', 'error');
+                            }
+                        }
+                    });
+                });
+                populateSelects();
+            }, (error) => {
+                discountsList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки скидок: ${error.message}</p>`;
+                showToast('Ошибка загрузки скидок', 'error');
+            });
+        }
+
+        addDiscountForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('discountName').value.trim() || 'Скидка';
+            const type = document.getElementById('discountType').value;
+            const value = parseFloat(document.getElementById('discountValue').value);
+            const scope = document.getElementById('discountScope').value;
+            let category = '';
+            let product = '';
+            let productName = '';
+            if (scope === 'category') {
+                category = document.getElementById('discountCategory').value;
+            } else if (scope === 'product') {
+                product = document.getElementById('discountProduct').value;
+                // получаем название товара
+                const prodDoc = await getDoc(doc(db, 'products', product));
+                if (prodDoc.exists()) productName = prodDoc.data().name;
+            }
+            if (!value || value <= 0) { alert('Укажите значение скидки'); return; }
+            if (scope === 'category' && !category) { alert('Выберите категорию'); return; }
+            if (scope === 'product' && !product) { alert('Выберите товар'); return; }
+            try {
+                await addDoc(collection(db, 'discounts'), {
+                    name,
+                    type,
+                    value,
+                    scope,
+                    category,
+                    product,
+                    productName,
+                    createdAt: serverTimestamp()
+                });
+                addDiscountForm.reset();
+                document.getElementById('discountScope').value = 'all';
+                toggleDiscountFields('all', '');
+                showToast('Скидка добавлена!', 'success');
+            } catch (err) {
+                showToast('Ошибка добавления скидки', 'error');
+            }
+        });
+
+        async function openEditDiscountModal(id) {
+            const docRef = doc(db, 'discounts', id);
+            const docSnap = await getDoc(docRef);
+            if (!docSnap.exists()) return;
+            const data = docSnap.data();
+            editDiscountId.value = id;
+            editDiscountName.value = data.name || '';
+            editDiscountType.value = data.type || 'percent';
+            editDiscountValue.value = data.value || '';
+            editDiscountScope.value = data.scope || 'all';
+            editDiscountCategory.value = data.category || '';
+            editDiscountProduct.value = data.product || '';
+            toggleDiscountFields(data.scope, 'edit');
+            editDiscountModal.classList.add('active');
+        }
+
+        function closeEditDiscountModal() {
+            editDiscountModal.classList.remove('active');
+        }
+        editDiscountModalClose.addEventListener('click', closeEditDiscountModal);
+        editDiscountCancel.addEventListener('click', closeEditDiscountModal);
+        editDiscountModal.addEventListener('click', (e) => { if (e.target === editDiscountModal) closeEditDiscountModal(); });
+
+        editDiscountForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = editDiscountId.value;
+            const name = editDiscountName.value.trim() || 'Скидка';
+            const type = editDiscountType.value;
+            const value = parseFloat(editDiscountValue.value);
+            const scope = editDiscountScope.value;
+            let category = '';
+            let product = '';
+            let productName = '';
+            if (scope === 'category') {
+                category = editDiscountCategory.value;
+            } else if (scope === 'product') {
+                product = editDiscountProduct.value;
+                const prodDoc = await getDoc(doc(db, 'products', product));
+                if (prodDoc.exists()) productName = prodDoc.data().name;
+            }
+            if (!value || value <= 0) { alert('Укажите значение скидки'); return; }
+            if (scope === 'category' && !category) { alert('Выберите категорию'); return; }
+            if (scope === 'product' && !product) { alert('Выберите товар'); return; }
+            try {
+                await updateDoc(doc(db, 'discounts', id), {
+                    name,
+                    type,
+                    value,
+                    scope,
+                    category,
+                    product,
+                    productName
+                });
+                closeEditDiscountModal();
+                showToast('Скидка обновлена!', 'success');
+            } catch (err) {
+                showToast('Ошибка обновления скидки', 'error');
+            }
+        });
+
+        // --- Вспомогательное: получение данных для select'ов ---
+        async function getDocs(collectionRef) {
+            const snapshot = await getDocs(collectionRef);
+            return snapshot;
+        }
+
+        // Инициализация после входа
+        // populateSelects() вызывается при переключении вкладок, но также нужно при загрузке товаров и т.д.
+
+        // Если пользователь уже авторизован, но не администратор
         if (auth.currentUser && auth.currentUser.email !== ADMIN_EMAIL) {
             signOut(auth);
         }
