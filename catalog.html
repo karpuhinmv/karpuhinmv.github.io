@@ -20,7 +20,7 @@
     </script>
 
     <style>
-        /* ---- Все стили такие же, как в предыдущей версии, плюс новые для корзины и авторизации ---- */
+        /* ---- Все стили такие же, как в предыдущей версии, плюс новые для авторизации ---- */
         * {
             margin: 0;
             padding: 0;
@@ -672,6 +672,14 @@
         .auth-form .btn {
             width: 100%;
             justify-content: center;
+            margin-bottom: 0.8rem;
+        }
+        .auth-form .btn-google {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .auth-form .btn-google:hover {
+            background: rgba(255, 255, 255, 0.18);
         }
         .auth-form .switch-link {
             margin-top: 0.8rem;
@@ -688,6 +696,22 @@
             color: #ff6b6b;
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
+        }
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            opacity: 0.4;
+        }
+        .auth-divider::before,
+        .auth-divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .auth-divider span {
+            padding: 0 0.8rem;
+            font-size: 0.9rem;
         }
 
         /* ---- АДАПТИВНОСТЬ ---- */
@@ -983,9 +1007,19 @@
             <h2 id="authModalTitle">Вход</h2>
             <div class="auth-form" id="authForm">
                 <div class="auth-error" id="authError"></div>
+                <!-- Поле Имя (видно только при регистрации) -->
+                <input type="text" id="authName" placeholder="Имя" style="display:none;" />
                 <input type="email" id="authEmail" placeholder="Email" />
                 <input type="password" id="authPassword" placeholder="Пароль" />
+                
                 <button class="btn btn-primary" id="authSubmitBtn"><i class="fas fa-sign-in-alt"></i> Войти</button>
+                
+                <div class="auth-divider"><span>или</span></div>
+                
+                <button class="btn btn-google" id="googleAuthBtn">
+                    <i class="fab fa-google"></i> Войти через Google
+                </button>
+                
                 <div class="switch-link" id="authSwitch">Нет аккаунта? Зарегистрироваться</div>
             </div>
         </div>
@@ -994,7 +1028,6 @@
     <!-- ========== ИМПОРТ FIREBASE ========== -->
     <script type="module">
         // ---------- Настройка Firebase ----------
-        // ЗАМЕНИТЕ ЭТОТ ОБЪЕКТ НА ВАШИ ДАННЫЕ ИЗ КОНСОЛИ FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyC7BohTCxtCP1w-ae5xtvXyF_-jojmruL8",
             authDomain: "ritual-c2049.firebaseapp.com",
@@ -1010,26 +1043,29 @@
             onAuthStateChanged,
             signInWithEmailAndPassword,
             createUserWithEmailAndPassword,
-            signOut
+            signOut,
+            updateProfile,
+            GoogleAuthProvider,
+            signInWithPopup
         } from 'firebase/auth';
         import {
             getFirestore,
             doc,
             getDoc,
             setDoc,
-            updateDoc,
             onSnapshot
         } from 'firebase/firestore';
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
 
         // ---------- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ----------
         let currentUser = null;
         let cart = {}; // { productId: { id, name, price, image, imageSrc, quantity } }
 
-        // ---------- ДАННЫЕ ТОВАРОВ (те же, что и раньше) ----------
+        // ---------- ДАННЫЕ ТОВАРОВ (те же) ----------
         const products = [
             { id: 1, name: 'Гроб сосновый полированный', description: 'Сосна, лак, стандартный размер', price: 8500,
                 category: 'гробы', material: 'дерево', size: 'стандартный', rating: 4.5, image: 'fa-solid fa-box',
@@ -1127,12 +1163,10 @@
         // 1. УПРАВЛЕНИЕ КОРЗИНОЙ (Firestore)
         // ============================================================
 
-        // Получить документ корзины для текущего пользователя
         function getCartRef(uid) {
             return doc(db, 'carts', uid);
         }
 
-        // Загрузить корзину из Firestore
         async function loadCartFromFirestore(uid) {
             try {
                 const ref = getCartRef(uid);
@@ -1149,7 +1183,6 @@
             }
         }
 
-        // Сохранить корзину в Firestore
         async function saveCartToFirestore(uid) {
             try {
                 const ref = getCartRef(uid);
@@ -1160,7 +1193,6 @@
             }
         }
 
-        // Добавить товар в корзину
         async function addToCart(productId) {
             if (!currentUser) {
                 alert('Пожалуйста, войдите в аккаунт, чтобы добавить товар в корзину.');
@@ -1190,7 +1222,6 @@
             updateCartUI();
         }
 
-        // Изменить количество
         async function updateQuantity(productId, delta) {
             if (!currentUser) return;
             if (!cart[productId]) return;
@@ -1205,7 +1236,6 @@
             renderCartModal();
         }
 
-        // Удалить товар из корзины
         async function removeFromCart(productId) {
             if (!currentUser) return;
             delete cart[productId];
@@ -1214,16 +1244,6 @@
             renderCartModal();
         }
 
-        // Очистить корзину (опционально)
-        async function clearCart() {
-            if (!currentUser) return;
-            cart = {};
-            await saveCartToFirestore(currentUser.uid);
-            updateCartUI();
-            renderCartModal();
-        }
-
-        // Подсчёт общего количества товаров в корзине
         function getCartTotalItems() {
             let total = 0;
             for (let key in cart) {
@@ -1232,7 +1252,6 @@
             return total;
         }
 
-        // Подсчёт общей суммы
         function getCartTotalPrice() {
             let total = 0;
             for (let key in cart) {
@@ -1241,7 +1260,6 @@
             return total;
         }
 
-        // Обновить значок корзины в шапке
         function updateCartUI() {
             const count = getCartTotalItems();
             document.getElementById('cartCount').textContent = count;
@@ -1291,14 +1309,12 @@
             totalEl.textContent = `Итого: ${totalPrice.toLocaleString()} ₽`;
         }
 
-        // Делаем функции доступными глобально для onclick
         window.addToCart = addToCart;
         window.updateQuantity = updateQuantity;
         window.removeFromCart = removeFromCart;
-        window.clearCart = clearCart;
 
         // ============================================================
-        // 3. АВТОРИЗАЦИЯ
+        // 3. АВТОРИЗАЦИЯ (с полем Имя и Google)
         // ============================================================
 
         let authMode = 'login'; // 'login' | 'register'
@@ -1314,12 +1330,15 @@
         const authError = document.getElementById('authError');
         const authEmail = document.getElementById('authEmail');
         const authPassword = document.getElementById('authPassword');
+        const authName = document.getElementById('authName');
+        const googleAuthBtn = document.getElementById('googleAuthBtn');
 
         function openAuthModal() {
             authModal.classList.add('active');
             authError.textContent = '';
             authEmail.value = '';
             authPassword.value = '';
+            authName.value = '';
             setAuthMode('login');
         }
 
@@ -1333,10 +1352,15 @@
                 authModalTitle.textContent = 'Вход';
                 authSubmitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Войти';
                 authSwitch.textContent = 'Нет аккаунта? Зарегистрироваться';
+                authName.style.display = 'none';
+                // меняем текст кнопки Google
+                googleAuthBtn.innerHTML = '<i class="fab fa-google"></i> Войти через Google';
             } else {
                 authModalTitle.textContent = 'Регистрация';
                 authSubmitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Зарегистрироваться';
                 authSwitch.textContent = 'Уже есть аккаунт? Войти';
+                authName.style.display = 'block';
+                googleAuthBtn.innerHTML = '<i class="fab fa-google"></i> Зарегистрироваться через Google';
             }
         }
 
@@ -1349,19 +1373,43 @@
             authError.textContent = '';
         });
 
+        // Обработка email/пароль
         authSubmitBtn.addEventListener('click', async () => {
             const email = authEmail.value.trim();
             const password = authPassword.value.trim();
             if (!email || !password) {
-                authError.textContent = 'Заполните все поля';
+                authError.textContent = 'Заполните все обязательные поля';
                 return;
             }
-            try {
-                if (authMode === 'login') {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } else {
-                    await createUserWithEmailAndPassword(auth, email, password);
+            if (authMode === 'register') {
+                const name = authName.value.trim();
+                if (!name) {
+                    authError.textContent = 'Введите имя';
+                    return;
                 }
+                try {
+                    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+                    // Обновляем профиль с именем
+                    await updateProfile(userCred.user, { displayName: name });
+                    closeAuthModal();
+                } catch (err) {
+                    authError.textContent = err.message;
+                }
+            } else {
+                // Вход
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    closeAuthModal();
+                } catch (err) {
+                    authError.textContent = err.message;
+                }
+            }
+        });
+
+        // Вход через Google
+        googleAuthBtn.addEventListener('click', async () => {
+            try {
+                await signInWithPopup(auth, provider);
                 closeAuthModal();
             } catch (err) {
                 authError.textContent = err.message;
@@ -1380,19 +1428,18 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                userName.textContent = user.email;
+                // Отображаем имя (displayName) или email
+                const displayName = user.displayName || user.email;
+                userName.textContent = displayName;
                 authBtn.style.display = 'none';
                 logoutBtn.style.display = 'inline-flex';
 
-                // Загружаем корзину из Firestore и подписываемся на обновления
                 await loadCartFromFirestore(user.uid);
-                // Подписка на изменения (realtime)
                 const ref = getCartRef(user.uid);
                 onSnapshot(ref, (docSnap) => {
                     if (docSnap.exists()) {
                         cart = docSnap.data().items || {};
                         updateCartUI();
-                        // Если корзина открыта – обновляем её содержимое
                         if (document.getElementById('cartModal').classList.contains('active')) {
                             renderCartModal();
                         }
@@ -1405,13 +1452,12 @@
                 logoutBtn.style.display = 'none';
                 cart = {};
                 updateCartUI();
-                // Закрыть корзину, если она была открыта
                 document.getElementById('cartModal').classList.remove('active');
             }
         });
 
         // ============================================================
-        // 5. ОТКРЫТИЕ КОРЗИНЫ (по клику на иконку)
+        // 5. ОТКРЫТИЕ КОРЗИНЫ
         // ============================================================
 
         document.getElementById('cartIcon').addEventListener('click', () => {
@@ -1433,7 +1479,7 @@
         });
 
         // ============================================================
-        // 6. ОСТАЛЬНАЯ ЛОГИКА КАТАЛОГА (фильтры, рендер, пагинация)
+        // 6. ЛОГИКА КАТАЛОГА (фильтры, рендер, пагинация)
         // ============================================================
 
         let currentProducts = [...products];
