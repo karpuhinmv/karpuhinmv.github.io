@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
+        /* ---- Все стили без изменений (такие же, как в предыдущей версии) ---- */
         * {
             margin: 0;
             padding: 0;
@@ -124,7 +125,6 @@
             gap: 0.5rem;
         }
 
-        /* Заказы, товары */
         .order-item,
         .product-item,
         .category-item,
@@ -217,14 +217,6 @@
         }
         .form-group select option {
             background: #1a253a;
-        }
-        .form-group .inline-group {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-        .form-group .inline-group input {
-            flex: 1;
         }
 
         .btn {
@@ -603,7 +595,7 @@
                             <div class="form-group full-width">
                                 <label for="bannerImage">Ссылка на рекламный баннер</label>
                                 <input type="text" id="bannerImage" placeholder="https://example.com/banner.jpg" />
-                                <small style="opacity:0.6;">Вставьте прямую ссылку на изображение (можно загрузить в Firebase Storage или внешний хостинг)</small>
+                                <small style="opacity:0.6;">Вставьте прямую ссылку на изображение</small>
                             </div>
                             <div class="full-width" style="display:flex; gap:1rem;">
                                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Сохранить</button>
@@ -835,7 +827,7 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- Firebase -->
+    <!-- Firebase SDK -->
     <script type="importmap">
         {
             "imports": {
@@ -852,6 +844,8 @@
         import {
             getFirestore,
             collection,
+            query,
+            getDocs,
             doc,
             updateDoc,
             onSnapshot,
@@ -860,7 +854,6 @@
             serverTimestamp,
             getDoc,
             setDoc,
-            query,
             orderBy
         } from 'firebase/firestore';
 
@@ -879,7 +872,7 @@
 
         const ADMIN_EMAIL = 'karpuhinmaxim@gmail.com';
 
-        // DOM
+        // DOM-элементы
         const authBlock = document.getElementById('authBlock');
         const adminInterface = document.getElementById('adminInterface');
         const adminName = document.getElementById('adminName');
@@ -944,7 +937,7 @@
                 Object.keys(tabContents).forEach(key => {
                     tabContents[key].classList.toggle('active', key === tab);
                 });
-                // Обновляем справочники в select при открытии
+                // При переключении на вкладку товаров или скидок обновляем select'ы
                 if (tab === 'products' || tab === 'discounts') {
                     populateSelects();
                 }
@@ -966,11 +959,11 @@
                 loadMaterials();
                 loadSizes();
                 loadDiscounts();
-                populateSelects(); // для форм
+                populateSelects();
             } else {
                 authBlock.style.display = 'flex';
                 adminInterface.style.display = 'none';
-                // отписки...
+                // Отписки
                 if (unsubscribeOrders) { unsubscribeOrders();
                     unsubscribeOrders = null; }
                 if (unsubscribeProducts) { unsubscribeProducts();
@@ -992,7 +985,6 @@
                 document.getElementById('materialsList').innerHTML = '<div class="loading">Войдите как администратор</div>';
                 document.getElementById('sizesList').innerHTML = '<div class="loading">Войдите как администратор</div>';
                 document.getElementById('discountsList').innerHTML = '<div class="loading">Войдите как администратор</div>';
-                // Очистка счётчиков
                 document.querySelectorAll('[id$=Count]').forEach(el => el.textContent = '');
             }
         });
@@ -1019,7 +1011,7 @@
             showToast('Вы вышли', 'info');
         });
 
-        // --- 1. ЗАКАЗЫ ---
+        // ---------- ЗАКАЗЫ ----------
         let unsubscribeOrders = null;
         const ordersList = document.getElementById('ordersList');
         const ordersCount = document.getElementById('ordersCount');
@@ -1097,11 +1089,12 @@
             });
         }
 
-        // --- 2. ТОВАРЫ ---
+        // ---------- ТОВАРЫ ----------
         let unsubscribeProducts = null;
         const productsList = document.getElementById('productsList');
         const productsCount = document.getElementById('productsCount');
         const addProductForm = document.getElementById('addProductForm');
+
         // Элементы редактирования товара
         const editModal = document.getElementById('editProductModal');
         const editModalClose = document.getElementById('editModalClose');
@@ -1120,14 +1113,17 @@
         const editInStock = document.getElementById('editInStock');
         const editIsPopular = document.getElementById('editIsPopular');
 
-        // Функция наполнения select'ов категориями, материалами, размерами
-        async function populateSelects() {
+        // Глобальные переменные для справочников (для populateSelects)
+        let categories = [];
+        let materials = [];
+        let sizes = [];
+        let productsListData = [];
+
+        // Функция заполнения select'ов (использует глобальные переменные)
+        function populateSelects() {
             // Категории
-            const catSnap = await getDocs(collection(db, 'categories'));
-            const categories = [];
-            catSnap.forEach(doc => categories.push(doc.data().name));
-            const selects = ['pCategory', 'editCategory', 'discountCategory', 'editDiscountCategory'];
-            selects.forEach(id => {
+            const catSelects = ['pCategory', 'editCategory', 'discountCategory', 'editDiscountCategory'];
+            catSelects.forEach(id => {
                 const sel = document.getElementById(id);
                 if (sel) {
                     const current = sel.value;
@@ -1138,15 +1134,14 @@
                         opt.textContent = cat;
                         sel.appendChild(opt);
                     });
+                    // Если есть "all" для фильтра, но в админке это не нужно, оставляем как есть
                     sel.value = current;
                 }
             });
 
             // Материалы
-            const matSnap = await getDocs(collection(db, 'materials'));
-            const materials = [];
-            matSnap.forEach(doc => materials.push(doc.data().name));
-            ['pMaterial', 'editMaterial'].forEach(id => {
+            const matSelects = ['pMaterial', 'editMaterial'];
+            matSelects.forEach(id => {
                 const sel = document.getElementById(id);
                 if (sel) {
                     const current = sel.value;
@@ -1162,10 +1157,8 @@
             });
 
             // Размеры
-            const sizeSnap = await getDocs(collection(db, 'sizes'));
-            const sizes = [];
-            sizeSnap.forEach(doc => sizes.push(doc.data().name));
-            ['pSize', 'editSize'].forEach(id => {
+            const sizeSelects = ['pSize', 'editSize'];
+            sizeSelects.forEach(id => {
                 const sel = document.getElementById(id);
                 if (sel) {
                     const current = sel.value;
@@ -1180,16 +1173,14 @@
                 }
             });
 
-            // Товары для скидок (продукты)
-            const prodSnap = await getDocs(collection(db, 'products'));
-            const products = [];
-            prodSnap.forEach(doc => products.push({ id: doc.id, name: doc.data().name }));
-            ['discountProduct', 'editDiscountProduct'].forEach(id => {
+            // Товары для скидок
+            const prodSelects = ['discountProduct', 'editDiscountProduct'];
+            prodSelects.forEach(id => {
                 const sel = document.getElementById(id);
                 if (sel) {
                     const current = sel.value;
                     sel.innerHTML = '<option value="">Выберите товар</option>';
-                    products.forEach(p => {
+                    productsListData.forEach(p => {
                         const opt = document.createElement('option');
                         opt.value = p.id;
                         opt.textContent = p.name;
@@ -1200,19 +1191,184 @@
             });
         }
 
+        // Подписка на изменения категорий
+        function loadCategories() {
+            if (unsubscribeCategories) unsubscribeCategories();
+            const q = query(collection(db, 'categories'), orderBy('name'));
+            unsubscribeCategories = onSnapshot(q, (snapshot) => {
+                categories = [];
+                snapshot.forEach(doc => {
+                    categories.push(doc.data().name);
+                });
+                // Обновляем списки в формах
+                populateSelects();
+                // Обновляем отображение списка категорий
+                if (snapshot.empty) {
+                    document.getElementById('categoriesList').innerHTML =
+                        '<p style="opacity:0.6; text-align:center;">Категорий пока нет.</p>';
+                    document.getElementById('categoriesCount').textContent = '';
+                    return;
+                }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    html += `
+                            <div class="category-item" data-id="${id}">
+                                <span><strong>${data.name}</strong></span>
+                                <div class="actions">
+                                    <button class="btn btn-sm btn-primary edit-category-btn" data-id="${id}"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-danger delete-category-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                });
+                document.getElementById('categoriesList').innerHTML = html;
+                document.getElementById('categoriesCount').textContent = `Всего: ${snapshot.size}`;
+                // Обработчики
+                document.querySelectorAll('.edit-category-btn').forEach(btn => {
+                    btn.addEventListener('click', () => openEditCategoryModal(btn.dataset.id));
+                });
+                document.querySelectorAll('.delete-category-btn').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (confirm('Удалить категорию?')) {
+                            try {
+                                await deleteDoc(doc(db, 'categories', btn.dataset.id));
+                                showToast('Категория удалена', 'success');
+                            } catch (err) {
+                                showToast('Ошибка удаления', 'error');
+                            }
+                        }
+                    });
+                });
+            }, (error) => {
+                document.getElementById('categoriesList').innerHTML =
+                    `<p style="color:#ff6b6b;">Ошибка загрузки категорий: ${error.message}</p>`;
+                showToast('Ошибка загрузки категорий', 'error');
+            });
+        }
+
+        let unsubscribeCategories = null;
+
+        // Подписка на материалы
+        function loadMaterials() {
+            if (unsubscribeMaterials) unsubscribeMaterials();
+            const q = query(collection(db, 'materials'), orderBy('name'));
+            unsubscribeMaterials = onSnapshot(q, (snapshot) => {
+                materials = [];
+                snapshot.forEach(doc => {
+                    materials.push(doc.data().name);
+                });
+                populateSelects();
+                // Отображение списка материалов
+                if (snapshot.empty) {
+                    document.getElementById('materialsList').innerHTML =
+                        '<p style="opacity:0.6; text-align:center;">Материалов пока нет.</p>';
+                    return;
+                }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    html += `
+                            <div class="category-item" data-id="${id}">
+                                <span>${data.name}</span>
+                                <div class="actions">
+                                    <button class="btn btn-sm btn-danger delete-material-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                });
+                document.getElementById('materialsList').innerHTML = html;
+                document.querySelectorAll('.delete-material-btn').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (confirm('Удалить материал?')) {
+                            try {
+                                await deleteDoc(doc(db, 'materials', btn.dataset.id));
+                                showToast('Материал удалён', 'success');
+                            } catch (err) {
+                                showToast('Ошибка удаления', 'error');
+                            }
+                        }
+                    });
+                });
+            }, (error) => {
+                document.getElementById('materialsList').innerHTML =
+                    `<p style="color:#ff6b6b;">Ошибка загрузки материалов: ${error.message}</p>`;
+                showToast('Ошибка загрузки материалов', 'error');
+            });
+        }
+
+        let unsubscribeMaterials = null;
+
+        // Подписка на размеры
+        function loadSizes() {
+            if (unsubscribeSizes) unsubscribeSizes();
+            const q = query(collection(db, 'sizes'), orderBy('name'));
+            unsubscribeSizes = onSnapshot(q, (snapshot) => {
+                sizes = [];
+                snapshot.forEach(doc => {
+                    sizes.push(doc.data().name);
+                });
+                populateSelects();
+                if (snapshot.empty) {
+                    document.getElementById('sizesList').innerHTML =
+                        '<p style="opacity:0.6; text-align:center;">Размеров пока нет.</p>';
+                    return;
+                }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const id = doc.id;
+                    html += `
+                            <div class="category-item" data-id="${id}">
+                                <span>${data.name}</span>
+                                <div class="actions">
+                                    <button class="btn btn-sm btn-danger delete-size-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        `;
+                });
+                document.getElementById('sizesList').innerHTML = html;
+                document.querySelectorAll('.delete-size-btn').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        if (confirm('Удалить размер?')) {
+                            try {
+                                await deleteDoc(doc(db, 'sizes', btn.dataset.id));
+                                showToast('Размер удалён', 'success');
+                            } catch (err) {
+                                showToast('Ошибка удаления', 'error');
+                            }
+                        }
+                    });
+                });
+            }, (error) => {
+                document.getElementById('sizesList').innerHTML =
+                    `<p style="color:#ff6b6b;">Ошибка загрузки размеров: ${error.message}</p>`;
+                showToast('Ошибка загрузки размеров', 'error');
+            });
+        }
+
+        let unsubscribeSizes = null;
+
+        // ---- ТОВАРЫ (список и добавление) ----
         function loadProducts() {
             if (unsubscribeProducts) unsubscribeProducts();
             const q = query(collection(db, 'products'), orderBy('createdAt', 'desc'));
             unsubscribeProducts = onSnapshot(q, (snapshot) => {
+                productsListData = [];
+                snapshot.forEach(doc => {
+                    productsListData.push({ id: doc.id, ...doc.data() });
+                });
+                // Отображение списка товаров
                 if (snapshot.empty) {
                     productsList.innerHTML = '<p style="opacity:0.6; text-align:center;">Товаров пока нет.</p>';
                     productsCount.textContent = '';
                     return;
                 }
                 let html = '';
-                snapshot.forEach(doc => {
-                    const p = doc.data();
-                    const id = doc.id;
+                productsListData.forEach(p => {
+                    const id = p.id;
                     html += `
                             <div class="product-item" data-id="${id}">
                                 <div class="p-info">
@@ -1245,7 +1401,7 @@
                         }
                     });
                 });
-                // Обновляем select с товарами для скидок
+                // Обновляем select'ы с товарами для скидок
                 populateSelects();
             }, (error) => {
                 productsList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки товаров: ${error.message}</p>`;
@@ -1253,6 +1409,7 @@
             });
         }
 
+        // --- Добавление товара ---
         addProductForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('pName').value.trim();
@@ -1266,6 +1423,8 @@
             const description = document.getElementById('pDescription').value.trim() || '';
             const inStock = document.getElementById('pInStock').value === 'true';
             const isPopular = document.getElementById('pIsPopular').value === 'true';
+            const rating = 0;
+
             if (!name || !price) {
                 alert('Название и цена обязательны');
                 return;
@@ -1283,6 +1442,7 @@
                     description,
                     inStock,
                     isPopular,
+                    rating,
                     createdAt: serverTimestamp()
                 });
                 addProductForm.reset();
@@ -1295,6 +1455,7 @@
             }
         });
 
+        // --- Редактирование товара ---
         async function openEditProductModal(productId) {
             try {
                 const docRef = doc(db, 'products', productId);
@@ -1305,6 +1466,7 @@
                 editName.value = p.name || '';
                 editPrice.value = p.price || '';
                 editOldPrice.value = p.oldPrice || '';
+                // select'ы уже заполнены, просто устанавливаем значения
                 editCategory.value = p.category || '';
                 editMaterial.value = p.material || '';
                 editSize.value = p.size || '';
@@ -1362,7 +1524,7 @@
             }
         });
 
-        // --- 3. НАСТРОЙКИ (баннер) ---
+        // ---------- НАСТРОЙКИ ----------
         let unsubscribeSettings = null;
         const settingsForm = document.getElementById('settingsForm');
         const bannerImage = document.getElementById('bannerImage');
@@ -1372,8 +1534,7 @@
             const docRef = doc(db, 'settings', 'site');
             unsubscribeSettings = onSnapshot(docRef, (docSnap) => {
                 if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    bannerImage.value = data.bannerImage || '';
+                    bannerImage.value = docSnap.data().bannerImage || '';
                 } else {
                     bannerImage.value = '';
                 }
@@ -1393,68 +1554,15 @@
             }
         });
 
-        // --- 4. КАТЕГОРИИ ---
-        let unsubscribeCategories = null;
-        const categoriesList = document.getElementById('categoriesList');
-        const categoriesCount = document.getElementById('categoriesCount');
+        // ---------- КАТЕГОРИИ (добавление, редактирование, удаление) ----------
         const addCategoryForm = document.getElementById('addCategoryForm');
         const categoryNameInput = document.getElementById('categoryName');
-        // Модалка редактирования категории
         const editCategoryModal = document.getElementById('editCategoryModal');
         const editCategoryModalClose = document.getElementById('editCategoryModalClose');
         const editCategoryCancel = document.getElementById('editCategoryCancel');
         const editCategoryForm = document.getElementById('editCategoryForm');
         const editCategoryId = document.getElementById('editCategoryId');
         const editCategoryName = document.getElementById('editCategoryName');
-
-        function loadCategories() {
-            if (unsubscribeCategories) unsubscribeCategories();
-            const q = query(collection(db, 'categories'), orderBy('name'));
-            unsubscribeCategories = onSnapshot(q, (snapshot) => {
-                if (snapshot.empty) {
-                    categoriesList.innerHTML = '<p style="opacity:0.6; text-align:center;">Категорий пока нет.</p>';
-                    categoriesCount.textContent = '';
-                    return;
-                }
-                let html = '';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const id = doc.id;
-                    html += `
-                            <div class="category-item" data-id="${id}">
-                                <span><strong>${data.name}</strong></span>
-                                <div class="actions">
-                                    <button class="btn btn-sm btn-primary edit-category-btn" data-id="${id}"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-sm btn-danger delete-category-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                        `;
-                });
-                categoriesList.innerHTML = html;
-                categoriesCount.textContent = `Всего: ${snapshot.size}`;
-                // Обработчики
-                document.querySelectorAll('.edit-category-btn').forEach(btn => {
-                    btn.addEventListener('click', () => openEditCategoryModal(btn.dataset.id));
-                });
-                document.querySelectorAll('.delete-category-btn').forEach(btn => {
-                    btn.addEventListener('click', async () => {
-                        if (confirm('Удалить категорию?')) {
-                            try {
-                                await deleteDoc(doc(db, 'categories', btn.dataset.id));
-                                showToast('Категория удалена', 'success');
-                                populateSelects();
-                            } catch (err) {
-                                showToast('Ошибка удаления', 'error');
-                            }
-                        }
-                    });
-                });
-                populateSelects();
-            }, (error) => {
-                categoriesList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки категорий: ${error.message}</p>`;
-                showToast('Ошибка загрузки категорий', 'error');
-            });
-        }
 
         addCategoryForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1464,7 +1572,6 @@
                 await addDoc(collection(db, 'categories'), { name });
                 categoryNameInput.value = '';
                 showToast('Категория добавлена!', 'success');
-                populateSelects();
             } catch (err) {
                 showToast('Ошибка добавления категории', 'error');
             }
@@ -1495,59 +1602,14 @@
                 await updateDoc(doc(db, 'categories', id), { name });
                 closeEditCategoryModal();
                 showToast('Категория обновлена!', 'success');
-                populateSelects();
             } catch (err) {
                 showToast('Ошибка обновления', 'error');
             }
         });
 
-        // --- 5. СПРАВОЧНИКИ (материалы, размеры) ---
-        let unsubscribeMaterials = null;
-        const materialsList = document.getElementById('materialsList');
+        // ---------- МАТЕРИАЛЫ ----------
         const addMaterialForm = document.getElementById('addMaterialForm');
         const materialNameInput = document.getElementById('materialName');
-
-        function loadMaterials() {
-            if (unsubscribeMaterials) unsubscribeMaterials();
-            const q = query(collection(db, 'materials'), orderBy('name'));
-            unsubscribeMaterials = onSnapshot(q, (snapshot) => {
-                if (snapshot.empty) {
-                    materialsList.innerHTML = '<p style="opacity:0.6; text-align:center;">Материалов пока нет.</p>';
-                    return;
-                }
-                let html = '';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const id = doc.id;
-                    html += `
-                            <div class="category-item" data-id="${id}">
-                                <span>${data.name}</span>
-                                <div class="actions">
-                                    <button class="btn btn-sm btn-danger delete-material-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                        `;
-                });
-                materialsList.innerHTML = html;
-                document.querySelectorAll('.delete-material-btn').forEach(btn => {
-                    btn.addEventListener('click', async () => {
-                        if (confirm('Удалить материал?')) {
-                            try {
-                                await deleteDoc(doc(db, 'materials', btn.dataset.id));
-                                showToast('Материал удалён', 'success');
-                                populateSelects();
-                            } catch (err) {
-                                showToast('Ошибка удаления', 'error');
-                            }
-                        }
-                    });
-                });
-                populateSelects();
-            }, (error) => {
-                materialsList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки материалов: ${error.message}</p>`;
-                showToast('Ошибка загрузки материалов', 'error');
-            });
-        }
 
         addMaterialForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1557,58 +1619,14 @@
                 await addDoc(collection(db, 'materials'), { name });
                 materialNameInput.value = '';
                 showToast('Материал добавлен!', 'success');
-                populateSelects();
             } catch (err) {
                 showToast('Ошибка добавления материала', 'error');
             }
         });
 
-        let unsubscribeSizes = null;
-        const sizesList = document.getElementById('sizesList');
+        // ---------- РАЗМЕРЫ ----------
         const addSizeForm = document.getElementById('addSizeForm');
         const sizeNameInput = document.getElementById('sizeName');
-
-        function loadSizes() {
-            if (unsubscribeSizes) unsubscribeSizes();
-            const q = query(collection(db, 'sizes'), orderBy('name'));
-            unsubscribeSizes = onSnapshot(q, (snapshot) => {
-                if (snapshot.empty) {
-                    sizesList.innerHTML = '<p style="opacity:0.6; text-align:center;">Размеров пока нет.</p>';
-                    return;
-                }
-                let html = '';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const id = doc.id;
-                    html += `
-                            <div class="category-item" data-id="${id}">
-                                <span>${data.name}</span>
-                                <div class="actions">
-                                    <button class="btn btn-sm btn-danger delete-size-btn" data-id="${id}"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>
-                        `;
-                });
-                sizesList.innerHTML = html;
-                document.querySelectorAll('.delete-size-btn').forEach(btn => {
-                    btn.addEventListener('click', async () => {
-                        if (confirm('Удалить размер?')) {
-                            try {
-                                await deleteDoc(doc(db, 'sizes', btn.dataset.id));
-                                showToast('Размер удалён', 'success');
-                                populateSelects();
-                            } catch (err) {
-                                showToast('Ошибка удаления', 'error');
-                            }
-                        }
-                    });
-                });
-                populateSelects();
-            }, (error) => {
-                sizesList.innerHTML = `<p style="color:#ff6b6b;">Ошибка загрузки размеров: ${error.message}</p>`;
-                showToast('Ошибка загрузки размеров', 'error');
-            });
-        }
 
         addSizeForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1618,18 +1636,18 @@
                 await addDoc(collection(db, 'sizes'), { name });
                 sizeNameInput.value = '';
                 showToast('Размер добавлен!', 'success');
-                populateSelects();
             } catch (err) {
                 showToast('Ошибка добавления размера', 'error');
             }
         });
 
-        // --- 6. СКИДКИ ---
+        // ---------- СКИДКИ ----------
         let unsubscribeDiscounts = null;
         const discountsList = document.getElementById('discountsList');
         const discountsCount = document.getElementById('discountsCount');
         const addDiscountForm = document.getElementById('addDiscountForm');
-        // Элементы модалки редактирования скидки
+
+        // Модалка редактирования скидки
         const editDiscountModal = document.getElementById('editDiscountModal');
         const editDiscountModalClose = document.getElementById('editDiscountModalClose');
         const editDiscountCancel = document.getElementById('editDiscountCancel');
@@ -1644,7 +1662,6 @@
         const editDiscountCategoryGroup = document.getElementById('editDiscountCategoryGroup');
         const editDiscountProductGroup = document.getElementById('editDiscountProductGroup');
 
-        // Показ/скрытие полей в зависимости от scope
         function toggleDiscountFields(scope, prefix = '') {
             const catGroup = document.getElementById(prefix + 'DiscountCategoryGroup');
             const prodGroup = document.getElementById(prefix + 'DiscountProductGroup');
@@ -1735,7 +1752,6 @@
                 category = document.getElementById('discountCategory').value;
             } else if (scope === 'product') {
                 product = document.getElementById('discountProduct').value;
-                // получаем название товара
                 const prodDoc = await getDoc(doc(db, 'products', product));
                 if (prodDoc.exists()) productName = prodDoc.data().name;
             }
@@ -1822,19 +1838,11 @@
             }
         });
 
-        // --- Вспомогательное: получение данных для select'ов ---
-        async function getDocs(collectionRef) {
-            const snapshot = await getDocs(collectionRef);
-            return snapshot;
-        }
+        // ---- Инициализация ----
+        // Запускаем все подписки (они уже запущены при входе)
+        // Также при переключении вкладок мы вызываем populateSelects
 
-        // Инициализация после входа
-        // populateSelects() вызывается при переключении вкладок, но также нужно при загрузке товаров и т.д.
-
-        // Если пользователь уже авторизован, но не администратор
-        if (auth.currentUser && auth.currentUser.email !== ADMIN_EMAIL) {
-            signOut(auth);
-        }
+        console.log('✅ Админ-панель обновлена: динамические select\'ы для категорий, материалов, размеров');
     </script>
 </body>
 </html>
